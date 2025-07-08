@@ -1,0 +1,21 @@
+export const listCategories: string[] = [
+  "Erreurs de facturation",
+  "Facture non reçue",
+  "Montant de facture élevé",
+  "Problèmes de paiement en ligne",
+  "Paiements non enregistrés",
+  "Coupure d'eau",
+  "Baisse de pression d'eau",
+  "Qualité de l'eau (goût, couleur, odeur)",
+  "Fuites d'eau",
+  "Interruption de service sans préavis",
+  "Coupure d'électricité",
+  "Problèmes de voltage",
+  "Électricité non stable",
+  "Raccordement électrique",
+  "Pannes fréquentes",
+  "Retard dans les interventions techniques",
+  "Installation de nouveaux compteurs",
+  "Réparation de fuites d'eau",
+  "Maintenance des installations électriques"
+];

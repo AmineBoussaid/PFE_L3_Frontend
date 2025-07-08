@@ -1,8 +1,15 @@
 // app.routes.ts
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
+
+import { DashboardComponent } from './agent/dashboard/dashboard.component';
+import { ReclamationComponent } from './agent/reclamation/reclamation.component';
+import { ServicesComponent } from './agent/services/services.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, // Redirection par défaut vers login
+
+              /*****      AGENT ROUTES    *****/
+  { path: 'agent/dashboard', component: DashboardComponent },
+  { path: 'agent/reclamation', component: ReclamationComponent },
+  { path: 'agent/services', component: ServicesComponent },
+
 ];
