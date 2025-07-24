@@ -1,38 +1,70 @@
+import { ServiceDService } from './../../services/service_d.service';
+import { listPeriodes, listOccurrences, listQuartiers } from './../assets/utils/utils';
 import { ReclamationService } from './../../services/reclamation.service';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Departement, Reclamation } from '../../../models';
-import { listCategories } from '../assets/utils/utils';
+import { Departement, Reclamation, Service } from '../../../models';
+import { listCategories, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
+import { ActivatedRoute } from '@angular/router';
+import { AgentUser_id } from '../../utils';
 
 @Component({
   selector: 'app-reclamation',
   standalone: true,
-  imports: [NgFor,FormsModule],
+  imports: [NgFor,FormsModule,NgIf],
   templateUrl: './reclamation.component.html',
   styleUrl: './reclamation.component.css'
 })
 export class ReclamationComponent implements OnInit {
 
-  reclamations: Reclamation[] | undefined;
-  newReclamation: Reclamation = new Reclamation; // Initialize the new reclamation
-  categories = listCategories;
-  departements: Departement[] | undefined
+  reclamations: Reclamation[] = [];
+  newReclamation: Reclamation = new Reclamation();
+  departements: Departement[] = []
+  services: Service[] = []
 
-  gravity: any ;
-  days: any ;
-  occurrences: any;
+
+  categories = listCategories;
+  situations = listSituations;
+  periodes = listPeriodes ;
+  occurrences = listOccurrences;
+  quartiers = listQuartiers;
+
+  selectedDepartementId!: number;
+  selectedOption: string = '';
+
+  filteredQuartiers: string[] = this.quartiers;
+  searchQuartier: string = '';
+
+  editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
+  reclamationExist: boolean = true;
+
+  user_id:number = AgentUser_id
+
+
 
   constructor(
     private reclamationService: ReclamationService,
-    private departementService: DepartementService
+    private departementService: DepartementService,
+    private serviceDService: ServiceDService,
+    private route: ActivatedRoute
   ) {}
 
 
   ngOnInit(): void {
-    this.getReclamations();
     this.getDepartements();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['idFonctionnel']) {
+        this.newReclamation.idFonctionnel = params['idFonctionnel'];
+        this.enterEditMode();
+      }
+    });
+
+    this.verifyReclamation(this.newReclamation.idFonctionnel);
+
+
   }
 
 
@@ -40,37 +72,50 @@ export class ReclamationComponent implements OnInit {
 
    addReclamation(): void {
 
-    this.newReclamation.agent.id = 1 // id de agent
-    this.newReclamation.departement.id = 1 // id de departement a partir de categorie
-    // Mise à jour de la description dans newReclamation
-    let newDescription = `Category: ${this.newReclamation.category}, Gravité: ${this.gravity}, Nombre de jours: ${this.days}, Nombre de fois: ${this.occurrences}, ${this.newReclamation.description}`;
-    this.newReclamation.description = newDescription;
+    this.newReclamation.agent.id = this.user_id ;
 
+    // Mise à jour de la description dans newReclamation
+    let newDescription = `nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
+
+    Category: ${this.newReclamation.category},
+    Situation: ${this.newReclamation.situation},
+    Periode: ${this.newReclamation.periode},
+    Occurrence: ${this.newReclamation.occurrence},\n\n
+
+    Detailles:\n${this.newReclamation.description}`;
+
+    this.newReclamation.description = newDescription;
     this.reclamationService.addReclamation(this.newReclamation).subscribe(
       response => {
         console.log('Reclamation added', response);
-        this.getReclamations(); // Refresh the list after adding
       },
     );
   }
 
-  getReclamations(): void {
-    this.reclamationService.getReclamations().subscribe(
-      data => {
-        this.reclamations = data;
-        console.log(this.reclamations);
+
+  updateReclamation(): void {
+
+    let newDescription = `
+    nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
+
+    Category: ${this.newReclamation.category},
+    Situation: ${this.newReclamation.situation},
+    Periode: ${this.newReclamation.periode},
+    Occurrence: ${this.newReclamation.occurrence},\n\n
+
+    Detailles:\n${this.newReclamation.description}`;
+
+    this.newReclamation.description = newDescription;
+    this.reclamationService.updateReclamation(this.newReclamation).subscribe(
+      response => {
+        console.log('Reclamation updated', response);
       },
     );
   }
 
-  public getReclamationById(id: number):void{
-    this.reclamationService.getReclamationById(id)
-  }
 
-  public getReclamationByFonctionel(id:number):void{
-    this.reclamationService.getReclamationByFonctionnel(id)
-  }
 
+  /*******************************/
 
 
   /****  Service Departement  ****/
@@ -85,12 +130,66 @@ export class ReclamationComponent implements OnInit {
   }
 
 
-  /*public scrollToSection(sectionId: string) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }*/
+    /****  Service Service  ****/
 
+    getServicesByDepartementId(departement_id: number): void{
+      this.serviceDService.getServicesByDepartementId(departement_id).subscribe(
+        data => {
+          this.services = data;
+          console.log(this.services);
+        },
+      );
+    }
+
+
+    onDepartementChange(event: any): void {
+      const departementId = event.target.value;
+      if (departementId) {
+        this.getServicesByDepartementId(departementId);
+      } else {
+        this.services = [];
+      }
+    }
+
+
+    filterQuartiers(): void {
+      this.filteredQuartiers = this.quartiers.filter(quartier =>
+        quartier.toLowerCase().includes(this.searchQuartier.toLowerCase())
+      );
+    }
+
+    onOptionChange(): void {
+      if (this.selectedOption === 'option2') {
+        this.newReclamation.pays = 'Maroc';
+        this.newReclamation.ville = 'Fes';
+      } else {
+        this.newReclamation.pays = null;
+        this.newReclamation.ville = null;
+      }
+    }
+
+
+    verifyReclamation(idFonctionnel: string): void {
+      this.reclamationService.getReclamationByIdFonctionnel(idFonctionnel).subscribe(
+        (reclamation: Reclamation) => {
+          this.newReclamation = reclamation;
+          this.reclamationExist = true;
+        },
+        (error) => {
+          console.error('Reclamation does not exist', error);
+          this.reclamationExist = false;
+        }
+      );
+    }
+
+
+    enterAddMode(): void {
+      this.editMode = false;
+      this.newReclamation = new Reclamation();
+    }
+
+    enterEditMode(): void {
+      this.editMode = true;
+    }
 
 }

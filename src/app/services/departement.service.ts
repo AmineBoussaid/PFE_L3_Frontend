@@ -17,4 +17,8 @@ export class DepartementService {
     return this.http.get<Departement[]>(`${this.apiUrl}/getAll`);
   }
 
+  getByChefDepartement(chef_departement_id: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/getByChefDepartement/${chef_departement_id}`);
+  }
+
 }

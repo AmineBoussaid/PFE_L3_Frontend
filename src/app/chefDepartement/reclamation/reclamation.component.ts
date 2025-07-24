@@ -1,46 +1,60 @@
-import { AgentUser_id } from './../../utils';
+import { DepartementService } from './../../services/departement.service';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { Reclamation } from '../../../models';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { jsPDF } from 'jspdf';
-
+import jsPDF from 'jspdf';
+import { DepartementUser_id } from '../../utils';
 
 @Component({
-  selector: 'app-services',
+  selector: 'app-reclamation',
   standalone: true,
   imports: [NgFor,NgIf],
-  templateUrl: './services.component.html',
-  styleUrl: './services.component.css'
+  templateUrl: './reclamation.component.html',
+  styleUrl: './reclamation.component.css'
 })
-export class ServicesComponent implements OnInit {
+export class ReclamationComponent implements OnInit{
 
   reclamations: Reclamation[] = [];
   filteredReclamations: Reclamation[] = [];
   paginatedReclamations: Reclamation[] = [];
 
+  searchDate: string = '';
+  searchStatus: string = '';
+  searchText: string = '';
+
   currentPage: number = 1;
   itemsPerPage: number = 5;
   Math: any = Math;
 
-  searchDate: string = '';
-  searchStatus: string = '';
-  searchText: string = '';
-  user_id: number = AgentUser_id;
-  filterByUserId: boolean = false;
+  user_id: number = DepartementUser_id
 
-  constructor(private reclamationService: ReclamationService, private router: Router) { }
+
+  constructor(private reclamationService: ReclamationService,
+              private departementService: DepartementService,
+              private router: Router
+            ) { }
 
   ngOnInit(): void {
-    this.getReclamations();
+    this.getReclamations(this.user_id);
   }
 
-  getReclamations(): void {
-    this.reclamationService.getReclamations().subscribe(data => {
-      this.reclamations = data;
-      this.filteredReclamations = data;
-      this.setPage(this.currentPage);
+  getReclamations(user_id: number): void {
+    this.departementService.getByChefDepartement(user_id).subscribe(departement_id => {
+      this.reclamationService.getReclamationsByDepartementId(departement_id).subscribe(data => {
+        this.reclamations = data;
+        this.filteredReclamations = data;
+        this.setPage(this.currentPage);
+      });
+    });
+  }
+
+
+  deleteById(id: number): void {
+    this.reclamationService.deleteById(id).subscribe(() => {
+      this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
+      this.filterReclamations();
     });
   }
 
@@ -49,8 +63,7 @@ export class ServicesComponent implements OnInit {
       return (!this.searchDate || reclamation.created_at?.startsWith(this.searchDate)) &&
              (!this.searchStatus || reclamation.status === this.searchStatus) &&
              (!this.searchText || reclamation.nomClient?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-              reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-             (!this.filterByUserId || reclamation.agent?.id === this.user_id);
+              reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase()))
     });
     this.setPage(this.currentPage);
     this.updatePagination();
@@ -71,10 +84,6 @@ export class ServicesComponent implements OnInit {
     this.filterReclamations();
   }
 
-  onUserCheckChange(event: any): void {
-    this.filterByUserId = event.target.checked;
-    this.filterReclamations();
-  }
 
   setPage(page: number): void {
     if (page < 1 || page > Math.ceil(this.filteredReclamations.length / this.itemsPerPage)) {
@@ -90,15 +99,14 @@ export class ServicesComponent implements OnInit {
     this.paginatedReclamations = this.filteredReclamations.slice(startIndex, endIndex);
   }
 
-  goToReclamation(idFonctionnel: string | null): void {
+  goToIntervention(idFonctionnel: string | null): void {
     if (idFonctionnel) {
-      this.router.navigate(['agent/reclamation'], { queryParams: { idFonctionnel } });
+      this.router.navigate(['chefDepartement/intervention'], { queryParams: { idFonctionnel } });
     } else {
       console.error('idFonctionnel is null');
     }
   }
 
-  // Method to generate PDF and open it in a new window
   generatePDF(reclamation: Reclamation): void {
     const doc = new jsPDF();
     doc.text(`Date Creation ${reclamation.created_at} \t N° Reclamation: ${reclamation.idFonctionnel}\n`,10, 10);
@@ -109,4 +117,6 @@ export class ServicesComponent implements OnInit {
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl);
   }
+
+
 }

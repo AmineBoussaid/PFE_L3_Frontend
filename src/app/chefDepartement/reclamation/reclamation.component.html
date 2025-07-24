@@ -40,7 +40,6 @@
 
 
 
-
   <main class="d-flex flex-nowrap">
 
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 250px;height: 100vh;">
@@ -51,31 +50,43 @@
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="agent/dashboard" class="nav-link text-white" >
+          <a href="chefDepartement/dashboard" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
             Dashboard
           </a>
         </li>
         <li>
-          <a href="agent/reclamation" class="nav-link text-white">
+          <a href="chefDepartement/intervention" class="nav-link text-white">
+            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#intervention"/></svg>
+            Intervention
+          </a>
+        </li>
+        <li>
+          <a href="chefDepartement/reclamation" class="nav-link active" aria-current="page">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#reclamation"/></svg>
             Reclamation
           </a>
         </li>
         <li>
-          <a href="agent/services" class="nav-link active" aria-current="page">
+          <a href="chefDepartement/services" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
             Services
           </a>
         </li>
         <li>
-          <a href="agent/historique" class="nav-link text-white">
+          <a href="chefDepartement/gestionDepartement" class="nav-link text-white">
+            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#gestion-departement"/></svg>
+            Gestion Departement
+          </a>
+        </li>
+        <li>
+          <a href="chefDepartement/historique" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#historique"/></svg>
             Historique
           </a>
         </li>
         <li>
-          <a href="agent/Profile" class="nav-link text-white">
+          <a href="chefDepartement/Profile" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
             Profile
           </a>
@@ -120,7 +131,7 @@
 
       <div class="row">
         <div class="col">
-          <h2>SERVICES</h2>
+          <h2>Reclamation</h2>
         </div>
         <div class="col">
           2 of 2
@@ -129,13 +140,6 @@
 
       <div class="row mt-3 mb-3">
         <div class="col-12 shadow p-2 bg-body-tertiary rounded ">
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckAgent" (change)="onUserCheckChange($event)">
-            <label class="form-check-label" for="flexCheckAgent">
-              Agent Reclamation
-            </label>
-          </div>
 
           <div class="input-group input-group-sm mb-2 p-2">
             <label class="input-group-text" for="dateFilter">Date Creation</label>
@@ -166,6 +170,7 @@
                   <th scope="col">Addresse</th>
                 </tr>
               </thead>
+
               <tbody>
                 <tr *ngFor="let reclamation of paginatedReclamations; let i = index">
                   <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
@@ -177,19 +182,23 @@
                   <td>{{ reclamation.pays }}  {{ reclamation.ville }}  {{ reclamation.quartier }}  {{ reclamation.nomRue }} </td>
                   <td>
                     <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(reclamation)">Voir</button>
+
                     <div class="btn-group">
                       <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                       </button>
 
                       <ul class="dropdown-menu">
-                        <li><button class="dropdown-item" type="button" (click)="goToReclamation(reclamation.idFonctionnel)" >Modifier Reclamation</button></li>
+                        <li><button class="dropdown-item" type="button" (click)="goToIntervention(reclamation.idFonctionnel)">Intervention</button></li>
+                        <li><button class="dropdown-item" type="button" (click)="deleteById(reclamation.id)">Annuler Reclamation</button></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><button class="dropdown-item" type="button">Repport</button></li>
                       </ul>
                     </div>
-                  </td>
+
+                </td>
                 </tr>
               </tbody>
+
             </table>
             <div *ngIf="paginatedReclamations.length === 0" class="text-center p-5">Aucune réclamation trouvée.</div>
           </div>

@@ -1,15 +1,14 @@
 // app.routes.ts
 import { Routes } from '@angular/router';
+import { AgentRoutes } from './agent/agent.routes';
+import { ChefDepartementRoutes } from './chefDepartement/chefDepartement.routes';
+import { ChefServiceRoutes } from './chefService/chef-service-routing.module'
 
-import { DashboardComponent } from './agent/dashboard/dashboard.component';
-import { ReclamationComponent } from './agent/reclamation/reclamation.component';
-import { ServicesComponent } from './agent/services/services.component';
 
 export const routes: Routes = [
+  { path: 'agent', children: AgentRoutes },
+  { path: 'chefDepartement', children: ChefDepartementRoutes },
+  { path: 'chefService', children: ChefServiceRoutes },
 
-              /*****      AGENT ROUTES    *****/
-  { path: 'agent/dashboard', component: DashboardComponent },
-  { path: 'agent/reclamation', component: ReclamationComponent },
-  { path: 'agent/services', component: ServicesComponent },
-
+  { path: '', redirectTo: '/chefService', pathMatch: 'full' } // Redirection par défaut vers /agent
 ];
