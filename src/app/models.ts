@@ -18,6 +18,28 @@ export class User {
   }
 }
 
+export class UserHist {
+  id!: number;
+  user!: User;
+  created_at!: string | null;
+  action!: string | null;
+  details!: string | null;
+  ipAddress!: string | null;
+
+  // Parameterless constructor
+  constructor();
+
+  // Constructor with parameters
+  constructor(id?: number, user?: User,created_at?: string, action?: string, details?: string, ipAddress?: string) {
+    this.id =id  ?? 0;
+    this.user = user  ?? new User();
+    this.created_at = created_at ?? null;
+    this.action = action  ?? null;
+    this.details = details  ?? null;
+    this.ipAddress = ipAddress  ?? null;
+  }
+}
+
 
 export class TechnicienDto {
   userId !: number;

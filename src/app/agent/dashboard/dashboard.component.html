@@ -40,10 +40,10 @@
 
 
 
-  <main class="d-flex flex-nowrap">
+  <main class=" flex-nowrap">
 
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 250px;height: 100vh;">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <div class=" flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 250px;height: 100vh;">
+      <a href="/" class=" align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <svg class="bi pe-none me-2" width="35" height="25"><use xlink:href="#grid"/></svg>
         <span class="fs-4">Nom utilisateur</span>
       </a>
@@ -74,7 +74,7 @@
           </a>
         </li>
         <li>
-          <a href="agent/Profile" class="nav-link text-white">
+          <a href="agent/profile" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
             Profile
           </a>
@@ -102,23 +102,131 @@
   <!--  header Menu Star  -->
     <header class="p-2 text-bg-dark">
       <div class="container">
-        <div class="d-flex flex-wrap align-items-end justify-content-end justify-end-lg-end">
+        <div class=" flex-wrap align-items-end justify-content-end justify-end-lg-end">
           <div class="text-end">
             <button type="button" class="btn btn-outline-light me-2">Profile</button>
-            <button type="button" class="btn btn-warning">Logout</button>
+            <button type="button" class="btn btn-warning" (click)="logout()" >Logout</button>
+
           </div>
         </div>
       </div>
     </header>
   <!--  header Menu End  -->
 
+  <!-- Container Start -->
+  <div class="container">
+
+    <div class="row mb-2">
+      <div class="col">
+        Dashboard
+      </div>
+      <div class="col">
+        2
+      </div>
+      <div class="col">
+        3
+      </div>
+    </div>
+
+    <div class="row mb-2 p-2 bg-body-tertiary shadow">
+
+      <div class="row mb-2 ">
+        <div class="col">
+          <!-- ICI Cree une Calendrier des mois pour afficher les statisitc de chaque mois ou bien de tous les mois -->
+        </div>
+      </div>
+
+      <div class="row mb-2 ">
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body ">
+              <div class="badge text-bg-primary ">Total Réclamations</div>
+              <div class="fs-2">{{ totalReclamations }}</div>
+            </div>
+          </div>
+        </div>
 
 
-    <!--  Container Star -->
-    <div class="container">
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-secondary ">En Attente</div>
+              <div class="fs-2">{{ enAttente }}/{{ totalReclamations }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-warning text-center ">En Cours</div>
+              <div class="fs-2">{{ enCours }}/{{ totalReclamations }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-success ">Terminées</div>
+              <div class="fs-2">{{ terminees }}/{{ totalReclamations }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-primary "></div>
+              <div class="fs-2"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+    <!-- Statistiques par quartier -->
+    <div class="row mb-2">
+      <div class="col-4">
+        <div class="card" style="height: 100%">
+          <div class="card-body " >
+            <canvas id="QuartierChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-8">
+        <div class="card"style="height: 100%">
+          <div class="card-body">
+            <select id="yearSelect" class="form-select-sm" (change)="onYearChange($event)">
+              <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+            <canvas id="MonthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
 
     </div>
-    <!--  Container End -->
+
+  </div>
+
+    <div class="row">
+      <div class="col">
+        1
+      </div>
+      <div class="col">
+        2
+      </div>
+      <div class="col">
+        3
+      </div>
+    </div>
+
+  </div>
+  <!-- Container End -->
 
   </main>
 

@@ -189,7 +189,7 @@
 
                       <ul class="dropdown-menu">
                         <li><button class="dropdown-item" type="button" (click)="goToIntervention(reclamation.idFonctionnel)">Intervention</button></li>
-                        <li><button class="dropdown-item" type="button" (click)="deleteById(reclamation.id)">Annuler Reclamation</button></li>
+                        <li><button class="dropdown-item" type="button" (click)="deleteById(reclamation.id,currentUser!.id)">Annuler Reclamation</button></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><button class="dropdown-item" type="button">Repport</button></li>
                       </ul>

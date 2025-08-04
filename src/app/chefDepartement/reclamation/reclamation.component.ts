@@ -1,11 +1,11 @@
 import { DepartementService } from './../../services/departement.service';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
-import { Reclamation } from '../../../models';
+import { Reclamation, User } from '../../models';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
-import { DepartementUser_id } from '../../utils';
+import { getCurrentUser } from '../../localStorage';
 
 @Component({
   selector: 'app-reclamation',
@@ -28,7 +28,7 @@ export class ReclamationComponent implements OnInit{
   itemsPerPage: number = 5;
   Math: any = Math;
 
-  user_id: number = DepartementUser_id
+  currentUser: User | null = null;
 
 
   constructor(private reclamationService: ReclamationService,
@@ -37,7 +37,15 @@ export class ReclamationComponent implements OnInit{
             ) { }
 
   ngOnInit(): void {
-    this.getReclamations(this.user_id);
+    this.currentUser = getCurrentUser();
+    if (this.currentUser) {
+
+      this.getReclamations(this.currentUser!.id);
+      console.log('Current User:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
   }
 
   getReclamations(user_id: number): void {
@@ -51,8 +59,8 @@ export class ReclamationComponent implements OnInit{
   }
 
 
-  deleteById(id: number): void {
-    this.reclamationService.deleteById(id).subscribe(() => {
+  deleteById(id: number,user_id:number): void {
+    this.reclamationService.deleteById(id,user_id).subscribe(() => {
       this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
       this.filterReclamations();
     });

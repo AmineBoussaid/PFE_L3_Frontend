@@ -1,13 +1,13 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Intervention, Reclamation, Service, TechnicienDto, User } from '../../../models';
+import { Intervention, Reclamation, Service, TechnicienDto, User } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { ReclamationService } from '../../services/reclamation.service';
-import { ServiceDService } from '../../services/service_d.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { DepartementUser_id, ServiceUser_id } from '../../utils';
+import { ServiceUser_id } from '../../utils';
+import { getCurrentUser } from '../../localStorage';
 
 @Component({
   selector: 'app-intervention',
@@ -25,8 +25,10 @@ export class InterventionComponent implements OnInit {
 
   reclamationExist: boolean = true;
   dateFinEstimee!: Date | null;
+  editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
 
-  user_id : number = ServiceUser_id;
+
+  currentUser: User | null = null;
 
   constructor(
     private interventionService: InterventionService,
@@ -37,25 +39,38 @@ export class InterventionComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      if (params['idFonctionnel']) {
-        this.newIntervention.reclamation.idFonctionnel = params['idFonctionnel'];
-      }
-    });
-    this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
+    this.currentUser = getCurrentUser();
+    if (this.currentUser) {
+
+      this.route.queryParams.subscribe(params => {
+        if (params['idFonctionnel']) {
+          this.newIntervention.reclamation.idFonctionnel = params['idFonctionnel'];
+        }
+        if (params['editMode']) {
+          this.editMode = params['editMode'] === 'true'; // Convertit la chaîne en booléen
+        }
+      });
+      this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
+      this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel);
+
+      console.log('Current User:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
   }
 
 
   /****  Service Intervention  ****/
 
-  addIntervention(): void {
+  addIntervention(user_id:number): void {
     if (this.reclamationExist) {
 
-      this.newIntervention.createur.id = this.user_id;
+      this.newIntervention.createur.id = this.currentUser!.id;
       this.newIntervention.departement.id = this.newReclamation.service.departement.id
       this.newIntervention.service.id = this.newReclamation.service.id
 
-      this.interventionService.addIntervention(this.newIntervention).subscribe(
+      this.interventionService.addIntervention(this.newIntervention,user_id).subscribe(
         response => {
           console.log('Intervention added', response);
           // Optionally navigate away or show a success message
@@ -64,6 +79,15 @@ export class InterventionComponent implements OnInit {
     } else {
       console.error('Cannot add intervention, reclamation does not exist');
     }
+  }
+
+
+  updateIntervention(user_id:number): void {
+    this.interventionService.updateIntervention(this.newIntervention,user_id).subscribe(
+      response => {
+        console.log('Intervention updated', response);
+      },
+    );
   }
 
 
@@ -82,11 +106,33 @@ export class InterventionComponent implements OnInit {
     );
   }
 
+  verifyIntervention(idFonctionnel: string): void {
+    this.interventionService.getInterventionsByIdFonctionnel(idFonctionnel).subscribe(
+      (intervnetion: Intervention) => {
+        this.newIntervention = intervnetion;
+        this.reclamationExist = true;
+        this.TechniciensByServiceId(intervnetion.service.id)
+      },
+      (error) => {
+        console.error('Intervention does not exist', error);
+        this.reclamationExist = false;
+      }
+    );
+  }
 
   TechniciensByServiceId(serviceId: number): void {
     this.userService.getTechniciensByServiceId(serviceId).subscribe(data => {
       this.techniciens = data;
     });
+  }
+
+  enterAddMode(): void {
+    this.editMode = false;
+    this.newIntervention = new Intervention();
+  }
+
+  enterEditMode(): void {
+    this.editMode = true;
   }
 
 }

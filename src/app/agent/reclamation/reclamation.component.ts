@@ -4,11 +4,13 @@ import { ReclamationService } from './../../services/reclamation.service';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Departement, Reclamation, Service } from '../../../models';
+import { Departement, Reclamation, Service, User } from '../../models';
 import { listCategories, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute } from '@angular/router';
-import { AgentUser_id } from '../../utils';
+import { Agent1User_id, Agent2User_id } from '../../utils';
+import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-reclamation',
@@ -40,39 +42,53 @@ export class ReclamationComponent implements OnInit {
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
   reclamationExist: boolean = true;
 
-  user_id:number = AgentUser_id
-
+  currentUser: User | null = null;
 
 
   constructor(
     private reclamationService: ReclamationService,
     private departementService: DepartementService,
     private serviceDService: ServiceDService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private authService: AuthService){ }
+
 
 
   ngOnInit(): void {
-    this.getDepartements();
+    this.currentUser = getCurrentUser();
+    console.log(this.currentUser)
 
-    this.route.queryParams.subscribe(params => {
-      if (params['idFonctionnel']) {
-        this.newReclamation.idFonctionnel = params['idFonctionnel'];
-        this.enterEditMode();
-      }
-    });
+    if (this.currentUser) {
+      this.getDepartements();
+      this.route.queryParams.subscribe(params => {
 
-    this.verifyReclamation(this.newReclamation.idFonctionnel);
+        if (params['idFonctionnel']) {
+          this.newReclamation.idFonctionnel = params['idFonctionnel'];
+          this.enterEditMode();
+        }
+      });
 
+      this.verifyReclamation(this.newReclamation.idFonctionnel);
+      console.log('Current user:', this.currentUser);
 
+    } else {
+      console.log('No user is currently logged in.');
+    }
+
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
 
    /****  Service Reclamation  ****/
 
-   addReclamation(): void {
+   addReclamation(user_id:number): void {
 
-    this.newReclamation.agent.id = this.user_id ;
+    this.newReclamation.agent.id = user_id ;
 
     // Mise à jour de la description dans newReclamation
     let newDescription = `nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
@@ -85,7 +101,7 @@ export class ReclamationComponent implements OnInit {
     Detailles:\n${this.newReclamation.description}`;
 
     this.newReclamation.description = newDescription;
-    this.reclamationService.addReclamation(this.newReclamation).subscribe(
+    this.reclamationService.addReclamation(this.newReclamation,user_id).subscribe(
       response => {
         console.log('Reclamation added', response);
       },
@@ -93,7 +109,7 @@ export class ReclamationComponent implements OnInit {
   }
 
 
-  updateReclamation(): void {
+  updateReclamation(user_id:number): void {
 
     let newDescription = `
     nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
@@ -106,7 +122,7 @@ export class ReclamationComponent implements OnInit {
     Detailles:\n${this.newReclamation.description}`;
 
     this.newReclamation.description = newDescription;
-    this.reclamationService.updateReclamation(this.newReclamation).subscribe(
+    this.reclamationService.updateReclamation(this.newReclamation,user_id).subscribe(
       response => {
         console.log('Reclamation updated', response);
       },
@@ -168,7 +184,6 @@ export class ReclamationComponent implements OnInit {
       }
     }
 
-
     verifyReclamation(idFonctionnel: string): void {
       this.reclamationService.getReclamationByIdFonctionnel(idFonctionnel).subscribe(
         (reclamation: Reclamation) => {
@@ -181,7 +196,6 @@ export class ReclamationComponent implements OnInit {
         }
       );
     }
-
 
     enterAddMode(): void {
       this.editMode = false;

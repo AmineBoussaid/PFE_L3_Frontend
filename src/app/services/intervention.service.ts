@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Intervention } from '../../models';
+import { Intervention } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,12 +12,25 @@ export class InterventionService {
 
   constructor(private http: HttpClient) { }
 
-  addIntervention(intervention: Intervention): Observable<Intervention> {
-    return this.http.post<Intervention>(`${this.apiUrl}/add`, intervention);
+  addIntervention(intervention: Intervention, userId: number): Observable<Intervention> {
+    return this.http.post<Intervention>(`${this.apiUrl}/add/${userId}`, intervention);
+  }
+
+
+  deleteById(id: number, userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}/${userId}`);
+  }
+
+  updateIntervention(intervention: Intervention, userId: number): Observable<Intervention> {
+    return this.http.put<Intervention>(`${this.apiUrl}/update/${userId}`, intervention);
   }
 
   getInterventions(): Observable<Intervention[]> {
     return this.http.get<Intervention[]>(`${this.apiUrl}/getAll`);
+  }
+
+  getInterventionById(id: number): Observable<Intervention> {
+    return this.http.get<Intervention>(`${this.apiUrl}/getById/${id}`);
   }
 
   getInterventionsByServiceId(service_id: number): Observable<Intervention[]> {
@@ -28,7 +41,12 @@ export class InterventionService {
     return this.http.get<Intervention[]>(`${this.apiUrl}/getByDepartementId/${departement_id}`);
   }
 
-  deleteById(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}`);
+  getInterventionsByTechnicienId(technicien_id: number): Observable<Intervention[]> {
+    return this.http.get<Intervention[]>(`${this.apiUrl}/getByTechnicienId/${technicien_id}`);
   }
+
+  getInterventionsByIdFonctionnel(idFonctionnel: string): Observable<Intervention> {
+    return this.http.get<Intervention>(`${this.apiUrl}/getByIdFonctionnel/${idFonctionnel}`);
+  }
+
 }

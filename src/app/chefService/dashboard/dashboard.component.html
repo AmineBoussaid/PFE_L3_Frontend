@@ -125,11 +125,120 @@
 
 
 
-    <!--  Container Star -->
-    <div class="container">
+  <!-- Container Start -->
+  <div class="container">
+
+    <div class="row mb-2">
+      <div class="col">
+        Dashboard
+      </div>
+      <div class="col">
+        2
+      </div>
+      <div class="col">
+        3
+      </div>
+    </div>
+
+    <div class="row mb-2 p-2 bg-body-tertiary shadow">
+
+      <div class="row mb-2 ">
+        <div class="col">
+          <!-- ICI Cree une Calendrier des mois pour afficher les statisitc de chaque mois ou bien de tous les mois -->
+        </div>
+      </div>
+
+      <div class="row mb-2 ">
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body ">
+              <div class="badge text-bg-primary ">Total Intervention</div>
+              <div class="fs-2">{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-secondary ">En Attente</div>
+              <div class="fs-2">{{ enAttente }}/{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-warning text-center ">En Cours</div>
+              <div class="fs-2">{{ enCours }}/{{ totalIntervnetions  }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-success ">Terminées</div>
+              <div class="fs-2">{{ terminees }}/{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-primary "></div>
+              <div class="fs-2"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+    <!-- Statistiques par quartier -->
+    <div class="row mb-2">
+      <div class="col-4">
+        <div class="card" style="height: 100%">
+          <div class="card-body " >
+            <canvas id="QuartierChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-8">
+        <div class="card"style="height: 100%">
+          <div class="card-body">
+            <select id="yearSelect" class="form-select-sm" (change)="onYearChange($event)">
+              <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+            <canvas id="MonthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
 
     </div>
-    <!--  Container End -->
+
+  </div>
+
+    <div class="row">
+      <div class="col">
+        1
+      </div>
+      <div class="col">
+        2
+      </div>
+      <div class="col">
+        3
+      </div>
+    </div>
+
+  </div>
+  <!-- Container End -->
 
   </main>
 

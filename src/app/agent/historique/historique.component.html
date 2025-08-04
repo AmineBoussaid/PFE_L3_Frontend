@@ -74,7 +74,7 @@
           </a>
         </li>
         <li>
-          <a href="agent/Profile" class="nav-link text-white">
+          <a href="agent/profile" class="nav-link text-white">
             <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
             Profile
           </a>
@@ -105,7 +105,7 @@
         <div class="d-flex flex-wrap align-items-end justify-content-end justify-end-lg-end">
           <div class="text-end">
             <button type="button" class="btn btn-outline-light me-2">Profile</button>
-            <button type="button" class="btn btn-warning">Logout</button>
+            <button type="button" class="btn btn-warning" (click)="logout()" >Logout</button>
           </div>
         </div>
       </div>
@@ -115,9 +115,49 @@
 
 
     <!--  Container Star -->
-    <div class="container">
+    <div class="container my-4">
+
+      <div class="row">
+        <div class="col">
+          <h2>Historique</h2>
+        </div>
+        <div class="col">
+          2 of 2
+        </div>
+      </div>
+
+      <div class="container my-4">
+        <div class="card" style="min-height: 500px;">
+          <div class="card-header bg-primary text-white">
+            <h5 class="p-1">Historique de l'utilisateur</h5>
+          </div>
+          <div style="max-height: 500px; overflow-y: auto;">
+            <table class="table table-striped-columns">
+              <tbody>
+                <tr *ngFor="let history of historiques">
+                  <td>{{ history.action }}</td>
+                  <td>{{ history.details }}</td>
+                  <td>{{ formatDate(history.created_at) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="historiques.length === 0" class="text-center p-5 fs-4">Votre historique s'affiche ici.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          1 of 2
+        </div>
+        <div class="col">
+          2 of 2
+        </div>
+      </div>
 
     </div>
+
+
     <!--  Container End -->
 
   </main>

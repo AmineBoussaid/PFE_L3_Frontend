@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TechnicienDto, User } from '../../models';
+import { TechnicienDto, User } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -17,6 +17,15 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/getAll`);
+  }
+
+  getById(id : number): Observable<User>{
+    return this.http.get<User>(`${this.apiUrl}/getById/${id}`);
+  }
+
+  getByEmail(email: string ,password: string): Observable<User>{
+    return this.http.get<User>(`${this.apiUrl}/getByEmail/${email}/${password}`)
+
   }
 
   getTechniciensByServiceId(serviceId: number): Observable<TechnicienDto[]> {

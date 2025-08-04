@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Reclamation } from '../../models';
+import { Reclamation } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
@@ -9,25 +9,25 @@ export class ReclamationService {
 
   constructor(private http: HttpClient) { }
 
-  addReclamation(reclamation: Reclamation): Observable<Reclamation> {
-    return this.http.post<Reclamation>(`${this.apiUrl}/add`, reclamation);
+  addReclamation(reclamation: Reclamation, userId: number): Observable<Reclamation> {
+    return this.http.post<Reclamation>(`${this.apiUrl}/add/${userId}`, reclamation);
   }
 
-  updateReclamation(reclamation: Reclamation): Observable<Reclamation> {
-    return this.http.put<Reclamation>(`${this.apiUrl}/update`, reclamation);
+  updateReclamation(reclamation: Reclamation, userId: number): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.apiUrl}/update/${userId}`, reclamation);
   }
 
-  deleteById(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}`);
+  deleteById(id: number, userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}/${userId}`);
   }
+
 
   getReclamations(): Observable<Reclamation[]> {
     return this.http.get<Reclamation[]>(`${this.apiUrl}/getAll`);
   }
 
-
   getReclamationById(id: number): Observable<Reclamation> {
-    return this.http.get<Reclamation>(`${this.apiUrl}getById/${id}`);
+    return this.http.get<Reclamation>(`${this.apiUrl}/getById/${id}`);
   }
 
   getReclamationByIdFonctionnel(idFonctionnel: string): Observable<Reclamation> {

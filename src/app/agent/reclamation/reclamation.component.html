@@ -73,7 +73,7 @@
             </a>
           </li>
           <li>
-            <a href="agent/Profile" class="nav-link text-white">
+            <a href="agent/profile" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
               Profile
             </a>
@@ -104,7 +104,7 @@
           <div class="d-flex flex-wrap align-items-end justify-content-end justify-end-lg-end">
             <div class="text-end">
               <button type="button" class="btn btn-outline-light me-2">Profile</button>
-              <button type="button" class="btn btn-warning">Logout</button>
+              <button type="button" class="btn btn-warning" (click)="logout()" >Logout</button>
             </div>
           </div>
         </div>
@@ -114,14 +114,17 @@
 
       <!-- Container Star -->
       <div class="container">
+
         <div class="row mt-2">
           <div class="col">
             <h2>Formulaire Réclamation</h2>
           </div>
-          <div class="col ">
+
+          <div class="col">
             <button type="button" class="btn btn-outline-primary m-1" (click)="enterAddMode()">Nouveau</button>
             <button type="button" class="btn btn-outline-secondary m-1" (click)="enterEditMode()">Modifier</button>
           </div>
+
         </div>
 
         <div class="row">
@@ -130,7 +133,7 @@
           </div>
 
           <div class="col col-lg-5 shadow p-2 m-2 bg-body-tertiary rounded">
-            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateReclamation() : addReclamation()" #reclamationForm="ngForm">
+            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateReclamation(this.currentUser!.id) : addReclamation(this.currentUser!.id)" #reclamationForm="ngForm">
 
               <div class="col-md-12" *ngIf="editMode">
 

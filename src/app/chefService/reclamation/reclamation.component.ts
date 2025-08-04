@@ -1,11 +1,12 @@
 import { ServiceDService } from './../../services/service_d.service';
 import { Component, OnInit } from '@angular/core';
-import { Reclamation } from '../../../models';
+import { Reclamation, User } from '../../models';
 import { ReclamationService } from '../../services/reclamation.service';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
 import { ServiceUser_id } from '../../utils';
+import { getCurrentUser } from '../../localStorage';
 
 @Component({
   selector: 'app-reclamation',
@@ -28,14 +29,22 @@ export class ReclamationComponent  implements OnInit{
   itemsPerPage: number = 5;
   Math: any = Math;
 
-  user_id : number = ServiceUser_id;
+  currentUser: User | null = null;
 
   constructor(private reclamationService: ReclamationService,
     private serviceDService: ServiceDService,
     private router: Router) { }
 
   ngOnInit(): void {
-    this.getReclamations(this.user_id);
+    this.currentUser = getCurrentUser();
+    if (this.currentUser) {
+
+      this.getReclamations(this.currentUser!.id);
+      console.log('Current User:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
   }
 
   getReclamations(user_id : number): void {
@@ -49,8 +58,8 @@ export class ReclamationComponent  implements OnInit{
 
   }
 
-  deleteById(id: number): void {
-    this.reclamationService.deleteById(id).subscribe(() => {
+  deleteById(id: number ,user_id : number): void {
+    this.reclamationService.deleteById(id,user_id).subscribe(() => {
       this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
       this.filterReclamations();
     });
@@ -58,9 +67,14 @@ export class ReclamationComponent  implements OnInit{
 
   filterReclamations(): void {
     this.filteredReclamations = this.reclamations.filter(reclamation => {
+
+      const address = `${reclamation.ville} ${reclamation.quartier} ${reclamation.nomRue}`.toLowerCase();
+
       return (!this.searchDate || reclamation.created_at?.startsWith(this.searchDate)) &&
              (!this.searchStatus || reclamation.status === this.searchStatus) &&
-             (!this.searchText || reclamation.nomClient?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+             (!this.searchText ||
+              address.includes(this.searchText.toLowerCase()) ||
+              reclamation.nomClient?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase()))
     });
     this.setPage(this.currentPage);

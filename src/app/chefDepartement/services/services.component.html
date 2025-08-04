@@ -169,17 +169,21 @@
                   <th scope="col">N</th>
                   <th scope="col">Date Creation</th>
                   <th scope="col">Reclamation ID</th>
-                  <th scope="col">titre</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">dateDebut</th>
+                  <th scope="col">category</th>
                   <th scope="col">status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let intervention of paginatedInterventions; let i = index">
                   <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
-                  <td>{{ intervention.created_at }}</td>
+                  <td>{{ intervention.created_at | date:'yyyy-MM-dd' }}</td>
                   <td>{{ intervention.reclamation.idFonctionnel}}</td>
-                  <td>{{ intervention.titre }}</td>
-                  <td>{{ intervention.status }}</td>
+                  <td>{{ intervention.service.nom}}</td>
+                  <td>{{ intervention.dateDebut | date:'yyyy-MM-dd'}}</td>
+                  <td>{{ intervention.reclamation.category }}</td>
+                  <td>{{ intervention.status}}</td>
                   <td>
                     <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(intervention)">Voir</button>
 
@@ -188,10 +192,10 @@
                       <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                       </button>
                       <ul class="dropdown-menu">
-                        <li><button class="dropdown-item" href="#">Modifier</button></li>
-                        <li><button class="dropdown-item"type="button" (click)="deleteById(intervention.id)">Annuler Intervention</button></li>
+                        <li><button class="dropdown-item"  type="button" (click)="goToIntervention(intervention.reclamation.idFonctionnel)" >Modifier</button></li>
+                        <li><button class="dropdown-item"type="button" (click)="deleteById(intervention.id,this.currentUser!.id)">Annuler Intervention</button></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><button class="dropdown-item" href="#">Repport</button></li>
+                        <li><button class="dropdown-item" type="button">Repport</button></li>
                       </ul>
                     </div>
 

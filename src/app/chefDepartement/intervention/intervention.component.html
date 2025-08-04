@@ -134,7 +134,8 @@
             <h2>Formulaire Intervention</h2>
           </div>
           <div class="col">
-            2 of 2
+            <button type="button" class="btn btn-outline-primary m-1" (click)="enterAddMode()">Nouveau</button>
+            <button type="button" class="btn btn-outline-secondary m-1" (click)="enterEditMode()">Modifier</button>
           </div>
         </div>
 
@@ -144,9 +145,25 @@
           </div>
 
           <div class="col col-lg-5 shadow p-2 m-2 bg-body-tertiary rounded ">
-            <form class="row g-2 p-4" (ngSubmit)="addIntervention()" #reclamationForm="ngForm" >
+            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention(this.currentUser!.id) : addIntervention(this.currentUser!.id)" #reclamationForm="ngForm">
 
-              <div class="col-md-6">
+              <!--Modifer-->
+              <div class="col-md-12" *ngIf="editMode">
+                <label for="inputAddress" class="form-label">Intervention</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="idFonctionnel"
+                  placeholder="N-Intervention"
+                  [(ngModel)]="newIntervention.reclamation.idFonctionnel"
+                  (ngModelChange)="verifyIntervention($event)"
+                  required
+                >
+                <div *ngIf="!reclamationExist" class="text-danger">Intervention n'existe pas</div>
+              </div>
+
+               <!--Ajouter-->
+               <div class="col-md-6" *ngIf="editMode == false">
                 <label for="inputAddress" class="form-label">Reclamation</label>
                 <input
                   type="text"
@@ -169,7 +186,7 @@
 
               <div class="col-md-6 was-validated">
                 <label for="serviceSelect" class="form-label">Service</label>
-                <select class="form-select form-select-sm" name="Service" [(ngModel)]="service_id" (change)="onServiceChange($event)" required>
+                <select class="form-select form-select-sm" name="Service" [(ngModel)]="service_id" [(ngModel)]="newIntervention.service.id" (change)="onServiceChange($event)" required>
                   <option value=""></option>
                   <option *ngFor="let service of services" [value]="service.id">
                     {{ service.nom }}

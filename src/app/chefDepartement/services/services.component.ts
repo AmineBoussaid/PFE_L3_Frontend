@@ -1,15 +1,16 @@
 import { DepartementUser_id } from './../../utils';
-import { Intervention } from './../../../models';
-import { NgFor, NgIf } from '@angular/common';
+import { Intervention, User } from '../../models';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
 import jsPDF from 'jspdf';
 import { DepartementService } from '../../services/departement.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,DatePipe],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
@@ -28,14 +29,15 @@ export class ServicesComponent {
   itemsPerPage: number = 5;
   Math: any = Math;
 
-  user_id: number = DepartementUser_id
+  currentUser: User | null = null;
 
   constructor(private interventionService: InterventionService,
               private departementService: DepartementService,
+              private router: Router
             ) {}
 
   ngOnInit(): void {
-    this.getInterventions(this.user_id);
+    this.getInterventions(this.currentUser!.id);
   }
 
   getInterventions(user_id : number): void {
@@ -50,8 +52,8 @@ export class ServicesComponent {
   }
 
 
-  deleteById(id: number): void {
-    this.interventionService.deleteById(id).subscribe(() => {
+  deleteById(id: number, user_id: number): void {
+    this.interventionService.deleteById(id, user_id).subscribe(() => {
       this.interventions = this.interventions.filter(intervention => intervention.id !== id);
       this.filterInterventions();
     });
@@ -63,7 +65,7 @@ export class ServicesComponent {
              (!this.searchStatus || intervention.status === this.searchStatus) &&
              (!this.searchText || intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               intervention.reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-              (!this.filterByUserId || intervention.departement?.id === this.user_id);
+              (!this.filterByUserId || intervention.departement?.id === this.currentUser!.id);
 
             });
     this.setPage(this.currentPage);
@@ -102,6 +104,15 @@ export class ServicesComponent {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedInterventions = this.filteredInterventions.slice(startIndex, endIndex);
+  }
+
+  goToIntervention(idFonctionnel: string | null): void {
+    if (idFonctionnel) {
+      const editMode = true; // Ajout de la variable d'état pour le mode édition
+      this.router.navigate(['chefDepartement/intervention'], { queryParams: { idFonctionnel,editMode} });
+    } else {
+      console.error('idFonctionnel is null');
+    }
   }
 
     // Method to generate PDF and open it in a new window

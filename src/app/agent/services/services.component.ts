@@ -1,10 +1,12 @@
-import { AgentUser_id } from './../../utils';
+import { Agent1User_id, Agent2User_id} from './../../utils';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
-import { Reclamation } from '../../../models';
+import { Reclamation, User } from '../../models';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { jsPDF } from 'jspdf';
+import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -27,13 +29,30 @@ export class ServicesComponent implements OnInit {
   searchDate: string = '';
   searchStatus: string = '';
   searchText: string = '';
-  user_id: number = AgentUser_id;
+
+  currentUser: User | null = null;
+
   filterByUserId: boolean = false;
 
-  constructor(private reclamationService: ReclamationService, private router: Router) { }
+  constructor(private reclamationService: ReclamationService,
+    private router: Router,
+    private authService: AuthService){ }
 
   ngOnInit(): void {
+    this.currentUser = getCurrentUser();
+    if (this.currentUser) {
+      this.getReclamations();
+      console.log('Current user:', this.currentUser);
+    } else {
+      console.log('No user is currently logged in.');
+    }
     this.getReclamations();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
   getReclamations(): void {
@@ -46,11 +65,15 @@ export class ServicesComponent implements OnInit {
 
   filterReclamations(): void {
     this.filteredReclamations = this.reclamations.filter(reclamation => {
+
+      const address = `${reclamation.ville} ${reclamation.quartier} ${reclamation.nomRue}`.toLowerCase();
+
       return (!this.searchDate || reclamation.created_at?.startsWith(this.searchDate)) &&
              (!this.searchStatus || reclamation.status === this.searchStatus) &&
              (!this.searchText || reclamation.nomClient?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+              address.includes(this.searchText.toLowerCase()) ||
               reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-             (!this.filterByUserId || reclamation.agent?.id === this.user_id);
+             (!this.filterByUserId || reclamation.agent?.id === this.currentUser!.id);
     });
     this.setPage(this.currentPage);
     this.updatePagination();

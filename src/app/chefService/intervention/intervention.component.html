@@ -129,13 +129,16 @@
       <!-- Container Star -->
       <div class="container">
 
-        <div class="row">
+        <div class="row mt-2">
           <div class="col">
             <h2>Formulaire Intervention</h2>
           </div>
+
           <div class="col">
-            2 of 2
+            <button type="button" class="btn btn-outline-primary m-1" (click)="enterAddMode()">Nouveau</button>
+            <button type="button" class="btn btn-outline-secondary m-1" (click)="enterEditMode()">Modifier</button>
           </div>
+
         </div>
 
         <div class="row">
@@ -144,9 +147,25 @@
           </div>
 
           <div class="col col-lg-5 shadow p-2 m-2 bg-body-tertiary rounded ">
-            <form class="row g-2 p-4" (ngSubmit)="addIntervention()" #reclamationForm="ngForm" >
+            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention(this.currentUser!.id) : addIntervention(this.currentUser!.id)" #reclamationForm="ngForm">
 
-              <div class="col-md-6">
+              <!--Modifer-->
+              <div class="col-md-12" *ngIf="editMode">
+                <label for="inputAddress" class="form-label">Intervention</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="idFonctionnel"
+                  placeholder="N-Intervention"
+                  [(ngModel)]="newIntervention.reclamation.idFonctionnel"
+                  (ngModelChange)="verifyIntervention($event)"
+                  required
+                >
+                <div *ngIf="!reclamationExist" class="text-danger">Intervention n'existe pas</div>
+              </div>
+
+              <!--Ajouter-->
+              <div class="col-md-6" *ngIf="editMode == false">
                 <label for="inputAddress" class="form-label">Reclamation</label>
                 <input
                   type="text"
@@ -160,8 +179,6 @@
                 <div *ngIf="!reclamationExist" class="text-danger">Reclamation n'existe pas</div>
               </div>
 
-
-
               <div class="col-md-6">
                 <label for="inputAddress" class="form-label">Titre</label>
                 <input type="text" class="form-control form-control-sm" name="Titre" placeholder="Titre" [(ngModel)]="newIntervention.titre" required>
@@ -174,7 +191,7 @@
 
               <div class="col-md-6">
                 <label for="inputAddress" class="form-label">Date de Fin Estimée</label>
-                <input type="datetime-local" class="form-control form-control-sm" name="dateFin" [(ngModel)]="dateFinEstimee" required>
+                <input type="datetime-local" class="form-control form-control-sm" name="dateFin" [(ngModel)]="newIntervention.dateFin" required>
               </div>
 
               <div class="col-md-6 was-validated">
