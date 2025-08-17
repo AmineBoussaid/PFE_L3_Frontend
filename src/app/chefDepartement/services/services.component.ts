@@ -1,4 +1,3 @@
-import { DepartementUser_id } from './../../utils';
 import { Intervention, User } from '../../models';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
@@ -6,11 +5,14 @@ import { InterventionService } from '../../services/intervention.service';
 import jsPDF from 'jspdf';
 import { DepartementService } from '../../services/departement.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe],
+  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
@@ -33,16 +35,26 @@ export class ServicesComponent {
 
   constructor(private interventionService: InterventionService,
               private departementService: DepartementService,
-              private router: Router
+              private router: Router,
+              private authService: AuthService
             ) {}
 
   ngOnInit(): void {
-    this.getInterventions(this.currentUser!.id);
+    this.currentUser = this.authService.getCurrentUser();
+
+    if (this.currentUser) {
+      this.getInterventions(this.currentUser!.id);
+      console.log('Current user:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
   }
 
+
   getInterventions(user_id : number): void {
-    this.departementService.getByChefDepartement(user_id).subscribe(departement_id => {
-      this.interventionService.getInterventionsByDepartementId(departement_id).subscribe(data => {
+    this.departementService.getByChefDepartement(user_id).subscribe(departement => {
+      this.interventionService.getInterventionsByDepartementId(departement.id).subscribe(data => {
         this.interventions = data;
         this.filteredInterventions = data;
         this.setPage(this.currentPage);
@@ -65,7 +77,7 @@ export class ServicesComponent {
              (!this.searchStatus || intervention.status === this.searchStatus) &&
              (!this.searchText || intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               intervention.reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-              (!this.filterByUserId || intervention.departement?.id === this.currentUser!.id);
+              (!this.filterByUserId || intervention.createur.id === this.currentUser!.id);
 
             });
     this.setPage(this.currentPage);

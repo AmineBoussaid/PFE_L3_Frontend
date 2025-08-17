@@ -4,17 +4,23 @@ export class User {
   password!: string | null;
   email!: string | null;
   role!: string | null;
+  created_at!: string | null;
+  last_login!: string | null;
+  description!: string | null;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
-  constructor(id?: number, username?: string, password?: string, email?: string, role?: string) {
+  constructor(id?: number, username?: string, password?: string, email?: string, role?: string,created_at?: string, last_login?: string, description?: string) {
     this.id = id ?? 0;
     this.username = username ?? null;
     this.password = password ?? null;
     this.email = email ?? null;
     this.role = role ?? null;
+    this.created_at = created_at ?? null;
+    this.last_login = last_login ?? null;
+    this.description = description ?? null;
   }
 }
 
@@ -48,22 +54,24 @@ export class TechnicienDto {
   role!: string | null;
   serviceId !: number | null;;
   serviceName!: string | null;
+  description!: string | null;
+
 
 // Parameterless constructor
   constructor();
 
 // Constructor with parameters
-  constructor(userId?: number, username?: string,email?: string, role?: string, serviceId ?: number, serviceName?: string,) {
+  constructor(userId?: number, username?: string,email?: string, role?: string, serviceId ?: number, serviceName?: string, description?: string) {
     this.userId = userId ?? 0;
     this.username = username ?? null;
     this.email = email ?? null;
     this.role = role ?? null;
     this.serviceId = serviceId ?? null;
     this.serviceName = serviceName ?? null;
+    this.description = description ?? null;
+
   }
 }
-
-
 
 
 export class Reclamation {
@@ -156,6 +164,34 @@ export class Service {
   }
 }
 
+export class Equipe{
+  id!: number;
+  nom!: string | null;
+  description!: string | null;
+  chefEquipe!: User;
+  createdAt!: string | null;
+  disabledAt!: string | null;
+  active!: boolean | null;
+  intervention!: Intervention | null;
+
+  constructor();
+
+  constructor(
+    id?: number, nom?: string, description?: string,
+    chefEquipe?: User, createdAt?: string, disabledAt?: string, active?:boolean, intervention?:Intervention
+  ) {
+    this.id = id ?? 0;
+    this.nom = nom ?? null;
+    this.description = description ?? null;
+    this.chefEquipe = chefEquipe ?? new User();
+    this.intervention = intervention ?? null; // Attention ici
+    this.createdAt = createdAt ?? null;
+    this.disabledAt = disabledAt ?? null;
+    this.active = active ?? null;
+
+  }
+}
+
 
 
 export class Intervention {
@@ -170,20 +206,23 @@ export class Intervention {
   reclamation!: Reclamation;
   departement!: Departement;
   service!: Service;
-  technicien!: User;
+  technicien!: User | null;
+  equipe!: Equipe | null;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
   constructor(
-    id?: number, titre?: string, status?: string, dateDebut?: Date, dateFin?: Date, description?: string, created_at?: string,  reclamation?:Reclamation ,createur?: User, service?: Service, technicien?: User)
+    id?: number, titre?: string, status?: string, dateDebut?: Date, dateFin?: Date,
+    description?: string, created_at?: string,  reclamation?:Reclamation ,
+    createur?: User, service?: Service, technicien?: User, equipe?: Equipe)
   {
     this.id = id ?? 0;
     this.titre = titre ?? null;
     this.status = status ?? null;
     this.dateDebut = dateDebut?? null;
-    this.dateFin = dateDebut ?? null;
+    this.dateFin = dateFin ?? null;
     this.description = description ?? null;
     this.created_at = created_at ?? null;
     this.createur = createur ?? new User();
@@ -191,5 +230,56 @@ export class Intervention {
     this.departement = this.departement ?? new Departement();
     this.service = service ?? new Service();
     this.technicien = technicien ?? new User();
+    this.equipe = equipe ?? null;
   }
 }
+
+
+export class Client {
+  id!: number;
+  nomClient!: string | null;
+  codeAbonnement!: string | null;
+  pays!: string | null;
+  ville!: string | null;
+  quartier!: string | null;
+  nomRue!: string | null;
+
+  // Parameterless constructor
+  constructor();
+
+  // Constructor with parameters
+  constructor(
+    id?: number, nomClient?: string, codeAbonnement?: string,
+    pays?: string, ville?: string, quartier?: string, nomRue?:string
+  ) {
+    this.id = id ?? 0;
+    this.nomClient = nomClient ?? null;
+    this.codeAbonnement = codeAbonnement ?? null;
+    this.pays = pays ?? null;
+    this.ville = ville ?? null;
+    this.quartier = quartier ?? null;
+    this.nomRue = nomRue ?? null;
+  }
+
+}
+
+  export class InterventionDTO{
+
+    intervention!: Intervention | null;
+    techniciens!: TechnicienDto[] | null
+
+    // Parameterless constructor
+    constructor();
+
+    // Constructor with parameters
+    constructor(
+      intervention?: Intervention, techniciens?: TechnicienDto[],
+    ) {
+      this.intervention = intervention ?? null;
+      this.techniciens = techniciens ?? null;
+    }
+
+  }
+
+
+

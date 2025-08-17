@@ -5,6 +5,7 @@ import { ReclamationComponent } from './reclamation/reclamation.component';
 import { ServicesComponent } from './services/services.component';
 import { HistoriqueComponent } from './historique/historique.component';
 import { InterventionComponent } from './intervention/intervention.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const ChefDepartementRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -12,7 +13,9 @@ export const ChefDepartementRoutes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'historique', component: HistoriqueComponent },
   { path: 'intervention', component: InterventionComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' } // Redirection par défaut vers le dashboard
+  { path: 'profile', component: ProfileComponent },
+
+  { path: '', redirectTo: 'services', pathMatch: 'full' } // Redirection par défaut vers le dashboard
 ];
 
 @NgModule({

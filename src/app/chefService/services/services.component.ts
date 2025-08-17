@@ -3,15 +3,16 @@ import { Intervention, User } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
-import { ServiceUser_id } from '../../utils';
 import { ServiceDService } from '../../services/service_d.service';
 import { Router } from '@angular/router';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe],
+  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
@@ -37,13 +38,14 @@ export class ServicesComponent {
 
   constructor(private interventionService: InterventionService,
               private serviceDService: ServiceDService,
-              private router: Router
+              private router: Router,
+              private authService: AuthService
             ) { }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-    if (this.currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
 
+    if (this.currentUser) {
       this.getInterventions(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
@@ -53,8 +55,8 @@ export class ServicesComponent {
   }
 
   getInterventions(user_id : number): void {
-    this.serviceDService.getServicesByChefService(user_id).subscribe(service_id => {
-      this.interventionService.getInterventionsByServiceId(service_id).subscribe(data => {
+    this.serviceDService.getServicesByChefService(user_id).subscribe(service => {
+      this.interventionService.getInterventionsByServiceId(service.id).subscribe(data => {
         this.interventions = data;
         this.filteredInterventions = data;
         this.setPage(this.currentPage);

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
-import { Reclamation } from '../../models';
+import { Reclamation, User } from '../../models';
 import Chart, { registerables } from 'chart.js/auto';
 import { NgFor } from '@angular/common';
-import { Agent1User_id } from '../../utils';
 import { AuthService } from '../../services/auth.service';
-
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -24,21 +24,26 @@ export class DashboardComponent implements OnInit {
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
 
+  currentUser: User | null = null;
+
+
   constructor(private reclamationService: ReclamationService,
     private authService: AuthService){
     Chart.register(...registerables);
   }
 
   ngOnInit(): void {
-    this.getYears();
-    this.getReclamation();
+    this.currentUser = this.authService.getCurrentUser();
+    if (this.currentUser) {
+      this.getYears();
+      this.getReclamation();
+      console.log('Current user:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
   }
 
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
-  }
 
   getReclamation(): void {
     this.reclamationService.getReclamations().subscribe(reponse => {

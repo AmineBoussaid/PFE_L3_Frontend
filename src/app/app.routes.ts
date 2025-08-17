@@ -14,5 +14,5 @@ export const routes: Routes = [
   { path: 'chefService', children: ChefServiceRoutes },
   { path: 'technicien', children: TechnicienRoutes },
 
-  { path: '', redirectTo: '/login', pathMatch: 'full' } // Redirection par défaut vers /agent
+  { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

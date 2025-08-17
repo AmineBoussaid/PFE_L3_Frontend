@@ -1,1 +1,14 @@
-<router-outlet><router-outlet/>
+
+<body>
+
+  <app-sidebar  class="bg-dark" *ngIf="isLogged()"></app-sidebar>
+
+  <main class="w-100 bg-primary-subtle">
+
+    <app-header *ngIf="isLogged()" ></app-header>
+    <router-outlet></router-outlet>
+
+  </main>
+
+</body>
+

@@ -4,13 +4,14 @@ import { Component, OnInit } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
 import { Intervention, User } from '../../models';
 import { Chart, registerables } from 'chart.js';
-import { ServiceUser_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor,HeaderComponent,SidebarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -33,14 +34,15 @@ export class DashboardComponent implements OnInit{
 
 
   constructor(private interventionService: InterventionService,
-              private serviceDService: ServiceDService)
+              private serviceDService: ServiceDService,
+              private authService: AuthService)
     {
       Chart.register(...registerables);
     }
 
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
 
       this.getYears();
@@ -54,9 +56,12 @@ export class DashboardComponent implements OnInit{
 
   }
 
+
+
+
   getIntervnetion(user_id : number): void {
-    this.serviceDService.getServicesByChefService(user_id).subscribe(service_id => {
-    this.interventionService.getInterventionsByServiceId(service_id).subscribe(reponse => {
+    this.serviceDService.getServicesByChefService(user_id).subscribe(service => {
+    this.interventionService.getInterventionsByServiceId(service.id).subscribe(reponse => {
       this.intervnetions = reponse;
       this.calculateStatistics();
       this.renderCharts();

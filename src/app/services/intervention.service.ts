@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Intervention } from '../models';
-import { Observable } from 'rxjs';
+import { Intervention, InterventionDTO } from '../models';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,8 @@ export class InterventionService {
 
   constructor(private http: HttpClient) { }
 
-  addIntervention(intervention: Intervention, userId: number): Observable<Intervention> {
-    return this.http.post<Intervention>(`${this.apiUrl}/add/${userId}`, intervention);
+  addIntervention(intervention: InterventionDTO, userId: number): Observable<InterventionDTO> {
+    return this.http.post<InterventionDTO>(`${this.apiUrl}/add/${userId}`, intervention);
   }
 
 
@@ -47,6 +47,10 @@ export class InterventionService {
 
   getInterventionsByIdFonctionnel(idFonctionnel: string): Observable<Intervention> {
     return this.http.get<Intervention>(`${this.apiUrl}/getByIdFonctionnel/${idFonctionnel}`);
+  }
+
+  getInterventionsByCreateurId(createurId: number): Observable<Intervention[]> {
+    return this.http.get<Intervention[]>(`${this.apiUrl}/getByCreateurId/${createurId}`);
   }
 
 }

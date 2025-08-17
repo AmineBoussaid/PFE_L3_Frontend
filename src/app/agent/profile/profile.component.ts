@@ -1,31 +1,39 @@
-import { NgFor, NgIf } from '@angular/common';
+import { ReclamationService } from './../../services/reclamation.service';
+import { DatePipe, NgFor, NgIf, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Agent1User_id, getUser } from '../../utils';
 import { UserHistService } from '../../services/user-hist.service';
-import { User, UserHist } from '../../models';
-import { getCurrentUser } from '../../localStorage';
+import { Reclamation, User, UserHist } from '../../models';
 import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,DatePipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit{
-[x: string]: any;
 
+  reclamations: Reclamation[] = [];
   historiques : UserHist[] = [];
+
   currentUser: User | null = null;
+  reclamationCount: number = 0;
+  lastReclamationDate: string | null = null;
+
+
 
   constructor(
     private userHistService: UserHistService,
-    private authService: AuthService){}
+    private authService: AuthService,
+    private reclamationService: ReclamationService){}
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
+      this.CountReclamation();
       this.getUserHist(this.currentUser.id);
       console.log('Current user:', this.currentUser);
 
@@ -34,10 +42,25 @@ export class ProfileComponent implements OnInit{
     }
   }
 
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
+
+
+  CountReclamation(): void {
+    if (this.currentUser) {
+      this.reclamationService.getReclamationByAgentId(this.currentUser.id).subscribe(
+        (reclamations: Reclamation[]) => {
+          this.reclamationCount = reclamations.length;
+
+          if (reclamations.length > 0) {
+            // Tri des réclamations par date de création décroissante
+            reclamations.sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
+            this.lastReclamationDate = reclamations[0].created_at; // Date de la dernière réclamation
+          }
+        },
+        (error) => {
+          console.error('Erreur lors de la récupération des réclamations', error);
+        }
+      );
+    }
   }
 
   getUserHist(user_id: number): void {
@@ -52,6 +75,30 @@ export class ProfileComponent implements OnInit{
       error => {
         console.error('Erreur lorsn de la récupération des historiques', error);
       }
+    );
+  }
+
+  formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (this.isSameDay(date, today)) {
+      return `Aujourd'hui à ${formatDate(date, 'HH:mm', 'en-US')}`;
+    } else if (this.isSameDay(date, yesterday)) {
+      return `Hier à ${formatDate(date, 'HH:mm', 'en-US')}`;
+    } else {
+      return formatDate(date, 'MM-dd HH:mm', 'en-US');
+    }
+  }
+
+  private isSameDay(date1: Date, date2: Date): boolean {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
     );
   }
 }

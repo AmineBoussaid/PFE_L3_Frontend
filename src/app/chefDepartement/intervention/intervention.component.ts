@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
-import { Intervention, Reclamation, Service, TechnicienDto, User } from '../../models';
+import { Intervention, InterventionDTO, Reclamation, Service, TechnicienDto, User } from '../../models';
 import { FormsModule } from '@angular/forms';
 import { ServiceDService } from '../../services/service_d.service';
 import { NgFor, NgIf } from '@angular/common';
@@ -8,19 +8,21 @@ import { ActivatedRoute } from '@angular/router';
 import { ReclamationService } from '../../services/reclamation.service';
 import { DepartementService } from '../../services/departement.service';
 import { UserService } from '../../services/user.service';
-import { DepartementUser_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf],
+  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
 export class InterventionComponent implements OnInit {
 
   interventions: Intervention[] = [];
+  interventionDTO: InterventionDTO = new InterventionDTO();
   newIntervention: Intervention = new Intervention();
   services: Service[] = []
   techniciens : TechnicienDto[] = [];
@@ -42,12 +44,13 @@ export class InterventionComponent implements OnInit {
     private departementService: DepartementService,
     private serviceDService : ServiceDService,
     private userService : UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
       this.route.queryParams.subscribe(params => {
         if (params['idFonctionnel']) {
@@ -77,7 +80,7 @@ export class InterventionComponent implements OnInit {
       this.newIntervention.departement.id = this.departement_id;
       this.newIntervention.service.id = this.service_id;
 
-      this.interventionService.addIntervention(this.newIntervention,user_id).subscribe(
+      this.interventionService.addIntervention(this.interventionDTO,user_id).subscribe(
         response => {
           console.log('Intervention added', response);
           // Optionally navigate away or show a success message
@@ -99,9 +102,9 @@ export class InterventionComponent implements OnInit {
 
   /****  Service Service  ****/
   getServicesByDepartementId(user_id: number): void{
-    this.departementService.getByChefDepartement(user_id).subscribe(departementid =>{
-      this.departement_id = departementid;
-      this.serviceDService.getServicesByDepartementId(departementid).subscribe(
+    this.departementService.getByChefDepartement(user_id).subscribe(departement =>{
+      this.departement_id = departement.id;
+      this.serviceDService.getServicesByDepartementId(departement.id).subscribe(
         data => {
         this.services = data;
         },

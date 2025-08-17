@@ -5,13 +5,14 @@ import { ReclamationService } from '../../services/reclamation.service';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
-import { ServiceUser_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-reclamation',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,HeaderComponent,SidebarComponent],
   templateUrl: './reclamation.component.html',
   styleUrl: './reclamation.component.css'
 })
@@ -33,12 +34,13 @@ export class ReclamationComponent  implements OnInit{
 
   constructor(private reclamationService: ReclamationService,
     private serviceDService: ServiceDService,
-    private router: Router) { }
+    private router: Router,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-    if (this.currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
 
+    if (this.currentUser) {
       this.getReclamations(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
@@ -48,8 +50,8 @@ export class ReclamationComponent  implements OnInit{
   }
 
   getReclamations(user_id : number): void {
-    this.serviceDService.getServicesByChefService(user_id).subscribe(service_id => {
-      this.reclamationService.getReclamationsByServiceId(service_id).subscribe(data => {
+    this.serviceDService.getServicesByChefService(user_id).subscribe(service => {
+      this.reclamationService.getReclamationsByServiceId(service.id).subscribe(data => {
         this.reclamations = data;
         this.filteredReclamations = data;
         this.setPage(this.currentPage);

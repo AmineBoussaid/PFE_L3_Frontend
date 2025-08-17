@@ -5,14 +5,20 @@ import { ReclamationComponent } from './reclamation/reclamation.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HistoriqueComponent } from './historique/historique.component';
 import { InterventionComponent } from './intervention/intervention.component';
-
+import { ProfileComponent } from './profile/profile.component';
+import { GestionServiceComponent } from './gestion-service/gestion-service.component';
+import { AllTechniciensComponent } from './all-techniciens/all-techniciens.component';
 export const ChefServiceRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'reclamation', component: ReclamationComponent },
   { path: 'services', component: ServicesComponent },
   { path: 'historique', component: HistoriqueComponent },
   { path: 'intervention', component: InterventionComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' } // Redirection par défaut vers le dashboard
+  { path: 'profile', component: ProfileComponent },
+  { path: 'gestion-service',component: GestionServiceComponent },
+  { path: 'gestion-service/all-techniciens',component: AllTechniciensComponent },
+
+  { path: '', redirectTo: 'services', pathMatch: 'full' }
 
 ];
 

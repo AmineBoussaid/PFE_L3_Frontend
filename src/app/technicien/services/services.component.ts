@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { Intervention, User } from '../../models';
-import { Technicien1User_id, Technicien2User_id, Technicien3User_id, Technicien4User_id, Technicien5User_id } from '../../utils';
 import { InterventionService } from '../../services/intervention.service';
 import jsPDF from 'jspdf';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe],
+  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
@@ -37,19 +38,26 @@ export class ServicesComponent {
   service_id!: number
 
   constructor(private interventionService: InterventionService,
-              private router: Router
+              private router: Router,
+              private authService: AuthService
             ) { }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-    if (this.currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
 
+    if (this.currentUser) {
       this.getInterventions(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
     } else {
       console.log('No user is currently logged in.');
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
   getInterventions(user_id : number): void {
@@ -109,7 +117,8 @@ export class ServicesComponent {
   goToIntervention(intervention: Intervention | null): void {
     if (intervention) {
       // Stocker l'intervention dans le localStorage
-      localStorage.setItem('currentIntervention', JSON.stringify(intervention));
+
+      localStorage.setItem(`currentIntervention_${this.currentUser!.id}`, JSON.stringify(intervention));
 
       // Naviguer vers la page souhaitée
       this.router.navigate(['technicien/intervention']);

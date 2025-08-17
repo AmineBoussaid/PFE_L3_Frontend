@@ -1,16 +1,17 @@
+import { ClientService } from './../../services/client.service';
 import { ServiceDService } from './../../services/service_d.service';
 import { listPeriodes, listOccurrences, listQuartiers } from './../assets/utils/utils';
 import { ReclamationService } from './../../services/reclamation.service';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Departement, Reclamation, Service, User } from '../../models';
+import { Client, Departement, Reclamation, Service, User } from '../../models';
 import { listCategories, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute } from '@angular/router';
-import { Agent1User_id, Agent2User_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
 import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-reclamation',
@@ -23,9 +24,9 @@ export class ReclamationComponent implements OnInit {
 
   reclamations: Reclamation[] = [];
   newReclamation: Reclamation = new Reclamation();
-  departements: Departement[] = []
-  services: Service[] = []
-
+  departements: Departement[] = [];
+  services: Service[] = [];
+  client: Client = new Client();
 
   categories = listCategories;
   situations = listSituations;
@@ -41,8 +42,9 @@ export class ReclamationComponent implements OnInit {
 
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
   reclamationExist: boolean = true;
-
   currentUser: User | null = null;
+  codeExist: boolean = false;
+  codeAbonnement: string = '';
 
 
   constructor(
@@ -50,12 +52,12 @@ export class ReclamationComponent implements OnInit {
     private departementService: DepartementService,
     private serviceDService: ServiceDService,
     private route: ActivatedRoute,
-    private authService: AuthService){ }
-
+    private authService: AuthService,
+    private clientService: ClientService) {}
 
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     console.log(this.currentUser)
 
     if (this.currentUser) {
@@ -76,13 +78,6 @@ export class ReclamationComponent implements OnInit {
     }
 
   }
-
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
-  }
-
 
    /****  Service Reclamation  ****/
 
@@ -132,10 +127,33 @@ export class ReclamationComponent implements OnInit {
 
 
   /*******************************/
+  verifyCode(codeAbonnement: string): void {
+    this.clientService.getByCodeAbonnement(codeAbonnement).subscribe(
+      (response) => {
+        this.client = response;
+        this.codeExist = true;
+        console.log(this.client);
+        // Optional: Open a new window or display a modal with client details
+        this.openClientDetailsWindow();
+      },
+      (error) => {
+        console.error('Client does not exist', error);
+        this.codeExist = false;
+      }
+    );
+  }
+
+  openClientDetailsWindow(): void {
+    const clientDetails = `
+      Nom: ${this.client.nomClient}\n
+      Code Abonnement: ${this.client.codeAbonnement}\n
+      Adresse: ${this.client.pays} ${this.client.ville} ${this.client.quartier} ${this.client.nomRue}
+    `;
+    window.alert(clientDetails); // Use a modal for better UI
+  }
 
 
   /****  Service Departement  ****/
-
   getDepartements(): void {
     this.departementService.getDepartements().subscribe(
       data => {
@@ -147,16 +165,14 @@ export class ReclamationComponent implements OnInit {
 
 
     /****  Service Service  ****/
-
-    getServicesByDepartementId(departement_id: number): void{
-      this.serviceDService.getServicesByDepartementId(departement_id).subscribe(
-        data => {
-          this.services = data;
-          console.log(this.services);
-        },
-      );
-    }
-
+  getServicesByDepartementId(departement_id: number): void{
+    this.serviceDService.getServicesByDepartementId(departement_id).subscribe(
+      data => {
+        this.services = data;
+        console.log(this.services);
+      },
+    );
+  }
 
     onDepartementChange(event: any): void {
       const departementId = event.target.value;

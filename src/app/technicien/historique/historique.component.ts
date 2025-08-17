@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { User, UserHist } from '../../models';
-import { Technicien4User_id } from '../../utils';
 import { UserHistService } from '../../services/user-hist.service';
 import { formatDate, NgFor, NgIf } from '@angular/common';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-historique',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,HeaderComponent,SidebarComponent],
   templateUrl: './historique.component.html',
   styleUrl: './historique.component.css'
 })
@@ -20,18 +21,24 @@ export class HistoriqueComponent  implements OnInit{
 
   constructor(
     private userHistService: UserHistService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
-
       this.getByUserId(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
     } else {
       console.log('No user is currently logged in.');
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
   getByUserId(user_id: number): void {

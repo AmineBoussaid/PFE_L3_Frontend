@@ -13,7 +13,8 @@ export const AgentRoutes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'historique', component: HistoriqueComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' } // Redirection par défaut vers le dashboard
+
+  { path: '', redirectTo: 'services', pathMatch: 'full' } // Redirection par défaut vers le dashboard
 
 ];
 

@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { Technicien4User_id } from '../../utils';
 import { InterventionService } from '../../services/intervention.service';
 import { Intervention, User } from '../../models';
 import { NgFor } from '@angular/common';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor,HeaderComponent,SidebarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -28,21 +29,29 @@ export class DashboardComponent implements OnInit{
   service_id!: number
 
 
-  constructor(private interventionService: InterventionService)
+  constructor(private interventionService: InterventionService,
+    private authService: AuthService
+  )
               {
                 Chart.register(...registerables);
               }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-      if (this.currentUser) {
-        this.getYears();
-        this.getIntervnetion(this.currentUser!.id);
-        console.log('Current User:', this.currentUser);
+    this.currentUser = this.authService.getCurrentUser();
+    if (this.currentUser) {
+      this.getYears();
+      this.getIntervnetion(this.currentUser!.id);
+      console.log('Current User:', this.currentUser);
 
-      } else {
-        console.log('No user is currently logged in.');
-      }
+    } else {
+      console.log('No user is currently logged in.');
+     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
   getIntervnetion(user_id : number): void {

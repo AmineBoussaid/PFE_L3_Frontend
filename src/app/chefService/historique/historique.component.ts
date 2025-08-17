@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { User, UserHist } from '../../models';
-import { ServiceUser_id } from '../../utils';
 import { UserHistService } from '../../services/user-hist.service';
 import { formatDate, NgFor, NgIf } from '@angular/common';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-historique',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,HeaderComponent,SidebarComponent],
   templateUrl: './historique.component.html',
   styleUrl: './historique.component.css'
 })
@@ -20,12 +21,13 @@ export class HistoriqueComponent  implements OnInit{
 
   constructor(
     private userHistService: UserHistService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-    if (this.currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
 
+    if (this.currentUser) {
       this.getByUserId(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
@@ -34,6 +36,7 @@ export class HistoriqueComponent  implements OnInit{
     }
 
   }
+
 
   getByUserId(user_id: number): void {
     this.userHistService.getByUserHistId(user_id).subscribe(

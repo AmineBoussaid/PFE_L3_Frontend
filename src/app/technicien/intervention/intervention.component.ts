@@ -3,14 +3,14 @@ import { Intervention, User } from '../../models';
 import { ActivatedRoute } from '@angular/router';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, NgIf } from '@angular/common';
-import { error } from 'jquery';
-import { Technicien4User_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [DatePipe,NgIf],
+  imports: [DatePipe,NgIf,HeaderComponent,SidebarComponent],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -22,26 +22,32 @@ export class InterventionComponent implements OnInit {
 
   constructor(
     private interventionService : InterventionService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
 
-      // Vérifier si l'intervention est dans le localStorage
-      const storedIntervention = localStorage.getItem('currentIntervention');
+      const storedIntervention = localStorage.getItem(`currentIntervention_${this.currentUser!.id}`);
       if (storedIntervention) {
         this.intervention = JSON.parse(storedIntervention);
 
       } else {
-        console.error('intervention: ',error);
+        console.error('intervention:');
       }
       console.log('Current User:', this.currentUser);
 
     } else {
       console.log('No user is currently logged in.');
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
+    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
   }
 
   loadIntervention(id: number): void {

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
   private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl_2 = 'http://localhost:8080/api/technicien-services';
 
   constructor(private http: HttpClient) { }
 
@@ -30,5 +31,9 @@ export class UserService {
 
   getTechniciensByServiceId(serviceId: number): Observable<TechnicienDto[]> {
     return this.http.get<TechnicienDto[]>(`${this.apiUrl}/getTechniciensByServiceId/${serviceId}`);
+  }
+
+  deleteByTechnicienService(technicien_id: number, service_id: number): Observable<boolean> {
+    return this.http.delete<boolean>(`${this.apiUrl_2}/deleteByTechnicienService/${technicien_id}/${service_id}`);
   }
 }

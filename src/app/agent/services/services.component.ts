@@ -1,11 +1,9 @@
-import { Agent1User_id, Agent2User_id} from './../../utils';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { Reclamation, User } from '../../models';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { jsPDF } from 'jspdf';
-import { getCurrentUser } from '../../localStorage';
 import { AuthService } from '../../services/auth.service';
 
 
@@ -39,7 +37,7 @@ export class ServicesComponent implements OnInit {
     private authService: AuthService){ }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
       this.getReclamations();
       console.log('Current user:', this.currentUser);
@@ -49,11 +47,7 @@ export class ServicesComponent implements OnInit {
     this.getReclamations();
   }
 
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
-  }
+
 
   getReclamations(): void {
     this.reclamationService.getReclamations().subscribe(data => {

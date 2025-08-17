@@ -2,8 +2,9 @@ import { User, UserHist } from './../../models';
 import { UserHistService } from './../../services/user-hist.service';
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
-import { getCurrentUser } from '../../localStorage';
 import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-historique',
@@ -23,7 +24,7 @@ export class HistoriqueComponent  implements OnInit{
     private authService: AuthService){}
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
       this.getByUserId(this.currentUser?.id);
       console.log('Current user:', this.currentUser);
@@ -32,11 +33,7 @@ export class HistoriqueComponent  implements OnInit{
     }
   }
 
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
-  }
+
 
   getByUserId(user_id: number): void {
     this.userHistService.getByUserHistId(user_id).subscribe(

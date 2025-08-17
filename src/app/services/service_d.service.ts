@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class ServiceDService {
   private apiUrl = 'http://localhost:8080/api/services';
+  private apiUrl_2 = 'http://localhost:8080/api/technicien-services';
+
 
   constructor(private http: HttpClient) { }
 
@@ -27,8 +29,12 @@ export class ServiceDService {
     return this.http.get<Service[]>(`${this.apiUrl}/getByDepartementId/${departement_id}`);
   }
 
-  getServicesByChefService(chef_service_id: number): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/getByChefService/${chef_service_id}`);
+  getServicesByChefService(chef_service_id: number): Observable<Service> {
+    return this.http.get<Service>(`${this.apiUrl}/getByChefService/${chef_service_id}`);
+  }
+
+  getServiceByTechnicienId(technicien_id: number): Observable<Service> {
+    return this.http.get<Service>(`${this.apiUrl_2}/getServiceByTechnicienId/${technicien_id}`);
   }
 
 }

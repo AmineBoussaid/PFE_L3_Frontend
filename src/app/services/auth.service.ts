@@ -8,30 +8,37 @@ import { User } from '../models';
   providedIn: 'root'
 })
 export class AuthService {
+  private key : string = "currentUser";
 
   private apiUrl = 'http://localhost:8080/api/users';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   login(email: string, password: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/getByEmail/${email}/${password}`).pipe(
+    return this.http.get<User>(`${this.apiUrl}/login/${email}/${password}`).pipe(
       map(user => {
         if (user) {
           // Stocker les informations utilisateur (ex: localStorage ou sessionStorage)
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          localStorage.setItem(this.key, JSON.stringify(user));
         }
         return user;
       })
     );
   }
 
-  logout(): void {
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+  logout() {
+    localStorage.removeItem(this.key);
+    //this.router.navigate(['/login']);
+
+
   }
 
   getCurrentUser(): User | null {
-    const userJson = localStorage.getItem('currentUser');
+    const userJson = localStorage.getItem(this.key);
     return userJson ? JSON.parse(userJson) : null;
+  }
+
+  isLogged(): boolean {
+      return !!this.getCurrentUser();
   }
 }

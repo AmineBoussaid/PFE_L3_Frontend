@@ -1,18 +1,19 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Intervention, Reclamation, Service, TechnicienDto, User } from '../../models';
+import { InterventionDTO, Equipe, Intervention, Reclamation, Service, TechnicienDto, User } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { ReclamationService } from '../../services/reclamation.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { ServiceUser_id } from '../../utils';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf],
+  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent,NgClass],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -20,13 +21,19 @@ export class InterventionComponent implements OnInit {
 
   newIntervention: Intervention = new Intervention();
   newReclamation: Reclamation = new Reclamation();
+  interventionDTO: InterventionDTO = new InterventionDTO();
   services: Service[] = []
   techniciens : TechnicienDto[] = [];
+  technicienParam: TechnicienDto = new TechnicienDto();
+  selectedTechniciens: TechnicienDto[] = [];
+  filteredTechniciens: TechnicienDto[] = [];
+  equipe: Equipe = new Equipe();
+
 
   reclamationExist: boolean = true;
   dateFinEstimee!: Date | null;
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
-
+  selectedOption: string = '';
 
   currentUser: User | null = null;
 
@@ -34,32 +41,42 @@ export class InterventionComponent implements OnInit {
     private interventionService: InterventionService,
     private reclamationService : ReclamationService,
     private userService : UserService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private authService: AuthService,)
+    {}
 
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
-    if (this.currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
 
+    if (this.currentUser) {
       this.route.queryParams.subscribe(params => {
+
         if (params['idFonctionnel']) {
           this.newIntervention.reclamation.idFonctionnel = params['idFonctionnel'];
         }
         if (params['editMode']) {
           this.editMode = params['editMode'] === 'true'; // Convertit la chaîne en booléen
         }
-      });
-      this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
-      this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel);
+        if (params['technicien']) {
+          try {
+            this.technicienParam  = JSON.parse(params['technicien']);
+            this.selectedOption = 'option1'
+            console.log(this.technicienParam);
+          } catch (error) {
+            alert("Erreur lors du parsing de technicien");
+          }
+        }
 
-      console.log('Current User:', this.currentUser);
+      });
+
+    this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
+    this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel);
 
     } else {
       console.log('No user is currently logged in.');
     }
   }
-
 
   /****  Service Intervention  ****/
 
@@ -67,10 +84,23 @@ export class InterventionComponent implements OnInit {
     if (this.reclamationExist) {
 
       this.newIntervention.createur.id = this.currentUser!.id;
-      this.newIntervention.departement.id = this.newReclamation.service.departement.id
-      this.newIntervention.service.id = this.newReclamation.service.id
+      this.newIntervention.departement.id = this.newReclamation.service.departement.id;
+      this.newIntervention.service.id = this.newReclamation.service.id;
 
-      this.interventionService.addIntervention(this.newIntervention,user_id).subscribe(
+
+      if (this.selectedOption === 'option1') {
+        this.newIntervention.equipe = null;
+        this.interventionDTO.techniciens = null;
+
+      } else if(this.selectedOption === 'option2'){
+        this.newIntervention.equipe = this.equipe;
+        this.interventionDTO.techniciens = this.selectedTechniciens
+        this.newIntervention.technicien = null;
+      }
+
+      this.interventionDTO.intervention = this.newIntervention
+
+      this.interventionService.addIntervention(this.interventionDTO,user_id).subscribe(
         response => {
           console.log('Intervention added', response);
           // Optionally navigate away or show a success message
@@ -123,6 +153,7 @@ export class InterventionComponent implements OnInit {
   TechniciensByServiceId(serviceId: number): void {
     this.userService.getTechniciensByServiceId(serviceId).subscribe(data => {
       this.techniciens = data;
+      this.filteredTechniciens = this.techniciens;
     });
   }
 
@@ -133,6 +164,78 @@ export class InterventionComponent implements OnInit {
 
   enterEditMode(): void {
     this.editMode = true;
+    this.filteredTechniciens = this.techniciens;
   }
+
+    // Méthode pour gérer le changement de chef d'équipe
+  onChefEquipeChange(event: Event): void {
+    const selectedChefId = +(event.target as HTMLSelectElement).value;
+    // Filtrer les techniciens disponibles en excluant le chef d'équipe sélectionné
+    this.filteredTechniciens = this.techniciens.filter(t => t.userId !== selectedChefId);
+    }
+
+  addTechnicien(event: Event): void {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    const selectedTechnicien = this.techniciens.find(t => t.userId === selectedId);
+
+    if (selectedTechnicien && !this.selectedTechniciens.includes(selectedTechnicien)) {
+      this.selectedTechniciens.push(selectedTechnicien);
+    }
+  }
+
+  removeTechnicien(technicien: TechnicienDto): void {
+    this.selectedTechniciens = this.selectedTechniciens.filter(t => t.userId !== technicien.userId);
+  }
+
+  resetSelection(): void {
+    this.selectedTechniciens = [];
+    this.filteredTechniciens = this.techniciens;
+    this.currentStep = 1;
+
+  }
+
+  onOptionChange(): void {
+    if (this.selectedOption === 'option1') {
+      this.filteredTechniciens = this.techniciens;
+    }
+  }
+
+
+    currentStep: number = 1;
+
+  // Méthodes pour changer d'étape
+  nextStep() {
+    if (this.currentStep < 4 && this.canProceedToNextStep()) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  // Méthode pour vérifier si on peut passer à l'étape suivante
+  canProceedToNextStep(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return !!this.newIntervention.reclamation.idFonctionnel && this.reclamationExist;
+      case 2:
+        return !!this.newIntervention.titre && !!this.newIntervention.dateDebut && !!this.newIntervention.dateFin;
+      case 3:
+        if (this.selectedOption === 'option1') {
+          return !!this.newIntervention.technicien?.id;
+        } else if (this.selectedOption === 'option2') {
+          return !!this.equipe.nom && !!this.equipe.chefEquipe?.id;
+        }
+        return false;
+      case 4:
+        return !!this.newIntervention.description;
+      default:
+        return false;
+    }
+  }
+
 
 }

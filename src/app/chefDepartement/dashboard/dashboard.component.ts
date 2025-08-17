@@ -3,14 +3,15 @@ import { Intervention, User } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { Chart, registerables } from 'chart.js';
 import { NgFor } from '@angular/common';
-import { DepartementUser_id } from '../../utils';
 import { DepartementService } from '../../services/departement.service';
-import { getCurrentUser } from '../../localStorage';
+import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../menu/header/header.component';
+import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor,HeaderComponent,SidebarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -29,13 +30,14 @@ export class DashboardComponent implements OnInit{
 
 
   constructor(private interventionService: InterventionService,
-              private departementService: DepartementService)
+              private departementService: DepartementService,
+              private authService: AuthService)
               {
                 Chart.register(...registerables);
               }
 
   ngOnInit(): void {
-    this.currentUser = getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
       if (this.currentUser) {
         this.getYears();
         this.getIntervnetion(this.currentUser!.id);
@@ -46,9 +48,10 @@ export class DashboardComponent implements OnInit{
       }
   }
 
+
   getIntervnetion(user_id : number): void {
-    this.departementService.getByChefDepartement(user_id).subscribe(departement_id => {
-      this.interventionService.getInterventionsByDepartementId(departement_id).subscribe(reponse => {
+    this.departementService.getByChefDepartement(user_id).subscribe(departement => {
+      this.interventionService.getInterventionsByDepartementId(departement.id).subscribe(reponse => {
         this.intervnetions = reponse;
       this.calculateStatistics();
       this.renderCharts();
