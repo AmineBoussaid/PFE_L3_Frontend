@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Departement } from '../models';
+import { DepartementDto } from '../models';
 
 @Injectable({ providedIn: 'root'})
 export class DepartementService {
@@ -9,16 +9,16 @@ export class DepartementService {
 
   constructor(private http: HttpClient) { }
 
-  addDepartement(departement: Departement): Observable<Departement> {
-    return this.http.post<Departement>(`${this.apiUrl}/add`, departement);
+  addDepartement(departement: DepartementDto): Observable<DepartementDto> {
+    return this.http.post<DepartementDto>(`${this.apiUrl}/add`, departement);
   }
 
-  getDepartements(): Observable<Departement[]> {
-    return this.http.get<Departement[]>(`${this.apiUrl}/getAll`);
+  getDepartements(): Observable<DepartementDto[]> {
+    return this.http.get<DepartementDto[]>(`${this.apiUrl}/getAll`);
   }
 
-  getByChefDepartement(chef_departement_id: number): Observable<Departement> {
-    return this.http.get<Departement>(`${this.apiUrl}/getByChefDepartement/${chef_departement_id}`);
+  getByChefDepartement(chef_departement_id: number): Observable<DepartementDto> {
+    return this.http.get<DepartementDto>(`${this.apiUrl}/getByChefDepartement/${chef_departement_id}`);
   }
 
 }

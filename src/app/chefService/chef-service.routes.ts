@@ -7,8 +7,11 @@ import { HistoriqueComponent } from './historique/historique.component';
 import { InterventionComponent } from './intervention/intervention.component';
 import { ProfileComponent } from './profile/profile.component';
 import { GestionServiceComponent } from './gestion-service/gestion-service.component';
-import { AllTechniciensComponent } from './all-techniciens/all-techniciens.component';
+import { AllTechniciensComponent } from './gestion-service/all-techniciens/all-techniciens.component';
+import { AllEquipesComponent } from './gestion-service/all-equipes/all-equipes.component';
+
 export const ChefServiceRoutes: Routes = [
+
   { path: 'dashboard', component: DashboardComponent },
   { path: 'reclamation', component: ReclamationComponent },
   { path: 'services', component: ServicesComponent },
@@ -17,6 +20,8 @@ export const ChefServiceRoutes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'gestion-service',component: GestionServiceComponent },
   { path: 'gestion-service/all-techniciens',component: AllTechniciensComponent },
+  { path: 'gestion-service/all-equipes',component: AllEquipesComponent },
+
 
   { path: '', redirectTo: 'services', pathMatch: 'full' }
 

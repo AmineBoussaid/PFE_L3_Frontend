@@ -2,7 +2,7 @@ import { ReclamationService } from './../../services/reclamation.service';
 import { DatePipe, NgFor, NgIf, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserHistService } from '../../services/user-hist.service';
-import { Reclamation, User, UserHist } from '../../models';
+import { ReclamationDto, UserDto, UserHistoriqueDto } from '../../models';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../menu/header/header.component';
 import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
@@ -16,10 +16,10 @@ import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 })
 export class ProfileComponent implements OnInit{
 
-  reclamations: Reclamation[] = [];
-  historiques : UserHist[] = [];
+  reclamations: ReclamationDto[] = [];
+  historiques : UserHistoriqueDto[] = [];
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
   reclamationCount: number = 0;
   lastReclamationDate: string | null = null;
 
@@ -47,13 +47,13 @@ export class ProfileComponent implements OnInit{
   CountReclamation(): void {
     if (this.currentUser) {
       this.reclamationService.getReclamationByAgentId(this.currentUser.id).subscribe(
-        (reclamations: Reclamation[]) => {
+        (reclamations: ReclamationDto[]) => {
           this.reclamationCount = reclamations.length;
 
           if (reclamations.length > 0) {
             // Tri des réclamations par date de création décroissante
-            reclamations.sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
-            this.lastReclamationDate = reclamations[0].created_at; // Date de la dernière réclamation
+            reclamations.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+            this.lastReclamationDate = reclamations[0].createdAt; // Date de la dernière réclamation
           }
         },
         (error) => {
@@ -67,8 +67,8 @@ export class ProfileComponent implements OnInit{
     this.userHistService.getByUserHistId(user_id).subscribe(
       data => {
         this.historiques = data.sort((a, b) => {
-          const dateA = new Date(a.created_at!).getTime();
-          const dateB = new Date(b.created_at!).getTime();
+          const dateA = new Date(a.createdAt!).getTime();
+          const dateB = new Date(b.createdAt!).getTime();
           return dateB - dateA; // Trie par ordre décroissant
         });
       },

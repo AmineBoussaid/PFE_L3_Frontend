@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { InterventionService } from '../../services/intervention.service';
-import { Intervention, User } from '../../models';
+import { InterventionDto, UserDto } from '../../models';
 import { NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../menu/header/header.component';
@@ -16,7 +16,7 @@ import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 })
 export class DashboardComponent implements OnInit{
 
-  intervnetions: Intervention[] = [];
+  intervnetions: InterventionDto[] = [];
   totalIntervnetions: number = 0;
   enAttente: number = 0;
   enCours: number = 0;
@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit{
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
   service_id!: number
 
 
@@ -112,8 +112,8 @@ export class DashboardComponent implements OnInit{
     ]);
 
     this.intervnetions.forEach(Intervnetion => {
-      if (Intervnetion.created_at) {
-        const date = new Date(Intervnetion.created_at);
+      if (Intervnetion.createdAt) {
+        const date = new Date(Intervnetion.createdAt);
         const year = date.getFullYear();
         if (year === this.selectedYear) {
           const month = date.toLocaleString('fr-FR', { month: 'short' });

@@ -24,7 +24,7 @@
 
               <div class="card-header bg-primary text-white">
                 <span class="float-star me-5"> N°/ {{ intervention.reclamation.idFonctionnel }}</span>
-                <span class="float-end ms-5">{{ intervention.created_at | date:'yyyy-MM-dd' }}</span>
+                <span class="float-end ms-5">{{ intervention.createdAt | date:'yyyy-MM-dd' }}</span>
               </div>
 
               <div class="card-body">
@@ -45,6 +45,19 @@
                     <span class=" float-end me-2">{{ intervention.status}}</span>
                   </div>
 
+                </div>
+
+                <div class="row">
+                  <div *ngIf="intervention.equipe != null" class="col">
+                    <h6 class="text-uppercase">En Equipe</h6>
+                    <p>Equipe :{{intervention.equipe.nom}}</p>
+                    <p>techniciens :{{intervention.equipe.techniciens}}
+                  </div>
+                  <div *ngIf="intervention.technicien != null" class="col">
+                    <h6 class="text-uppercase">Individual</h6>
+                    <p class="m-0">{{intervention.technicien.username}}</p>
+                    <p>{{intervention.technicien.description}}
+                  </div>
                 </div>
 
                 <div class="row">

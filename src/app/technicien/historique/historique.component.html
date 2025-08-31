@@ -23,7 +23,7 @@
                 <tr *ngFor="let history of historiques">
                   <td class="mb-2">{{ history.action }}</td>
                   <td class="mb-2">{{ history.details }}</td>
-                  <td class="mb-2">{{ formatDate(history.created_at) }}</td>
+                  <td class="mb-2">{{ formatDate(history.createdAt) }}</td>
                 </tr>
               </tbody>
             </table>

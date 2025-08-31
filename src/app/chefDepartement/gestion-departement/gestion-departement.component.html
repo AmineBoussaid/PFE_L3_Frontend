@@ -1,0 +1,117 @@
+
+
+    <!--  Container Star -->
+    <div class="container">
+
+      <div class="row">
+        <div class="col">
+          <h2>Gestion Service</h2>
+        </div>
+        <div class="col">
+          2 of 2
+        </div>
+      </div>
+
+      <div class="row mb-2">
+
+        <main class="col-8 p-2 ">
+          <!-- Affichage des services -->
+          <div class="my-2 px-4 py-2 bg-body rounded shadow-sm">
+            <div class="row pb-2 mb-0">
+              <div *ngFor="let service of services" class="col-auto text-">
+                <button
+                  class="btn btn-link text-decoration-underline p-0"
+                  [ngClass]="{'text-dark': service.id === selectedServiceId, 'text-primary': service.id !== selectedServiceId}"
+                  (click)="TechniciensByServiceId(service.id)"
+                  (click)="EquipesByServiceId(service.id)">
+                  {{ service.nom }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- Affichage des techniciens -->
+          <div class="my-2 p-3 bg-body rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">Techniciens</h6>
+
+            <!-- Afficher les techniciens si la liste n'est pas vide -->
+            <div *ngIf="techniciens.length > 0">
+              <div *ngFor="let group of techniciensGrouped" class="row">
+                <div *ngFor="let technicien of group" class="col-6 d-flex text-body-secondary pt-3">
+                  <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#007bff"/>
+                    <text x="50%" y="50%" fill="#ffffff" dy=".3em">{{ technicien.username?.charAt(0) }}</text>
+                  </svg>
+                  <p class="pb-3 mb-0 small lh-sm border-bottom">
+                    <strong class="d-block text-gray-dark">{{ technicien.username }}</strong>
+                    {{ technicien.description }}
+                  </p>
+                </div>
+              </div>
+
+              <small class="d-block text-end mt-2">
+                <button class="btn btn-link p-0" (click)="AllTechnicians(techniciens,selectedServiceId)">Show All</button>
+              </small>
+            </div>
+
+            <!-- Afficher un message si la liste est vide -->
+            <div *ngIf="techniciens.length === 0" class="text-muted">
+              Il n'y a pas de techniciens pour ce service.
+            </div>
+          </div>
+
+          <!-- Equipes Section -->
+          <div class="my-2 p-3 bg-body rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">Equipes</h6>
+
+            <div *ngIf="equipes.length > 0">
+              <div *ngFor="let group of equipesGrouped.slice(0, 3)" class="row">
+                <div *ngFor="let equipe of group" class="col-6 d-flex text-body-secondary pt-3">
+                  <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <title>{{ equipe.nom }}</title>
+                    <rect width="100%" height="100%" fill="#6c757d"/>
+                    <text x="50%" y="50%" fill="#ffffff" dy=".3em">{{ equipe.nom?.charAt(0) }}</text>
+                  </svg>
+                  <div class="pb-2 mb-0 small lh-sm border-bottom">
+                    <strong class="d-block text-gray-dark">{{ equipe.nom }}</strong>
+                    <p class="m-0 p-0">Chef d'équipe: {{ equipe.chefEquipe.username }}</p>
+                    <p class="m-0 p-0">Techniciens: {{ equipe.techniciens?.length ?? 0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <small class="d-block text-end mt-2">
+                <button class="btn btn-link p-0" (click)="AllEquipes(equipes,selectedServiceId)">Show All</button>
+              </small>
+            </div>
+          <!-- Afficher un message si la liste est vide -->
+            <div *ngIf="equipes.length === 0" class="text-muted">
+              Il n'y a pas de techniciens pour ce service.
+            </div>
+
+          </div>
+
+        </main>
+
+        <main class="col p-2">
+          <div class="my-2 p-3 bg-body rounded shadow-sm h-100">
+            <h4>{{ getSelectedService()?.nom }}</h4>
+          </div>
+        </main>
+
+
+      </div>
+
+      <div class="row">
+        <div class="col">
+          1 of 2
+        </div>
+        <div class="col">
+          2 of 2
+        </div>
+      </div>
+
+    </div>
+    <!--  Container End -->

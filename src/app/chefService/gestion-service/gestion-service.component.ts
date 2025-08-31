@@ -1,8 +1,9 @@
+import { EquipeService } from './../../services/equipe.service';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ServiceDService } from './../../services/service_d.service';
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Service, TechnicienDto, User } from '../../models';
+import { EquipeDto, ServiceDto, TechnicienDto, UserDto } from '../../models';
 import { NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,42 +18,58 @@ import { AuthService } from '../../services/auth.service';
 export class GestionServiceComponent implements OnInit {
 
   techniciens : TechnicienDto[] = [];
-  techniciensGrouped: TechnicienDto[][] = [];
-  service !: Service;
+  equipes : EquipeDto[] = [];
 
-  currentUser: User | null = null;
+  techniciensGrouped: TechnicienDto[][] = [];
+  equipesGrouped: EquipeDto[][] = [];
+  service : ServiceDto = new ServiceDto();
+
+  currentUser: UserDto | null = null;
 
 
   constructor(
     private userService : UserService,
     private serviceDService : ServiceDService,
     private authService: AuthService,
+    private equipeService: EquipeService,
     private router : Router)
     {}
+
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
-      this.TechniciensByServiceId(this.currentUser!.id);
+
+      this.serviceDService.getServicesByChefService(this.currentUser.id).subscribe(
+        data => {
+          this.service.id = data.id;
+          this.TechniciensByServiceId(this.service.id);
+          this.EquipesByServiceId(this.service.id)
+      })
+
       console.log('Current User:', this.currentUser);
 
     } else {
       console.log('No user is currently logged in.');
-    }  }
-
+    }
+  }
 
   TechniciensByServiceId(user_id: number): void {
-      this.serviceDService.getServicesByChefService(user_id).subscribe(
-        data => {
-          this.service = data;
-          this.userService.getTechniciensByServiceId(data.id).subscribe(
-            technicien => {
-              this.techniciens = technicien;
-              this.groupTechniciens();
-            }
-          );
-        }
-      );
+   this.userService.getTechniciensByServiceId(user_id).subscribe(
+    technicien => {
+      this.techniciens = technicien;
+      this.groupTechniciens();
+    }
+    );
+  }
+
+  EquipesByServiceId(service_id: number): void {
+    this.equipeService.getEquipeByService(service_id).subscribe(
+      equipes => {
+        this.equipes = equipes;
+        this.groupEquipes();
+      }
+    );
   }
 
   groupTechniciens(): void {
@@ -62,9 +79,23 @@ export class GestionServiceComponent implements OnInit {
     }
   }
 
+
+  groupEquipes(): void {
+    this.equipesGrouped = [];
+    for (let i = 0; i < this.equipes.length; i += 2) {
+      this.equipesGrouped.push(this.equipes.slice(i, i + 2));
+    }
+  }
+
+
   AllTechnicians(techniciens: TechnicienDto[]): void {
     const techniciensJson = JSON.stringify(techniciens);
     this.router.navigate(['/chefService/gestion-service/all-techniciens'], { queryParams: { techniciens: techniciensJson }});
+  }
+
+  AllEquipes(equipes: EquipeDto[]): void {
+    const equipesJson = JSON.stringify(equipes);
+    this.router.navigate(['/chefService/gestion-service/all-equipes'], { queryParams: { equipes: equipesJson }});
   }
 
 

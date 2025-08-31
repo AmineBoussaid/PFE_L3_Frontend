@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
-import { Reclamation, User } from '../../models';
+import { ReclamationDto, UserDto } from '../../models';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { jsPDF } from 'jspdf';
@@ -16,9 +16,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ServicesComponent implements OnInit {
 
-  reclamations: Reclamation[] = [];
-  filteredReclamations: Reclamation[] = [];
-  paginatedReclamations: Reclamation[] = [];
+  reclamations: ReclamationDto[] = [];
+  filteredReclamations: ReclamationDto[] = [];
+  paginatedReclamations: ReclamationDto[] = [];
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -28,7 +28,7 @@ export class ServicesComponent implements OnInit {
   searchStatus: string = '';
   searchText: string = '';
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
 
   filterByUserId: boolean = false;
 
@@ -62,7 +62,7 @@ export class ServicesComponent implements OnInit {
 
       const address = `${reclamation.ville} ${reclamation.quartier} ${reclamation.nomRue}`.toLowerCase();
 
-      return (!this.searchDate || reclamation.created_at?.startsWith(this.searchDate)) &&
+      return (!this.searchDate || reclamation.createdAt?.startsWith(this.searchDate)) &&
              (!this.searchStatus || reclamation.status === this.searchStatus) &&
              (!this.searchText || reclamation.nomClient?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               address.includes(this.searchText.toLowerCase()) ||
@@ -116,9 +116,9 @@ export class ServicesComponent implements OnInit {
   }
 
   // Method to generate PDF and open it in a new window
-  generatePDF(reclamation: Reclamation): void {
+  generatePDF(reclamation: ReclamationDto): void {
     const doc = new jsPDF();
-    doc.text(`Date Creation ${reclamation.created_at} \t N° Reclamation: ${reclamation.idFonctionnel}\n`,10, 10);
+    doc.text(`Date Creation ${reclamation.createdAt} \t N° Reclamation: ${reclamation.idFonctionnel}\n`,10, 10);
     doc.text(`\n\n ${reclamation.description}`,10, 10);
 
     // Open the PDF in a new window

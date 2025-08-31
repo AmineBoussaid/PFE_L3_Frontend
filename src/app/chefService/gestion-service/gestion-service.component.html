@@ -15,15 +15,15 @@
       <div class="row mb-2">
 
         <main class="col-8 p-2 ">
-
+          <!-- Techniciens Section -->
           <div class="my-2 p-3 bg-body rounded shadow-sm">
             <h6 class="border-bottom pb-2 mb-0">Techniciens</h6>
-
             <div *ngFor="let group of techniciensGrouped.slice(0, 3)" class="row">
               <div *ngFor="let technicien of group" class="col-6 d-flex text-body-secondary pt-3">
                 <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#ffffff" dy=".3em">{{ technicien.username?.charAt(0) }}</text>
+                  <title>{{ technicien.username }}</title>
+                  <rect width="100%" height="100%" fill="#007bff"/>
+                  <text x="50%" y="50%" fill="#ffffff" dy=".3em">{{ technicien.username?.charAt(0) }}</text>
                 </svg>
                 <p class="pb-3 mb-0 small lh-sm border-bottom">
                   <strong class="d-block text-gray-dark">{{ technicien.username }}</strong>
@@ -31,52 +31,34 @@
                 </p>
               </div>
             </div>
-
             <small class="d-block text-end mt-2">
               <button class="btn btn-link p-0" (click)="AllTechnicians(techniciens)">Show All</button>
             </small>
           </div>
 
-
-
-
+          <!-- Equipes Section -->
           <div class="my-2 p-3 bg-body rounded shadow-sm">
             <h6 class="border-bottom pb-2 mb-0">Equipes</h6>
-            <div class="d-flex text-body-secondary pt-3">
-              <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-              <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                <div class="d-flex justify-content-between">
-                  <strong class="text-gray-dark">Full Name</strong>
-                  <a href="#">Follow</a>
+            <div *ngFor="let group of equipesGrouped.slice(0, 3)" class="row">
+              <div *ngFor="let equipe of group" class="col-6 d-flex text-body-secondary pt-3">
+                <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
+                  <title>{{ equipe.nom }}</title>
+                  <rect width="100%" height="100%" fill="#6c757d"/>
+                  <text x="50%" y="50%" fill="#ffffff" dy=".3em">{{ equipe.nom?.charAt(0) }}</text>
+                </svg>
+                <div class="pb-2 mb-0 small lh-sm border-bottom">
+                  <strong class="d-block text-gray-dark">{{ equipe.nom }}</strong>
+                  <p class="m-0 p-0">Chef d'équipe: {{ equipe.chefEquipe.username }}</p>
+                  <p class="m-0 p-0">Techniciens: {{ equipe.techniciens?.length ?? 0 }}</p>
                 </div>
-                <span class="d-block">username</span>
               </div>
             </div>
-            <div class="d-flex text-body-secondary pt-3">
-              <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-              <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                <div class="d-flex justify-content-between">
-                  <strong class="text-gray-dark">Full Name</strong>
-                  <a href="#">Follow</a>
-                </div>
-                <span class="d-block">username</span>
-              </div>
-            </div>
-            <div class="d-flex text-body-secondary pt-3">
-              <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-              <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                <div class="d-flex justify-content-between">
-                  <strong class="text-gray-dark">Full Name</strong>
-                  <a href="#">Follow</a>
-                </div>
-                <span class="d-block">username</span>
-              </div>
-            </div>
-            <small class="d-block text-end mt-3">
-              <a href="#">All suggestions</a>
+            <small class="d-block text-end mt-2">
+              <button class="btn btn-link p-0" (click)="AllEquipes(equipes)">Show All</button>
             </small>
           </div>
         </main>
+
 
         <main class="col p-2">
           <div class="my-2 p-3 bg-body rounded shadow-sm h-100">

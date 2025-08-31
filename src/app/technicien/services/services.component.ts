@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Intervention, User } from '../../models';
+import { InterventionDto, UserDto } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import jsPDF from 'jspdf';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -17,9 +17,9 @@ import { HeaderComponent } from '../../menu/header/header.component';
 })
 export class ServicesComponent {
 
-  interventions: Intervention[] = [];
-  filteredInterventions: Intervention[] = [];
-  paginatedInterventions: Intervention[] = [];
+  interventions: InterventionDto[] = [];
+  filteredInterventions: InterventionDto[] = [];
+  paginatedInterventions: InterventionDto[] = [];
 
   searchDate: string = '';
   searchStatus: string = '';
@@ -32,7 +32,7 @@ export class ServicesComponent {
   Math: any = Math;
 
   /*******************/
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
 
 
   service_id!: number
@@ -114,7 +114,7 @@ export class ServicesComponent {
     this.paginatedInterventions = this.filteredInterventions.slice(startIndex, endIndex);
   }
 
-  goToIntervention(intervention: Intervention | null): void {
+  goToIntervention(intervention: InterventionDto | null): void {
     if (intervention) {
       // Stocker l'intervention dans le localStorage
 
@@ -128,13 +128,13 @@ export class ServicesComponent {
   }
 
     // Method to generate PDF and open it in a new window
-    generatePDF(intervention: Intervention): void {
+    generatePDF(intervention: InterventionDto): void {
       const doc = new jsPDF();
       doc.text(
 
     `
     \n\n
-      N°intervention: ${intervention.reclamation.idFonctionnel}\t${intervention.created_at}
+      N°intervention: ${intervention.reclamation.idFonctionnel}\t${intervention.createdAt}
     \n
         CARTEGORY: ${intervention.reclamation.category}
         SITUATION: ${intervention.reclamation.situation}

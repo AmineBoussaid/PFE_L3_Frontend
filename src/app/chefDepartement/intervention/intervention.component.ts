@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
-import { Intervention, InterventionDTO, Reclamation, Service, TechnicienDto, User } from '../../models';
+import { DepartementDto, EquipeDto, InterventionDto, ReclamationDto, ServiceDto, TechnicienDto, UserDto } from '../../models';
 import { FormsModule } from '@angular/forms';
 import { ServiceDService } from '../../services/service_d.service';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ReclamationService } from '../../services/reclamation.service';
 import { DepartementService } from '../../services/departement.service';
@@ -11,31 +11,34 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../menu/header/header.component';
 import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { EquipeService } from '../../services/equipe.service';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent],
+  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent,NgClass],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
 export class InterventionComponent implements OnInit {
 
-  interventions: Intervention[] = [];
-  interventionDTO: InterventionDTO = new InterventionDTO();
-  newIntervention: Intervention = new Intervention();
-  services: Service[] = []
+  newIntervention: InterventionDto = new InterventionDto();
+  services: ServiceDto[] = []
   techniciens : TechnicienDto[] = [];
+  technicienParam: TechnicienDto = new TechnicienDto();
+  selectedTechniciens: TechnicienDto[] = [];
+  filteredTechniciens: TechnicienDto[] = [];
+  equipe: EquipeDto = new EquipeDto();
 
-
-  reclamationExist: boolean = true;
+  reclamationExist: boolean = false;
   dateFinEstimee!: Date | null;
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
-
+  selectedOption: string = '';
+  technicien: UserDto = new UserDto()
 
   departement_id!:number
-  service_id!:number
-  currentUser: User | null = null;
+  service_id!: number;
+  currentUser: UserDto | null = null;
 
 
   constructor(
@@ -45,7 +48,8 @@ export class InterventionComponent implements OnInit {
     private serviceDService : ServiceDService,
     private userService : UserService,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private equipeService: EquipeService
   ) {}
 
 
@@ -60,7 +64,7 @@ export class InterventionComponent implements OnInit {
           this.editMode = params['editMode'] === 'true'; // Convertit la chaîne en booléen
         }
       });
-
+    this.getServicesByDepartementId(this.currentUser.id);
     this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
     this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel);
     console.log('Current User:', this.currentUser);
@@ -73,32 +77,73 @@ export class InterventionComponent implements OnInit {
 
   /****  Service Intervention  ****/
 
-  addIntervention(user_id:number): void {
+  addIntervention(): void {
     if (this.reclamationExist) {
 
-      this.newIntervention.createur.id = user_id;
+      if (!this.newIntervention.createur) {
+        this.newIntervention.createur = new UserDto();
+    }
+      this.newIntervention.createur.id = this.currentUser!.id;
+
+      // Vérification et initialisation de `departement`
+      if (!this.newIntervention.departement) {
+        this.newIntervention.departement = new DepartementDto();
+    }
       this.newIntervention.departement.id = this.departement_id;
+
+      // Vérification et initialisation de `service`
+      if (!this.newIntervention.service) {
+        this.newIntervention.service = new ServiceDto();
+    }
       this.newIntervention.service.id = this.service_id;
 
-      this.interventionService.addIntervention(this.interventionDTO,user_id).subscribe(
+
+      if (this.selectedOption === 'option1') {
+        if (!this.newIntervention.technicien) {
+            this.newIntervention.technicien = new TechnicienDto();
+        }
+        this.newIntervention.technicien!.id = this.technicien.id;
+        this.newIntervention.equipe = null;
+    } else if (this.selectedOption === 'option2') {
+        this.equipe.techniciens = this.selectedTechniciens;
+        this.newIntervention.equipe = this.equipe;
+        this.newIntervention.technicien = null;
+    }
+
+      this.interventionService.addIntervention(this.newIntervention,this.currentUser!.id).subscribe(
         response => {
           console.log('Intervention added', response);
           // Optionally navigate away or show a success message
         },
       );
-
     } else {
       console.error('Cannot add intervention, reclamation does not exist');
     }
   }
 
-  updateIntervention(user_id:number): void {
-    this.interventionService.updateIntervention(this.newIntervention,user_id).subscribe(
+  updateIntervention(): void {
+
+    if (this.selectedOption === 'option1') {
+      if (!this.newIntervention.technicien) {
+        this.newIntervention.technicien = new TechnicienDto();
+    }
+      this.newIntervention.technicien!.id = this.technicien.id
+      this.newIntervention.equipe = null;
+    }
+
+    if(this.selectedOption === 'option2'){
+      this.equipe.techniciens = this.selectedTechniciens
+      this.newIntervention.equipe = this.equipe;
+      this.newIntervention.technicien = null;
+    }
+
+    this.interventionService.updateIntervention(this.newIntervention,this.currentUser!.id).subscribe(
       response => {
         console.log('Intervention updated', response);
       },
     );
   }
+
 
   /****  Service Service  ****/
   getServicesByDepartementId(user_id: number): void{
@@ -106,6 +151,8 @@ export class InterventionComponent implements OnInit {
       this.departement_id = departement.id;
       this.serviceDService.getServicesByDepartementId(departement.id).subscribe(
         data => {
+          console.log("departement",departement)
+          console.log("data",data)
         this.services = data;
         },
       );
@@ -132,14 +179,13 @@ export class InterventionComponent implements OnInit {
   /****  Reclamation Service  ****/
   verifyReclamation(idFonctionnel: string): void {
     this.reclamationService.getReclamationByIdFonctionnel(idFonctionnel).subscribe(
-      (reclamation: Reclamation) => {
-        this.newIntervention.reclamation.id = reclamation.id;
+      (reclamation) => {
+        console.log(reclamation)
+        this.newIntervention.reclamation = reclamation;
         this.reclamationExist = true;
-        this.getServicesByDepartementId(this.currentUser!.id)
-
       },
       (error) => {
-        console.error('Reclamation does not exist');
+        console.log('Reclamation does not exist', error);
         this.reclamationExist = false;
       }
     );
@@ -147,13 +193,16 @@ export class InterventionComponent implements OnInit {
 
   verifyIntervention(idFonctionnel: string): void {
     this.interventionService.getInterventionsByIdFonctionnel(idFonctionnel).subscribe(
-      (intervnetion: Intervention) => {
+      (intervnetion) => {
         this.newIntervention = intervnetion;
+
+        if(intervnetion.equipe){
+          this.equipe = intervnetion.equipe;
+        }
         this.reclamationExist = true;
-        this.TechniciensByServiceId(intervnetion.service.id)
       },
       (error) => {
-        console.error('Intervention does not exist', error);
+        console.log('Intervention does not exist', error);
         this.reclamationExist = false;
       }
     );
@@ -162,11 +211,81 @@ export class InterventionComponent implements OnInit {
 
   enterAddMode(): void {
     this.editMode = false;
-    this.newIntervention = new Intervention();
+    this.newIntervention = new InterventionDto();
   }
 
   enterEditMode(): void {
     this.editMode = true;
+  }
+
+   // Méthode pour gérer le changement de chef d'équipe
+   onChefEquipeChange(event: Event): void {
+    const selectedChefId = +(event.target as HTMLSelectElement).value;
+    // Filtrer les techniciens disponibles en excluant le chef d'équipe sélectionné
+    this.filteredTechniciens = this.techniciens.filter(t => t.id !== selectedChefId);
+    }
+
+  addTechnicien(event: Event): void {
+    const selectedId = +(event.target as HTMLSelectElement).value;
+    const selectedTechnicien = this.techniciens.find(t => t.id === selectedId);
+
+    if (selectedTechnicien && !this.selectedTechniciens.includes(selectedTechnicien)) {
+      this.selectedTechniciens.push(selectedTechnicien);
+    }
+  }
+
+  removeTechnicien(technicien: TechnicienDto): void {
+    this.selectedTechniciens = this.selectedTechniciens.filter(t => t.id !== technicien.id);
+  }
+
+  resetSelection(): void {
+    this.selectedTechniciens = [];
+    this.filteredTechniciens = this.techniciens;
+    this.currentStep = 1;
+
+  }
+
+  onOptionChange(): void {
+    if (this.selectedOption === 'option1') {
+      this.filteredTechniciens = this.techniciens;
+    }
+  }
+
+
+    currentStep: number = 1;
+
+  // Méthodes pour changer d'étape
+  nextStep() {
+    if (this.currentStep < 4 && this.canProceedToNextStep()) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  // Méthode pour vérifier si on peut passer à l'étape suivante
+  canProceedToNextStep(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return !!this.newIntervention.reclamation.idFonctionnel && this.reclamationExist;
+      case 2:
+        return  true/*!!this.newIntervention.titre && !!this.newIntervention.dateDebut && !!this.newIntervention.dateFin;*/
+      case 3:
+        if (this.selectedOption === 'option1') {
+          return !!this.technicien.id;
+        } else if (this.selectedOption === 'option2') {
+          return !!this.equipe.nom && !!this.equipe.chefEquipe?.id;
+        }
+        return false;
+      case 4:
+        return !!this.newIntervention.description;
+      default:
+        return false;
+    }
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
-import { Reclamation, User } from '../../models';
+import { ReclamationDto, UserDto } from '../../models';
 import Chart, { registerables } from 'chart.js/auto';
 import { NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -15,7 +15,7 @@ import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 })
 export class DashboardComponent implements OnInit {
 
-  reclamations: Reclamation[] = [];
+  reclamations: ReclamationDto[] = [];
   totalReclamations: number = 0;
   enAttente: number = 0;
   enCours: number = 0;
@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
 
 
   constructor(private reclamationService: ReclamationService,
@@ -103,8 +103,8 @@ export class DashboardComponent implements OnInit {
     ]);
 
     this.reclamations.forEach(reclamation => {
-      if (reclamation.created_at) {
-        const date = new Date(reclamation.created_at);
+      if (reclamation.createdAt) {
+        const date = new Date(reclamation.createdAt);
         const year = date.getFullYear();
         if (year === this.selectedYear) {
           const month = date.toLocaleString('fr-FR', { month: 'short' });

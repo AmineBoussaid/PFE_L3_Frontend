@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Service } from '../models';
+import { ServiceDto } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,33 +8,28 @@ import { Observable } from 'rxjs';
 })
 export class ServiceDService {
   private apiUrl = 'http://localhost:8080/api/services';
-  private apiUrl_2 = 'http://localhost:8080/api/technicien-services';
 
 
   constructor(private http: HttpClient) { }
 
-  addService(service: Service): Observable<Service> {
-    return this.http.post<Service>(`${this.apiUrl}/add`, service);
+  addService(service: ServiceDto): Observable<ServiceDto> {
+    return this.http.post<ServiceDto>(`${this.apiUrl}/add`, service);
   }
 
-  getServices(): Observable<Service[]> {
-    return this.http.get<Service[]>(`${this.apiUrl}/getAll`);
+  getServices(): Observable<ServiceDto[]> {
+    return this.http.get<ServiceDto[]>(`${this.apiUrl}/getAll`);
   }
 
-  getServicesById(id: number): Observable<Service> {
-    return this.http.get<Service>(`${this.apiUrl}getById/${id}`);
+  getServicesById(id: number): Observable<ServiceDto> {
+    return this.http.get<ServiceDto>(`${this.apiUrl}getById/${id}`);
   }
 
-  getServicesByDepartementId(departement_id: number): Observable<Service[]> {
-    return this.http.get<Service[]>(`${this.apiUrl}/getByDepartementId/${departement_id}`);
+  getServicesByDepartementId(departement_id: number): Observable<ServiceDto[]> {
+    return this.http.get<ServiceDto[]>(`${this.apiUrl}/getByDepartementId/${departement_id}`);
   }
 
-  getServicesByChefService(chef_service_id: number): Observable<Service> {
-    return this.http.get<Service>(`${this.apiUrl}/getByChefService/${chef_service_id}`);
-  }
-
-  getServiceByTechnicienId(technicien_id: number): Observable<Service> {
-    return this.http.get<Service>(`${this.apiUrl_2}/getServiceByTechnicienId/${technicien_id}`);
+  getServicesByChefService(chef_service_id: number): Observable<ServiceDto> {
+    return this.http.get<ServiceDto>(`${this.apiUrl}/getByChefService/${chef_service_id}`);
   }
 
 }

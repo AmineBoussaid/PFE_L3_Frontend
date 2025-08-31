@@ -28,9 +28,8 @@
             <label class="input-group-text" for="statusFilter">Status</label>
             <select class="form-select" id="statusFilter" (change)="onStatusChange($event)">
               <option value="">Tous</option>
-              <option value="En attente">En attente</option>
               <option value="En cours">En cours</option>
-              <option value="Terminer">Terminer</option>
+              <option value="Terminee">Terminee</option>
             </select>
 
             <input type="text" class="form-control" placeholder="Rechercher" aria-label="Rechercher" aria-describedby="button-addon2" (input)="onSearchChange($event)">
@@ -52,7 +51,7 @@
               <tbody>
                 <tr *ngFor="let intervention of paginatedInterventions; let i = index">
                   <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
-                  <td>{{ intervention.created_at }}</td>
+                  <td>{{ intervention.createdAt }}</td>
                   <td>{{ intervention.reclamation.idFonctionnel}}</td>
                   <td>{{ intervention.dateDebut | date:'yyyy-MM-dd'}}</td>
                   <td>{{ intervention.reclamation.category}}</td>

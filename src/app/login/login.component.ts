@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../models';
+import { UserDto } from '../models';
 import { FormsModule, NgModel } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class LoginComponent {
 
 
   onSubmit(): void {
-    this.authService.login(this.email, this.password).subscribe(
+    this.authService.auth(this.email, this.password).subscribe(
       user  => {
         if (user) {
           // Naviguer vers le tableau de bord en fonction du rôle
@@ -45,7 +45,8 @@ export class LoginComponent {
       error => {
         console.error('Login error', error);
         alert('Login error');
-      }
+      },
+      () => {}
     );
   }
 }

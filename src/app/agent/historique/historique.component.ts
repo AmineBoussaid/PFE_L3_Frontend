@@ -1,4 +1,4 @@
-import { User, UserHist } from './../../models';
+import { UserDto, UserHistoriqueDto } from './../../models';
 import { UserHistService } from './../../services/user-hist.service';
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
@@ -15,8 +15,8 @@ import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 })
 export class HistoriqueComponent  implements OnInit{
 
-  historiques : UserHist[] = [];
-  currentUser: User | null = null;
+  historiques : UserHistoriqueDto[] = [];
+  currentUser: UserDto | null = null;
 
 
   constructor(
@@ -39,8 +39,8 @@ export class HistoriqueComponent  implements OnInit{
     this.userHistService.getByUserHistId(user_id).subscribe(
       data => {
         this.historiques = data.sort((a, b) => {
-          const dateA = new Date(a.created_at!).getTime();
-          const dateB = new Date(b.created_at!).getTime();
+          const dateA = new Date(a.createdAt!).getTime();
+          const dateB = new Date(b.createdAt!).getTime();
           return dateB - dateA; // Trie par ordre décroissant
         });
       },

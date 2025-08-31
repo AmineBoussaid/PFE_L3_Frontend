@@ -30,7 +30,7 @@
                 <option value="">Tous</option>
                 <option value="En attente">En attente</option>
                 <option value="En cours">En cours</option>
-                <option value="Terminer">Terminer</option>
+                <option value="Terminee">Terminee</option>
               </select>
 
               <input type="text" class="form-control" placeholder="Rechercher" aria-label="Rechercher" aria-describedby="button-addon2" (input)="onSearchChange($event)">
@@ -52,7 +52,7 @@
                 <tbody>
                   <tr *ngFor="let reclamation of paginatedReclamations; let i = index">
                     <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
-                    <td>{{ reclamation.created_at }}</td>
+                    <td>{{ reclamation.createdAt }}</td>
                     <td>{{ reclamation.idFonctionnel }}</td>
                     <td>{{ reclamation.nomClient }}</td>
                     <td>{{ reclamation.ville }}  {{ reclamation.quartier }}  {{ reclamation.nomRue }} </td>
@@ -61,7 +61,7 @@
                       <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(reclamation)">Voir</button>
 
                       <div class="btn-group">
-                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         </button>
 
                         <ul class="dropdown-menu">

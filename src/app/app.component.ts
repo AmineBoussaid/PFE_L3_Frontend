@@ -6,11 +6,12 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './menu/sidebar/sidebar.component';
 import { HeaderComponent } from './menu/header/header.component';
 import { CommonModule } from '@angular/common';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,RouterLink,HeaderComponent,SidebarComponent,CommonModule],
+  imports: [RouterOutlet,RouterLink,HeaderComponent,SidebarComponent,CommonModule, FullCalendarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

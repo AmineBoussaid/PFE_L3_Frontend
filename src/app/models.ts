@@ -1,33 +1,32 @@
-export class User {
+export class UserDto {
   id!: number;
   username!: string | null;
-  password!: string | null;
   email!: string | null;
   role!: string | null;
-  created_at!: string | null;
-  last_login!: string | null;
+  createdAt!: string | null;
+  lastLogin!: string | null;
   description!: string | null;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
-  constructor(id?: number, username?: string, password?: string, email?: string, role?: string,created_at?: string, last_login?: string, description?: string) {
+  constructor(id?: number, username?: string, email?: string, role?: string,createdAt?: string,lastLogin?: string, description?: string) {
     this.id = id ?? 0;
     this.username = username ?? null;
-    this.password = password ?? null;
     this.email = email ?? null;
     this.role = role ?? null;
-    this.created_at = created_at ?? null;
-    this.last_login = last_login ?? null;
+    this.createdAt = createdAt ?? null;
+    this.lastLogin = lastLogin ?? null;
     this.description = description ?? null;
   }
 }
 
-export class UserHist {
+
+export class UserHistoriqueDto {
   id!: number;
-  user!: User;
-  created_at!: string | null;
+  user!: UserDto;
+  createdAt!: string | null;
   action!: string | null;
   details!: string | null;
   ipAddress!: string | null;
@@ -36,10 +35,10 @@ export class UserHist {
   constructor();
 
   // Constructor with parameters
-  constructor(id?: number, user?: User,created_at?: string, action?: string, details?: string, ipAddress?: string) {
+  constructor(id?: number, user?: UserDto,createdAt?: string, action?: string, details?: string, ipAddress?: string) {
     this.id =id  ?? 0;
-    this.user = user  ?? new User();
-    this.created_at = created_at ?? null;
+    this.user = user  ?? new UserDto();
+    this.createdAt = createdAt ?? null;
     this.action = action  ?? null;
     this.details = details  ?? null;
     this.ipAddress = ipAddress  ?? null;
@@ -48,33 +47,29 @@ export class UserHist {
 
 
 export class TechnicienDto {
-  userId !: number;
+  id !: number;
   username!: string | null;
   email!: string | null;
-  role!: string | null;
-  serviceId !: number | null;;
-  serviceName!: string | null;
   description!: string | null;
+  service !: ServiceDto | null;
 
 
 // Parameterless constructor
   constructor();
 
 // Constructor with parameters
-  constructor(userId?: number, username?: string,email?: string, role?: string, serviceId ?: number, serviceName?: string, description?: string) {
-    this.userId = userId ?? 0;
+  constructor(userId?: number, username?: string,email?: string, service?: ServiceDto, description?: string) {
+    this.id = userId ?? 0;
     this.username = username ?? null;
     this.email = email ?? null;
-    this.role = role ?? null;
-    this.serviceId = serviceId ?? null;
-    this.serviceName = serviceName ?? null;
+    this.service = service ?? null;
     this.description = description ?? null;
 
   }
 }
 
 
-export class Reclamation {
+export class ReclamationDto {
   id!: number;
   idFonctionnel!: string ;
   nomClient!: string | null;
@@ -91,9 +86,9 @@ export class Reclamation {
   occurrence!: string | null;
   status!: string | null;
   description!: string | null;
-  created_at!: string | null;
-  agent!: User;
-  service!: Service;
+  createdAt!: string | null;
+  agent!: UserDto ;
+  service!: ServiceDto;
 
   // Parameterless constructor
   constructor();
@@ -102,7 +97,7 @@ export class Reclamation {
   constructor(
     id?: number, idFonctionnel?: string, nomClient?: string, telephone?: string, email?: string, codeAbonnement?: string,
     pays?: string, ville?: string, quartier?: string, nomRue?:string, category?: string, situation?: string, periode?: string,
-    occurrence?: string, status?: string, description?: string, created_at?: string, agent?: User, service?: Service
+    occurrence?: string, status?: string, description?: string, createdAt?: string, agent?: UserDto, service?: ServiceDto
   ) {
     this.id = id ?? 0;
     this.idFonctionnel != idFonctionnel;
@@ -120,71 +115,68 @@ export class Reclamation {
     this.occurrence = occurrence ?? null;
     this.status = status ?? null;
     this.description = description ?? null;
-    this.created_at = created_at ?? null;
-    this.agent = agent ?? new User();
-    this.service = service ?? new Service();
+    this.createdAt = createdAt ?? null;
+    this.agent = agent ?? new UserDto();
+    this.service = service ?? new ServiceDto();
   }
 }
 
 
 
-export class Departement {
+export class DepartementDto {
   id!: number;
   nom!: string | null;
-  chefDepartement!: User;
+  chefDepartement!: UserDto;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
-  constructor(id?: number, nom?: string, chefDepartement?: User) {
+  constructor(id?: number, nom?: string, chefDepartement?: UserDto) {
     this.id = id ?? 0;
     this.nom = nom ?? null;
-    this.chefDepartement = chefDepartement ?? new User();
+    this.chefDepartement = chefDepartement ?? new UserDto();
   }
 }
 
 
 
-export class Service {
+
+export class ServiceDto {
   id!: number;
   nom!: string | null;
-  departement!: Departement;
-  chefService!: User;
+  departement!: DepartementDto;
+  chefService!: UserDto;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
-  constructor(id?: number, nom?: string, departement?: Departement, chefService?: User) {
+  constructor(id?: number, nom?: string, departement?: DepartementDto, chefService?: UserDto) {
     this.id = id ?? 0;
     this.nom = nom ?? null;
-    this.departement = departement ?? new Departement();
-    this.chefService = chefService ?? new User();
+    this.departement = departement ?? new DepartementDto();
+    this.chefService = chefService ?? new UserDto();
   }
 }
 
-export class Equipe{
+export class EquipeDto{
   id!: number;
   nom!: string | null;
-  description!: string | null;
-  chefEquipe!: User;
+  chefEquipe!: TechnicienDto;
   createdAt!: string | null;
   disabledAt!: string | null;
   active!: boolean | null;
-  intervention!: Intervention | null;
+  techniciens!: TechnicienDto[] | null;
 
   constructor();
 
   constructor(
-    id?: number, nom?: string, description?: string,
-    chefEquipe?: User, createdAt?: string, disabledAt?: string, active?:boolean, intervention?:Intervention
+    id?: number, nom?: string,chefEquipe?: TechnicienDto, createdAt?: string, disabledAt?: string, active?:boolean
   ) {
     this.id = id ?? 0;
     this.nom = nom ?? null;
-    this.description = description ?? null;
-    this.chefEquipe = chefEquipe ?? new User();
-    this.intervention = intervention ?? null; // Attention ici
+    this.chefEquipe = chefEquipe ?? new TechnicienDto();
     this.createdAt = createdAt ?? null;
     this.disabledAt = disabledAt ?? null;
     this.active = active ?? null;
@@ -194,29 +186,29 @@ export class Equipe{
 
 
 
-export class Intervention {
+export class InterventionDto {
   id!: number;
   titre!: string | null;
   status!: string | null;
   dateDebut!: Date | null;
   dateFin!: Date | null;
-  created_at!: string | null;
+  createdAt!: string | null;
   description!: string | null;
-  createur!: User;
-  reclamation!: Reclamation;
-  departement!: Departement;
-  service!: Service;
-  technicien!: User | null;
-  equipe!: Equipe | null;
+  createur!: UserDto;
+  reclamation: ReclamationDto;
+  departement!: DepartementDto;
+  service!: ServiceDto;
+  technicien!: TechnicienDto | null;
+  equipe!: EquipeDto | null;
 
   // Parameterless constructor
-  constructor();
+  constructor()
 
   // Constructor with parameters
   constructor(
     id?: number, titre?: string, status?: string, dateDebut?: Date, dateFin?: Date,
-    description?: string, created_at?: string,  reclamation?:Reclamation ,
-    createur?: User, service?: Service, technicien?: User, equipe?: Equipe)
+    description?: string, createdAt?: string,  reclamation?:ReclamationDto ,departement?:DepartementDto,
+    createur?: UserDto, service?: ServiceDto, technicien?: TechnicienDto, equipe?: EquipeDto)
   {
     this.id = id ?? 0;
     this.titre = titre ?? null;
@@ -224,18 +216,18 @@ export class Intervention {
     this.dateDebut = dateDebut?? null;
     this.dateFin = dateFin ?? null;
     this.description = description ?? null;
-    this.created_at = created_at ?? null;
-    this.createur = createur ?? new User();
-    this.reclamation = reclamation ?? new Reclamation();
-    this.departement = this.departement ?? new Departement();
-    this.service = service ?? new Service();
-    this.technicien = technicien ?? new User();
-    this.equipe = equipe ?? null;
+    this.createdAt = createdAt ?? null;
+    this.createur = createur ?? new UserDto();
+    this.reclamation = reclamation ?? new ReclamationDto();
+    this.departement = departement ?? new DepartementDto();
+    this.service = service ?? new ServiceDto();
+    this.technicien = technicien ?? new TechnicienDto();
+    this.equipe = equipe ?? new EquipeDto();
   }
 }
 
 
-export class Client {
+export class ClientDto {
   id!: number;
   nomClient!: string | null;
   codeAbonnement!: string | null;
@@ -262,24 +254,6 @@ export class Client {
   }
 
 }
-
-  export class InterventionDTO{
-
-    intervention!: Intervention | null;
-    techniciens!: TechnicienDto[] | null
-
-    // Parameterless constructor
-    constructor();
-
-    // Constructor with parameters
-    constructor(
-      intervention?: Intervention, techniciens?: TechnicienDto[],
-    ) {
-      this.intervention = intervention ?? null;
-      this.techniciens = techniciens ?? null;
-    }
-
-  }
 
 
 

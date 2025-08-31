@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserHist } from '../models';
+import { UserHistoriqueDto } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,11 +11,11 @@ export class UserHistService {
 
   constructor(private http: HttpClient) { }
 
-  getUserHist(): Observable<UserHist[]> {
-    return this.http.get<UserHist[]>(`${this.apiUrl}/getAll`);
+  getUserHist(): Observable<UserHistoriqueDto[]> {
+    return this.http.get<UserHistoriqueDto[]>(`${this.apiUrl}/getAll`);
   }
 
-  getByUserHistId(userId:number): Observable<UserHist[]> {
-    return this.http.get<UserHist[]>(`${this.apiUrl}/getByUserId/${userId}`);
+  getByUserHistId(userId:number): Observable<UserHistoriqueDto[]> {
+    return this.http.get<UserHistoriqueDto[]>(`${this.apiUrl}/getByUserId/${userId}`);
   }
 }

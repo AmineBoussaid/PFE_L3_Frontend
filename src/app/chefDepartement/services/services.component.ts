@@ -1,4 +1,4 @@
-import { Intervention, User } from '../../models';
+import { InterventionDto, UserDto } from '../../models';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
@@ -17,9 +17,9 @@ import { HeaderComponent } from '../../menu/header/header.component';
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
-  interventions: Intervention[] = [];
-  filteredInterventions: Intervention[] = [];
-  paginatedInterventions: Intervention[] = [];
+  interventions: InterventionDto[] = [];
+  filteredInterventions: InterventionDto[] = [];
+  paginatedInterventions: InterventionDto[] = [];
 
   searchDate: string = '';
   searchStatus: string = '';
@@ -31,7 +31,7 @@ export class ServicesComponent {
   itemsPerPage: number = 5;
   Math: any = Math;
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
 
   constructor(private interventionService: InterventionService,
               private departementService: DepartementService,
@@ -73,7 +73,7 @@ export class ServicesComponent {
 
   filterInterventions(): void {
     this.filteredInterventions = this.interventions.filter(intervention => {
-      return (!this.searchDate || intervention.created_at?.startsWith(this.searchDate)) &&
+      return (!this.searchDate || intervention.createdAt?.startsWith(this.searchDate)) &&
              (!this.searchStatus || intervention.status === this.searchStatus) &&
              (!this.searchText || intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               intervention.reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
@@ -128,17 +128,17 @@ export class ServicesComponent {
   }
 
     // Method to generate PDF and open it in a new window
-    generatePDF(intervention: Intervention): void {
+    generatePDF(intervention: InterventionDto): void {
       const doc = new jsPDF();
       doc.text(
 
     `Intervention: ${intervention.reclamation.idFonctionnel}\n
-      Date Creation ${intervention.created_at}\n
+      Date Creation ${intervention.createdAt}\n
       Titre: ${intervention.titre} \t N° Intervention: ${intervention.reclamation.idFonctionnel}\n
       Detailles : ${intervention.description}\n\n
 
     Reclamation:\n
-      Date Creation ${intervention.reclamation.created_at}
+      Date Creation ${intervention.reclamation.createdAt}
       Detailles :${intervention.reclamation.description}`
 
       ,10, 10);

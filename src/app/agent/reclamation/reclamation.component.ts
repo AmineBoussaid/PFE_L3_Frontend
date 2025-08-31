@@ -5,7 +5,7 @@ import { ReclamationService } from './../../services/reclamation.service';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Client, Departement, Reclamation, Service, User } from '../../models';
+import { ClientDto, DepartementDto, ReclamationDto, ServiceDto, UserDto } from '../../models';
 import { listCategories, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute } from '@angular/router';
@@ -22,11 +22,11 @@ import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 })
 export class ReclamationComponent implements OnInit {
 
-  reclamations: Reclamation[] = [];
-  newReclamation: Reclamation = new Reclamation();
-  departements: Departement[] = [];
-  services: Service[] = [];
-  client: Client = new Client();
+  reclamations: ReclamationDto[] = [];
+  newReclamation: ReclamationDto = new ReclamationDto();
+  departements: DepartementDto[] = [];
+  services: ServiceDto[] = [];
+  client: ClientDto = new ClientDto();
 
   categories = listCategories;
   situations = listSituations;
@@ -42,7 +42,7 @@ export class ReclamationComponent implements OnInit {
 
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
   reclamationExist: boolean = true;
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
   codeExist: boolean = false;
   codeAbonnement: string = '';
 
@@ -202,7 +202,7 @@ export class ReclamationComponent implements OnInit {
 
     verifyReclamation(idFonctionnel: string): void {
       this.reclamationService.getReclamationByIdFonctionnel(idFonctionnel).subscribe(
-        (reclamation: Reclamation) => {
+        (reclamation: ReclamationDto) => {
           this.newReclamation = reclamation;
           this.reclamationExist = true;
         },
@@ -215,7 +215,7 @@ export class ReclamationComponent implements OnInit {
 
     enterAddMode(): void {
       this.editMode = false;
-      this.newReclamation = new Reclamation();
+      this.newReclamation = new ReclamationDto();
     }
 
     enterEditMode(): void {

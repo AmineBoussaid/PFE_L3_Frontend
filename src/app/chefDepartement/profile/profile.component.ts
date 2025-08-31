@@ -1,8 +1,8 @@
-import { Departement } from './../../models';
+import { DepartementDto } from './../../models';
 import { DepartementService } from './../../services/departement.service';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Intervention, User, UserHist } from '../../models';
+import { InterventionDto, UserDto, UserHistoriqueDto } from '../../models';
 import { UserHistService } from '../../services/user-hist.service';
 import { AuthService } from '../../services/auth.service';
 import { InterventionService } from '../../services/intervention.service';
@@ -18,12 +18,12 @@ import { HeaderComponent } from '../../menu/header/header.component';
 })
 export class ProfileComponent implements OnInit{
 
-  intervention: Intervention[] = [];
-  historiques : UserHist[] = [];
-  departement:Departement = new Departement()
+  intervention: InterventionDto[] = [];
+  historiques : UserHistoriqueDto[] = [];
+  departement:DepartementDto = new DepartementDto()
 
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
   interventionCount: number = 0;
   lastInterventionDate: string | null = null;
 
@@ -62,8 +62,8 @@ export class ProfileComponent implements OnInit{
           this.interventionCount = intervention.length;
           if (intervention.length > 0) {
             // Tri des réclamations par date de création décroissante
-            intervention.sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
-            this.lastInterventionDate = intervention[0].created_at; // Date de la dernière réclamation
+            intervention.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+            this.lastInterventionDate = intervention[0].createdAt; // Date de la dernière réclamation
           }
         });
       }
@@ -73,8 +73,8 @@ export class ProfileComponent implements OnInit{
     this.userHistService.getByUserHistId(user_id).subscribe(
       data => {
         this.historiques = data.sort((a, b) => {
-          const dateA = new Date(a.created_at!).getTime();
-          const dateB = new Date(b.created_at!).getTime();
+          const dateA = new Date(a.createdAt!).getTime();
+          const dateB = new Date(b.createdAt!).getTime();
           return dateB - dateA; // Trie par ordre décroissant
         });
       },

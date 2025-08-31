@@ -1,30 +1,28 @@
-import { Departement } from './../../models';
+import { UserService } from './../../services/user.service';
+import { DepartementDto } from './../../models';
 import { Component, OnInit } from '@angular/core';
 import { UserHistService } from '../../services/user-hist.service';
 import { AuthService } from '../../services/auth.service';
-import { Intervention, Service, User, UserHist } from '../../models';
+import { InterventionDto, ServiceDto, UserDto, UserHistoriqueDto } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
 import { ServiceDService } from '../../services/service_d.service';
-import { DepartementService } from '../../services/departement.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
+  imports: [NgFor,NgIf,DatePipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit{
 
-  intervention: Intervention[] = [];
-  historiques : UserHist[] = [];
+  intervention: InterventionDto[] = [];
+  historiques : UserHistoriqueDto[] = [];
   nomService : string  | null = null;
   nomDepartement : string  | null = null;
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
   interventionCount: number = 0;
   lastInterventionDate: string | null = null;
 
@@ -34,7 +32,7 @@ export class ProfileComponent implements OnInit{
     private userHistService: UserHistService,
     private authService: AuthService,
     private interventionService: InterventionService,
-    private serviceDService: ServiceDService,
+    private userService: UserService
   )
     {}
 
@@ -50,30 +48,25 @@ export class ProfileComponent implements OnInit{
     }
   }
 
-  logout(): void {
-    this.authService.logout();
-    // Optionnel : Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = '/login'; // Remplacez '/login' par le chemin vers votre page de connexion
-  }
 
   CountReclamation(): void {
     if (this.currentUser) {
-      this.serviceDService.getServiceByTechnicienId(this.currentUser.id).subscribe(
-        service => {
-          this.nomService = service.nom
-          this.nomDepartement = service.departement.nom
+      this.userService.getTechniciensById(this.currentUser.id).subscribe(
+        technicien => {
+          this.nomService = technicien.service!.nom
+          this.nomDepartement = technicien.service!.departement.nom
         },(error) =>{
           console.error('departement does not exist');
         }
       );
 
-      this.interventionService.getInterventionsByTechnicienId(this.currentUser.id).subscribe( intervention =>
-        {
+      this.interventionService.getInterventionsByTechnicienId(this.currentUser.id).subscribe(
+        intervention =>{
           this.interventionCount = intervention.length;
           if (intervention.length > 0) {
             // Tri des réclamations par date de création décroissante
-            intervention.sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
-            this.lastInterventionDate = intervention[0].created_at; // Date de la dernière réclamation
+            intervention.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+            this.lastInterventionDate = intervention[0].createdAt; // Date de la dernière réclamation
           }
         });
     }
@@ -83,8 +76,8 @@ export class ProfileComponent implements OnInit{
     this.userHistService.getByUserHistId(user_id).subscribe(
       data => {
         this.historiques = data.sort((a, b) => {
-          const dateA = new Date(a.created_at!).getTime();
-          const dateB = new Date(b.created_at!).getTime();
+          const dateA = new Date(a.createdAt!).getTime();
+          const dateB = new Date(b.createdAt!).getTime();
           return dateB - dateA; // Trie par ordre décroissant
         });
       },

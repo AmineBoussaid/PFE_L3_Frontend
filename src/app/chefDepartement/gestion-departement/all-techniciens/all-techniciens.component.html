@@ -1,10 +1,11 @@
 
+
   <!-- Container Start -->
   <div class="container">
 
     <div class="row">
       <div class="col">
-        <h2>Services</h2>
+        <h2>Techniciens</h2>
       </div>
       <div class="col">
         2 of 2
@@ -63,20 +64,20 @@
                   <div class="card-body m-0 p-0">
                     <div class="card-title fs-4 m-0">{{ technicien.username }}</div>
                     <div class="card-text fs-6 m-0">{{ technicien.email }}</div>
-                    <div class="card-text fs-6 m-0">{{ technicien.role }}</div>
+                    <div class="card-text fs-6 m-0">{{ technicien.description }}</div>
                   </div>
                 </div>
               </div>
 
               <ul class="list-group list-group-flush m-0 p-0">
                 <li class="list-group-item fs-6 m-0 ">{{ technicien.description }}</li>
-                <li class="list-group-item fs-6 m-0 ">{{ technicien.serviceName }}</li>
+                <li class="list-group-item fs-6 m-0 ">{{ technicien.service?.nom }}</li>
               </ul>
 
               <div class="card-body text-end m-0 p-1">
                 <button class="col-3 btn btn-link p-0" (click)="goToIntervention(technicien)">Intervenir</button>
                 <button class="col-3 btn btn-link p-0">Calendrier</button>
-                <button class="col-6 btn btn-link p-0" (click)="deleteTS(technicien.userId, serivce_id) ">Liberer</button>
+                <button class="col-6 btn btn-link p-0" (click)="deleteTS(technicien.id, service_id) ">Liberer</button>
 
               </div>
             </div>

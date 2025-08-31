@@ -70,10 +70,10 @@
                     <h5 class="card-title">Informations de connexion</h5>
                     <div class="row p-2">
                       <div class="col">
-                        <span class="fw-bold">Date de création :</span> {{ currentUser?.created_at | date: 'yyyy-MM-dd' }}
+                        <span class="fw-bold">Date de création :</span> {{ currentUser?.createdAt | date: 'yyyy-MM-dd' }}
                       </div>
                       <div class="col">
-                        <span class="fw-bold">Dernière connexion :</span> {{ currentUser?.last_login | date: 'yyyy-MM-dd HH:mm:ss' }}
+                        <span class="fw-bold">Dernière connexion :</span> {{ currentUser?.lastLogin | date: 'yyyy-MM-dd HH:mm:ss' }}
                       </div>
                     </div>
                   </li>
@@ -113,7 +113,7 @@
                   <tr *ngFor="let history of historiques">
                     <td class="ps-5">{{ history.action }}</td>
                     <td class="ps-5">{{ history.details }}</td>
-                    <td class="pe-5">{{ history.created_at | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td class="pe-5">{{ history.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                   </tr>
                 </tbody>
               </table>

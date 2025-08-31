@@ -1,11 +1,11 @@
-import { ServiceDService } from './../../services/service_d.service';
-import { UserService } from './../../services/user.service';
+import { ServiceDService } from '../../../services/service_d.service';
+import { UserService } from '../../../services/user.service';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { TechnicienDto, User } from '../../models';
+import { TechnicienDto, UserDto } from '../../../models';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InterventionService } from '../../services/intervention.service';
-import { AuthService } from '../../services/auth.service';
+import { InterventionService } from '../../../services/intervention.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-all-techniciens',
@@ -28,7 +28,7 @@ export class AllTechniciensComponent implements OnInit{
   Math: any = Math;
 
 
-  currentUser: User | null = null;
+  currentUser: UserDto | null = null;
 
 
   constructor(
@@ -82,7 +82,7 @@ export class AllTechniciensComponent implements OnInit{
 
         return (!this.searchText ||
                 technicien.username?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                technicien.serviceName?.toLowerCase().includes(this.searchText.toLowerCase()));
+                technicien.service?.nom?.toLowerCase().includes(this.searchText.toLowerCase()));
               });
       this.setPage(this.currentPage);
       this.updatePagination();

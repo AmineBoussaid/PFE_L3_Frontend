@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Intervention, User } from '../../models';
+import { InterventionDto, UserDto } from '../../models';
 import { ActivatedRoute } from '@angular/router';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, NgIf } from '@angular/common';
@@ -16,8 +16,8 @@ import { HeaderComponent } from '../../menu/header/header.component';
 })
 export class InterventionComponent implements OnInit {
 
-  intervention: Intervention = new Intervention();
-  currentUser: User | null = null;
+  intervention: InterventionDto = new InterventionDto();
+  currentUser: UserDto | null = null;
 
 
   constructor(
@@ -60,6 +60,7 @@ export class InterventionComponent implements OnInit {
     this.intervention.status = "Terminer";
     this.interventionService.updateIntervention(this.intervention,user_id).subscribe(
       response => {
+        if(response)
         this.intervention = response;
         console.log('Reclamation updated', response);
       });

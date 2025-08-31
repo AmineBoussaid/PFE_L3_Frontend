@@ -29,7 +29,7 @@
               </div>
             </div>
 
-            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention(this.currentUser!.id) : addIntervention(this.currentUser!.id)" #reclamationForm="ngForm">
+            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention() : addIntervention()" #reclamationForm="ngForm">
               <!-- Etape 1 : Code de Réclamation -->
               <div *ngIf="currentStep === 1">
                 <div class="col-md-12" *ngIf="editMode">
@@ -78,12 +78,12 @@
                 </div>
                 <div class="col-md-12 was-validated" *ngIf="selectedOption === 'option1'">
                   <label for="serviceSelect" class="form-label">Techniciens Disponible</label>
-                  <select class="form-select form-select-sm" name="Technicien" [(ngModel)]="newIntervention.technicien!.id" required>
+                  <select class="form-select form-select-sm" name="Technicien" [(ngModel)]="technicien.id" required>
                     <option value=""></option>
-                    <option *ngIf="technicienParam" [value]="technicienParam.userId">
+                    <option *ngIf="technicienParam" [value]="technicienParam.id">
                       {{ technicienParam.username }}  {{ technicienParam.description }}
                     </option>
-                    <option *ngFor="let technicien of techniciens" [value]="technicien.userId">
+                    <option *ngFor="let technicien of techniciens" [value]="technicien.id">
                       {{ technicien.username }} : {{ technicien.description }}
                     </option>
                   </select>
@@ -94,14 +94,14 @@
                   <label for="inputAddress" class="form-label">Chef Equipe</label>
                   <select class="form-select form-select-sm" name="ChefEquipe" [(ngModel)]="equipe.chefEquipe.id" (change)="onChefEquipeChange($event)" required>
                     <option value=""></option>
-                    <option *ngFor="let technicien of techniciens" [value]="technicien.userId">
+                    <option *ngFor="let technicien of techniciens" [value]="technicien.id">
                       {{ technicien.username }} : {{ technicien.description }}
                     </option>
                   </select>
                   <label for="inputAddress" class="form-label">Techniciens</label>
                   <select *ngIf="filteredTechniciens.length != techniciens.length " class="form-select form-select-sm" name="Technicien" (change)="addTechnicien($event)" required>
                     <option value=""></option>
-                    <option *ngFor="let technicien of filteredTechniciens" [value]="technicien.userId">
+                    <option *ngFor="let technicien of filteredTechniciens" [value]="technicien.id">
                       {{ technicien.username }} : {{ technicien.description }}
                     </option>
                   </select>
