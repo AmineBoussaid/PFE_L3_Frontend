@@ -11,7 +11,7 @@ import { NgFor, NgIf } from '@angular/common';
   selector: 'app-all-equipes',
   standalone: true,
   imports: [NgFor,NgIf],
-  templateUrl: './all-equipes.component.html',
+  templateUrl: '../../../share/gestion-service//all-equipes/all-equipes.component.html',
   styleUrl: './all-equipes.component.css'
 })
 export class AllEquipesComponent {
@@ -70,10 +70,6 @@ export class AllEquipesComponent {
     getEquipes():void{
       this.filteredEquipes = this.equipes;
       this.setPage(this.currentPage);
-    }
-
-
-    deleteTS(technicien_id: number, service_id: number): void {
     }
 
 

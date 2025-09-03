@@ -1,0 +1,15 @@
+.status-default {
+  background-color: inherit; /* Couleur par défaut, héritée du parent */
+}
+
+.status-en-cours {
+  background-color: rgba(255, 255, 0, 0.753);
+}
+
+.status-terminee {
+  background-color: rgba(0, 182, 0, 0.753);
+}
+
+.status-annulee {
+  background-color: rgba(255, 0, 0, 0.753);
+}

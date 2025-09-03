@@ -78,3 +78,25 @@ body{
 /*****************************************************************************************************************/
 
 
+.step-indicator {
+  font-weight: bold;
+}
+
+.step {
+  padding: 15px;
+  border-radius: 50%;
+  text-align: center;
+  width: 70px;
+  height: 70px;
+  line-height: 20px;
+}
+
+.active-step {
+  background-color: #007bff; /* Couleur de l'étape actuelle */
+  color: white;
+}
+
+.inactive-step {
+  background-color: #ccc; /* Couleur des étapes inactives */
+  color: #333;
+}

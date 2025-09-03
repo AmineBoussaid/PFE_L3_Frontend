@@ -1,19 +1,17 @@
 import { Component } from '@angular/core';
 import { InterventionDto, UserDto } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
 import { ServiceDService } from '../../services/service_d.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
-  templateUrl: './services.component.html',
+  imports: [NgFor,NgIf,DatePipe,NgClass],
+  templateUrl: '../../share/services/services.component.html',
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
@@ -65,11 +63,14 @@ export class ServicesComponent {
   }
 
 
-  deleteById(id: number,user_id:number): void {
-    this.interventionService.deleteById(id,user_id).subscribe(() => {
-      this.interventions = this.interventions.filter(intervention => intervention.id !== id);
-      this.filterInterventions();
-    });
+  AnnulerIntervention(intervention: InterventionDto, user_id:number): void {
+    intervention.status = 'Annulee'
+    this.interventionService.updateIntervention(intervention,user_id).subscribe(
+      response => {
+        if(response)
+        console.log('intervention Annulee', response);
+      });
+    this.filterInterventions();
   }
 
   filterInterventions(): void {

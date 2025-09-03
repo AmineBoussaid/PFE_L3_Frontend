@@ -11,7 +11,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-all-techniciens',
   standalone: true,
   imports: [NgFor,NgIf],
-  templateUrl: './all-techniciens.component.html',
+  templateUrl: '../../../share/gestion-service/all-techniciens/all-techniciens.component.html',
   styleUrl: './all-techniciens.component.css'
 })
 export class AllTechniciensComponent implements OnInit{
@@ -73,9 +73,6 @@ export class AllTechniciensComponent implements OnInit{
     }
 
 
-    deleteTS(technicien_id: number, service_id: number): void {
-    }
-
 
     filterTechniciens(): void {
       this.filteredTechniciens = this.techniciens.filter(technicien => {
@@ -110,7 +107,16 @@ export class AllTechniciensComponent implements OnInit{
     goToIntervention(technicien: TechnicienDto): void {
       if (technicien) {
         const technicienJson = JSON.stringify(technicien);
-        this.router.navigate(['chefService/intervention'], { queryParams: { technicien: technicienJson } });
+        this.router.navigate(['/chefService/intervention'], { queryParams: { technicien: technicienJson } });
+      } else {
+        alert('technicien is null');
+      }
+    }
+
+    goToCalendrier(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefService/calendrier'], { queryParams: { technicienId: technicienIdJson } });
       } else {
         alert('technicien is null');
       }

@@ -51,7 +51,7 @@ export class TechnicienDto {
   username!: string | null;
   email!: string | null;
   description!: string | null;
-  service !: ServiceDto | null;
+  service!: ServiceDto;
 
 
 // Parameterless constructor
@@ -62,7 +62,7 @@ export class TechnicienDto {
     this.id = userId ?? 0;
     this.username = username ?? null;
     this.email = email ?? null;
-    this.service = service ?? null;
+    this.service = service ?? new ServiceDto();
     this.description = description ?? null;
 
   }

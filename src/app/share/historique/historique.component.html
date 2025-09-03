@@ -1,21 +1,15 @@
 
     <!--  Container Star -->
-    <div class="container my-4">
+    <div class="container">
 
-      <div class="row">
-        <div class="col">
-          <h2>Historique</h2>
-        </div>
-        <div class="col">
-          2 of 2
-        </div>
+      <div class="row mt-3 mb-3">
+
+      <div class="card-header bg-primary rounded text-white shadow">
+        <h2 class="p-1 m-2">Historique de l'utilisateur</h2>
       </div>
 
-      <div class="container my-4">
+      <div class="col-12 shadow p-0 py-1 bg-body-tertiary rounded ">
         <div class="card" style="min-height: 500px;">
-          <div class="card-header bg-primary text-white">
-            <h5 class="p-1">Historique de l'utilisateur</h5>
-          </div>
           <div style="max-height: 500px; overflow-y: auto;">
             <table class="table table-striped-columns">
               <tbody>
@@ -30,7 +24,7 @@
           <div *ngIf="historiques.length === 0" class="text-center p-5 fs-4">Votre historique s'affiche ici.</div>
         </div>
       </div>
-
+    </div>
 
 
       <div class="row">

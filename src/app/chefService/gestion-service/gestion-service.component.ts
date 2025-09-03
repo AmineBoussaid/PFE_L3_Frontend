@@ -4,14 +4,14 @@ import { ServiceDService } from './../../services/service_d.service';
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { EquipeDto, ServiceDto, TechnicienDto, UserDto } from '../../models';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 
 @Component({
   selector: 'app-gestion-service',
   standalone: true,
-  imports: [NgFor,RouterLink],
+  imports: [NgFor,NgIf,RouterLink],
   templateUrl: './gestion-service.component.html',
   styleUrl: './gestion-service.component.css'
 })
@@ -42,7 +42,7 @@ export class GestionServiceComponent implements OnInit {
 
       this.serviceDService.getServicesByChefService(this.currentUser.id).subscribe(
         data => {
-          this.service.id = data.id;
+          this.service = data;
           this.TechniciensByServiceId(this.service.id);
           this.EquipesByServiceId(this.service.id)
       })

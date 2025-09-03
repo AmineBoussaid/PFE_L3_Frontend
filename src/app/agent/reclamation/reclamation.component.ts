@@ -10,8 +10,6 @@ import { listCategories, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-reclamation',

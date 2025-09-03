@@ -1,0 +1,92 @@
+
+  <!-- Container Start -->
+  <div class="container">
+
+  <div class="row mt-3 mb-3">
+
+    <div class="card-header bg-primary rounded text-white shadow">
+      <h2 class="p-1 m-2">Dashboard</h2>
+    </div>
+
+    <div class="col-12 shadow p-2 bg-body-tertiary rounded ">
+
+      <div class="row mb-2 ">
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body ">
+              <div class="badge text-bg-primary ">Total Intervention</div>
+              <div class="fs-2">{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-secondary ">En Attente</div>
+              <div class="fs-2">{{ enAttente }}/{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 ">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-warning text-center ">En Cours</div>
+              <div class="fs-2">{{ enCours }}/{{ totalIntervnetions  }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-success ">Terminées</div>
+              <div class="fs-2">{{ terminees }}/{{ totalIntervnetions }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="badge text-bg-primary "></div>
+              <div class="fs-2"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+    <!-- Statistiques par quartier -->
+    <div class="row mb-2">
+      <div class="col-4">
+        <div class="card" style="height: 100%">
+          <div class="card-body " >
+            <canvas id="QuartierChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-8">
+        <div class="card"style="height: 100%">
+          <div class="card-body">
+            <select id="yearSelect" class="form-select-sm" (change)="onYearChange($event)">
+              <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+            <canvas id="MonthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  </div>
+</div>
+  <!-- Container End -->

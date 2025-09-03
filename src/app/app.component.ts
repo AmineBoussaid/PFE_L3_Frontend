@@ -3,10 +3,11 @@ import { AuthService } from './services/auth.service';
 
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { SidebarComponent } from './menu/sidebar/sidebar.component';
-import { HeaderComponent } from './menu/header/header.component';
+
 import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { HeaderComponent } from './share/menu/header/header.component';
+import { SidebarComponent } from './share/menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',

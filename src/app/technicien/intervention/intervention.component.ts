@@ -4,13 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [DatePipe,NgIf,HeaderComponent,SidebarComponent],
+  imports: [DatePipe,NgIf],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -62,7 +60,7 @@ export class InterventionComponent implements OnInit {
       response => {
         if(response)
         this.intervention = response;
-        console.log('Reclamation updated', response);
+        console.log('intervention updated', response);
       });
   }
 

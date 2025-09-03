@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { InterventionService } from '../../services/intervention.service';
-import { InterventionDto, UserDto } from '../../models';
+import { InterventionDto, ServiceDto, UserDto } from '../../models';
 import { NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor,HeaderComponent,SidebarComponent],
+  imports: [NgFor],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -21,24 +20,30 @@ export class DashboardComponent implements OnInit{
   enAttente: number = 0;
   enCours: number = 0;
   terminees: number = 0;
+  annulees: number = 0;
   years: number[] = [];
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
 
   currentUser: UserDto | null = null;
-  service_id!: number
-
+  service!: ServiceDto | null;
 
   constructor(private interventionService: InterventionService,
-    private authService: AuthService
-  )
-              {
-                Chart.register(...registerables);
-              }
+    private authService: AuthService,
+    private userService: UserService,
+  ){}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
+      this.userService.getTechniciensById(this.currentUser.id).subscribe(
+        technicien => {
+          if(!this.service){
+            this.service = new ServiceDto();
+          }
+          this.service = technicien.service
+        }
+      );
       this.getYears();
       this.getIntervnetion(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
@@ -85,6 +90,8 @@ export class DashboardComponent implements OnInit{
     this.enAttente = this.intervnetions.filter(r => r.status === 'En attente').length;
     this.enCours = this.intervnetions.filter(r => r.status === 'En cours').length;
     this.terminees = this.intervnetions.filter(r => r.status === 'Terminer').length;
+    this.annulees = this.intervnetions.filter(r => r.status === 'Annulee').length;
+
   }
 
   getQuartierData() {

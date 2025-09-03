@@ -4,7 +4,7 @@ import { AgentRoutes } from './agent/agent.routes';
 import { ChefDepartementRoutes } from './chefDepartement/chefDepartement.routes';
 import { ChefServiceRoutes } from './chefService/chef-service.routes'
 import { TechnicienRoutes } from './technicien/technicien.routes';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './share/login/login.component';
 import { AuthGuard, ProfileGuard } from './app.guard';
 
 

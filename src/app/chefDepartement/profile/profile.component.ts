@@ -6,13 +6,11 @@ import { InterventionDto, UserDto, UserHistoriqueDto } from '../../models';
 import { UserHistService } from '../../services/user-hist.service';
 import { AuthService } from '../../services/auth.service';
 import { InterventionService } from '../../services/intervention.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
+  imports: [NgFor,NgIf,DatePipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

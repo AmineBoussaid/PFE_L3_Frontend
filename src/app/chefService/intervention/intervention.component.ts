@@ -7,14 +7,12 @@ import { ReclamationService } from '../../services/reclamation.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 import { EquipeService } from '../../services/equipe.service';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent,NgClass],
+  imports: [NgFor,FormsModule,NgIf,NgClass],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -43,8 +41,7 @@ export class InterventionComponent implements OnInit {
     private reclamationService : ReclamationService,
     private userService : UserService,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private equipeService: EquipeService)
+    private authService: AuthService)
     {}
 
 

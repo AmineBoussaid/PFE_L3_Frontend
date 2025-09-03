@@ -4,8 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { UserHistService } from '../../services/user-hist.service';
 import { ReclamationDto, UserDto, UserHistoriqueDto } from '../../models';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-profile',

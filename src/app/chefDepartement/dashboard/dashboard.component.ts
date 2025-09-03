@@ -1,36 +1,42 @@
 import { Component, OnInit } from '@angular/core';
-import { InterventionDto, UserDto } from '../../models';
+import { InterventionDto, ServiceDto, UserDto } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { Chart, registerables } from 'chart.js';
-import { NgFor } from '@angular/common';
+import { NgClass, NgFor } from '@angular/common';
 import { DepartementService } from '../../services/departement.service';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+import { ServiceDService } from '../../services/service_d.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor,HeaderComponent,SidebarComponent],
+  imports: [NgFor,NgClass],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit{
 
-  intervnetions: InterventionDto[] = [];
+  interventions: InterventionDto[] = [];
+  interventionsByService: InterventionDto[] = []; // Liste des interventions filtrées par service
   totalIntervnetions: number = 0;
   enAttente: number = 0;
   enCours: number = 0;
   terminees: number = 0;
+  annulees: number = 0;
   years: number[] = [];
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
+  quartierChart: any;
+  selectedServiceId!: number ; // Variable pour stocker l'ID du service sélectionné
 
   currentUser: UserDto | null = null;
+  services: ServiceDto[] = [];
 
 
   constructor(private interventionService: InterventionService,
               private departementService: DepartementService,
+              private serviceDService: ServiceDService,
+
               private authService: AuthService)
               {
                 Chart.register(...registerables);
@@ -39,6 +45,7 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
       if (this.currentUser) {
+        this.getServices(this.currentUser!.id);
         this.getYears();
         this.getIntervnetion(this.currentUser!.id);
         console.log('Current User:', this.currentUser);
@@ -52,12 +59,44 @@ export class DashboardComponent implements OnInit{
   getIntervnetion(user_id : number): void {
     this.departementService.getByChefDepartement(user_id).subscribe(departement => {
       this.interventionService.getInterventionsByDepartementId(departement.id).subscribe(reponse => {
-        this.intervnetions = reponse;
-      this.calculateStatistics();
-      this.renderCharts();
-    })
-  });
-}
+        this.interventions = reponse;
+        this.filterInterventionsByService(); // Appliquer le filtrage lors du chargement initial
+      })
+    });
+  }
+
+  getServices(user_id: number): void {
+    this.departementService.getByChefDepartement(user_id).subscribe(departement => {
+      this.serviceDService.getServicesByDepartementId(departement.id).subscribe(
+        data => {
+          this.services = data;
+          if (this.services.length > 0) {
+            this.selectedServiceId = this.services[0].id; // Sélectionner le premier service par défaut
+          }
+        });
+    });
+  }
+
+  filterInterventionsByService(): void {
+    // Filtrer les interventions par service sélectionné
+    if (this.selectedServiceId) {
+      this.interventionsByService = this.interventions.filter(intervention =>
+        intervention.service && intervention.service.id === this.selectedServiceId
+      );
+    } else {
+      this.interventionsByService = this.interventions;
+    }
+    this.calculateStatistics(); // Recalculer les statistiques après le filtrage
+    this.updateChart();
+    this.renderCharts(); // Recalculer les graphiques après le filtrage
+  }
+
+  onServiceChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.selectedServiceId = parseInt(target.value);;
+    this.filterInterventionsByService();
+  }
+
   getYears(): void {
     const currentYear = new Date().getFullYear();
     this.years.push(currentYear);
@@ -77,17 +116,18 @@ export class DashboardComponent implements OnInit{
   }
 
   calculateStatistics(): void {
-    this.totalIntervnetions = this.intervnetions.length;
-    this.enAttente = this.intervnetions.filter(r => r.status === 'En attente').length;
-    this.enCours = this.intervnetions.filter(r => r.status === 'En cours').length;
-    this.terminees = this.intervnetions.filter(r => r.status === 'Terminer').length;
+    this.totalIntervnetions = this.interventionsByService.length;
+    this.enAttente = this.interventionsByService.filter(r => r.status === 'En attente').length;
+    this.enCours = this.interventionsByService.filter(r => r.status === 'En cours').length;
+    this.terminees = this.interventionsByService.filter(r => r.status === 'Terminer').length;
+    this.annulees = this.interventionsByService.filter(r => r.status === 'Annulee').length;
   }
 
   getQuartierData() {
     const QuartierMap = new Map<string, number>();
-    this.intervnetions.forEach(Intervnetion => {
-      if (Intervnetion.reclamation.quartier) {
-        const quartier = Intervnetion.reclamation.quartier;
+    this.interventionsByService.forEach(intervention => {
+      if (intervention.reclamation.quartier) {
+        const quartier = intervention.reclamation.quartier;
         QuartierMap.set(quartier, (QuartierMap.get(quartier) || 0) + 1);
       }
     });
@@ -107,9 +147,9 @@ export class DashboardComponent implements OnInit{
       ['juil.', 0], ['août', 0], ['sept.', 0], ['oct.', 0], ['nov.', 0], ['déc.', 0]
     ]);
 
-    this.intervnetions.forEach(Intervnetion => {
-      if (Intervnetion.createdAt) {
-        const date = new Date(Intervnetion.createdAt);
+    this.interventionsByService.forEach(intervention => {
+      if (intervention.createdAt) {
+        const date = new Date(intervention.createdAt);
         const year = date.getFullYear();
         if (year === this.selectedYear) {
           const month = date.toLocaleString('fr-FR', { month: 'short' });
@@ -128,107 +168,115 @@ export class DashboardComponent implements OnInit{
 
   updateChart(): void {
     const monthlyData = this.getMonthlyData();
+    const quartierData = this.getQuartierData();
     if (this.monthlyChart) {
       this.monthlyChart.data.datasets[0].data = Object.values(monthlyData);
-      this.monthlyChart.data.datasets[0].label = `Réclamations par Mois (${this.selectedYear})`;
+      this.monthlyChart.data.datasets[0].label = `Interventions par Mois (${this.selectedYear})`;
       this.monthlyChart.update();
+    }
+    if (this.quartierChart) {
+      this.quartierChart.data.datasets[0].data = Object.values(quartierData);
+      this.quartierChart.data.labels = Object.keys(quartierData);
+      this.quartierChart.update();
     }
   }
 
+  renderCharts() {
+    const QuartierData = this.getQuartierData();
+    const monthlyData = this.getMonthlyData();
 
-
-renderCharts() {
-  const QuartierData = this.getQuartierData();
-  const monthlyData = this.getMonthlyData();
-
-  const ctxQuartier = (document.getElementById('QuartierChart') as HTMLCanvasElement)?.getContext('2d');
-  if (ctxQuartier) {
-    new Chart(ctxQuartier, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(QuartierData),
-        datasets: [{
-          label: 'intervnetions',
-          data: Object.values(QuartierData),
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'intervnetions by Quartier'
-          },
-          tooltip: {
-            callbacks: {
-              label: (tooltipItem) => {
-                return `${tooltipItem.label}: ${tooltipItem.raw}`;
+    const ctxQuartier = (document.getElementById('QuartierChart') as HTMLCanvasElement)?.getContext('2d');
+    if (ctxQuartier) {
+      this.quartierChart = new Chart(ctxQuartier, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(QuartierData),
+          datasets: [{
+            label: 'interventions',
+            data: Object.values(QuartierData),
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: 'Interventions par Quartier'
+            },
+            tooltip: {
+              callbacks: {
+                label: (tooltipItem) => {
+                  return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                }
               }
             }
-          }
-        },
-        cutout: '5%'
-      }
-    });
-  }
-
-  const ctxMonthly = (document.getElementById('MonthlyChart') as HTMLCanvasElement)?.getContext('2d');
-  if (ctxMonthly) {
-    this.monthlyChart = new Chart(ctxMonthly, {
-      type: 'line',
-      data: {
-        labels: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
-        datasets: [{
-          label: `Intervention par Mois (${this.selectedYear})`,
-          data: Object.values(monthlyData),
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
           },
-          title: {
-            display: true,
-            text: 'Diagramme des Interventions '
-          }
+          cutout: '5%'
+        }
+      });
+    }
+
+    const ctxMonthly = (document.getElementById('MonthlyChart') as HTMLCanvasElement)?.getContext('2d');
+    if (ctxMonthly) {
+      this.monthlyChart = new Chart(ctxMonthly, {
+        type: 'line',
+        data: {
+          labels: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+          datasets: [{
+            label: `Interventions par Mois (${this.selectedYear})`,
+            data: Object.values(monthlyData),
+            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            fill: true,
+            tension: 0.3
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true
+            },
+            tooltip: {
+              callbacks: {
+                label: (tooltipItem) => {
+                  return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true
+            },
+            y: {
+              beginAtZero: true
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
-
-}
-
 
 }
 

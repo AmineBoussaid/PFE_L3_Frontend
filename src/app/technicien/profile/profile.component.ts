@@ -1,12 +1,10 @@
 import { UserService } from './../../services/user.service';
-import { DepartementDto } from './../../models';
 import { Component, OnInit } from '@angular/core';
 import { UserHistService } from '../../services/user-hist.service';
 import { AuthService } from '../../services/auth.service';
-import { InterventionDto, ServiceDto, UserDto, UserHistoriqueDto } from '../../models';
+import { InterventionDto, UserDto, UserHistoriqueDto } from '../../models';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
-import { ServiceDService } from '../../services/service_d.service';
 
 @Component({
   selector: 'app-profile',

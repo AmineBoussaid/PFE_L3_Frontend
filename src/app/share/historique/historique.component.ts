@@ -3,13 +3,11 @@ import { UserDto, UserHistoriqueDto } from '../../models';
 import { UserHistService } from '../../services/user-hist.service';
 import { formatDate, NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-historique',
   standalone: true,
-  imports: [NgFor,NgIf,HeaderComponent,SidebarComponent],
+  imports: [NgFor,NgIf],
   templateUrl: './historique.component.html',
   styleUrl: './historique.component.css'
 })
@@ -26,13 +24,14 @@ export class HistoriqueComponent  implements OnInit{
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-      if (this.currentUser) {
-        this.getByUserId(this.currentUser!.id);
-        console.log('Current User:', this.currentUser);
 
-      } else {
-        console.log('No user is currently logged in.');
-      }
+    if (this.currentUser) {
+      this.getByUserId(this.currentUser!.id);
+      console.log('Current User:', this.currentUser);
+
+    } else {
+      console.log('No user is currently logged in.');
+    }
 
   }
 

@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ServicesComponent } from './services/services.component';
 import { InterventionComponent } from './intervention/intervention.component';
-import { HistoriqueComponent } from './historique/historique.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CalendarComponent } from '../share/calendar/calendar.component';
+import { HistoriqueComponent } from '../share/historique/historique.component';
 
 export const TechnicienRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -13,7 +13,7 @@ export const TechnicienRoutes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'historique', component: HistoriqueComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'cal', component: CalendarComponent },
+  { path: 'calendrier', component: CalendarComponent },
 
   { path: '', redirectTo: 'services', pathMatch: 'full' } // Redirection par défaut vers le dashboard
 

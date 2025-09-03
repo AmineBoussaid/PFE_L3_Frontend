@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HistoriqueComponent } from './historique/historique.component';
 import { ServicesComponent } from './services/services.component';
 import { ReclamationComponent } from './reclamation/reclamation.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
+import { HistoriqueComponent } from '../share/historique/historique.component';
 
 export const AgentRoutes: Routes = [
 

@@ -1,28 +1,21 @@
 
 
-
   <!-- Container Star -->
     <div class="container">
 
-        <div class="row mt-2">
-          <div class="col">
-            <h2>Formulaire Réclamation</h2>
-          </div>
-
-          <div class="col">
-            <button type="button" class="btn btn-outline-primary m-1" (click)="enterAddMode()">Nouveau</button>
-            <button type="button" class="btn btn-outline-secondary m-1" (click)="enterEditMode()">Modifier</button>
-          </div>
-
-        </div>
-
         <div class="row">
           <div class="col">
-            1 of 3
           </div>
 
-          <div class="col col-lg-5 shadow p-2 m-2 bg-body-tertiary rounded">
-            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateReclamation(this.currentUser!.id) : addReclamation(this.currentUser!.id)" #reclamationForm="ngForm">
+          <div class="col-8 shadow-sm px-2 m-2 bg-body-tertiary rounded">
+
+            <div class="row mb-2">
+              <div class="card-header bg-primary rounded text-white shadow-sm">
+                <h2 class="p-1 m-2">Formulaire Intervention</h2>
+              </div>
+            </div>
+
+            <form class="row g-2 py-3 px-5 mb-2" (ngSubmit)="editMode ? updateReclamation(this.currentUser!.id) : addReclamation(this.currentUser!.id)" #reclamationForm="ngForm">
 
               <div class="col-md-12" *ngIf="editMode">
 
@@ -156,25 +149,17 @@
                 <button type="reset" class="btn btn-outline-danger">Annuler</button>
               </div>
 
-              <div class="d-grid gap-2 col-9 mx-auto">
+              <div class="d-grid gap-2 col-5 mx-auto">
                 <button *ngIf="!editMode" type="submit" class="btn btn-outline-primary">Envoyer</button>
                 <button *ngIf="editMode" [disabled]="!reclamationExist" type="submit" class="btn btn-outline-primary">Modifier</button>
               </div>
             </form>
+
           </div>
 
           <div class="col">
-            3 of 3
           </div>
         </div>
 
-        <div class="row ">
-          <div class="col">
-            1 of 2
-          </div>
-          <div class="col">
-            2 of 2
-          </div>
-        </div>
     </div>
      <!-- Container End -->

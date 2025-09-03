@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserDto } from '../../models';
 import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
+import { UserDto } from '../../../models';
 
 @Component({
   selector: 'app-sidebar',

@@ -2,18 +2,17 @@ import { DepartementService } from './../../services/departement.service';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { ReclamationDto, UserDto } from '../../models';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
+
 
 @Component({
-  selector: 'app-reclamation',
+  selector: 'app-reclamationShare',
   standalone: true,
-  imports: [NgFor,NgIf,HeaderComponent,SidebarComponent],
-  templateUrl: './reclamation.component.html',
+  imports: [NgFor,NgIf,NgClass],
+  templateUrl: '../../share/reclamation/reclamation.component.html',
   styleUrl: './reclamation.component.css'
 })
 export class ReclamationComponent implements OnInit{

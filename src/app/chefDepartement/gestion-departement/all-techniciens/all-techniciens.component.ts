@@ -2,16 +2,13 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TechnicienDto, UserDto } from '../../../models';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ServiceDService } from '../../../services/service_d.service';
-import { UserService } from '../../../services/user.service';
-import { InterventionService } from '../../../services/intervention.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-all-techniciens',
   standalone: true,
   imports: [NgFor,NgIf],
-  templateUrl: './all-techniciens.component.html',
+  templateUrl: '../../../share/gestion-service/all-techniciens/all-techniciens.component.html',
   styleUrl: './all-techniciens.component.css'
 })
 export class AllTechniciensComponent implements OnInit{
@@ -106,7 +103,16 @@ export class AllTechniciensComponent implements OnInit{
     goToIntervention(technicien: TechnicienDto): void {
       if (technicien) {
         const technicienJson = JSON.stringify(technicien);
-        this.router.navigate(['chefDepartement/intervention'], { queryParams: { technicien: technicienJson } });
+        this.router.navigate(['/chefDepartement/intervention'], { queryParams: { technicien: technicienJson } });
+      } else {
+        alert('technicien is null');
+      }
+    }
+
+    goToCalendrier(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefDepartement/calendrier'], { queryParams: { technicienId: technicienIdJson } });
       } else {
         alert('technicien is null');
       }

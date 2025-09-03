@@ -1,4 +1,5 @@
 
+
     <!--  Container Star -->
     <div class="container">
 
@@ -10,8 +11,15 @@
 
         <div class="col-12 shadow p-2 bg-body-tertiary rounded ">
 
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckAgent" (change)="onUserCheckChange($event)">
+            <label class="form-check-label" for="flexCheckAgent">
+              Mes Intervention
+            </label>
+          </div>
+
           <div class="input-group input-group-sm mb-2 p-2">
-            <label class="input-group-text" for="dateFilter">Date Debut</label>
+            <label class="input-group-text" for="dateFilter">Date Creation</label>
             <input type="date" class="form-control" id="dateFilter" (change)="onDateChange($event)">
 
             <label class="input-group-text" for="statusFilter">Status</label>
@@ -27,7 +35,6 @@
           </div>
 
           <div style="min-height: 400px;">
-
             <table class="table table-striped table-hover table-bordered"  *ngIf="paginatedInterventions.length > 0">
               <thead class="thead-light">
                 <tr>
@@ -41,7 +48,6 @@
                   <th scope="col">Status</th>
                 </tr>
               </thead>
-
               <tbody>
                 <tr *ngFor="let intervention of paginatedInterventions; let i = index">
                   <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
@@ -61,24 +67,32 @@
                 </td>
                   <td>
                     <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(intervention)">Détails</button>
+
                     <!-- Example single danger button -->
                     <div class="btn-group">
                       <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                       </button>
+
                       <ul class="dropdown-menu">
                         <li *ngIf="intervention.status !== 'Terminee' && intervention.status !== 'Annulee'">
-                          <button class="dropdown-item" type="button" (click)="goToIntervention(intervention)">Intervenir</button>
+                            <button class="dropdown-item" type="button" (click)="goToIntervention(intervention.reclamation.idFonctionnel)">
+                                Modifier
+                            </button>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><button class="dropdown-item" type="button">Repport</button></li>
-                      </ul>
+                        <li *ngIf="intervention.status !== 'Terminee' && intervention.status !== 'Annulee'">
+                            <button class="dropdown-item" type="button" (click)="AnnulerIntervention(intervention, this.currentUser!.id)">
+                                Annuler Intervention
+                            </button>
+                        </li>
+                        <li *ngIf="intervention.status !== 'Terminee' && intervention.status !== 'Annulee'"><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" href="#">Rapport</button></li>
+                    </ul>
                     </div>
-                  </td>
 
+                  </td>
                 </tr>
               </tbody>
             </table>
-
             <div *ngIf="paginatedInterventions.length === 0" class="text-center p-5">Aucune intervention trouvée.</div>
           </div>
 
@@ -114,4 +128,3 @@
 
     </div>
     <!--  Container End -->
-

@@ -3,12 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReclamationComponent } from './reclamation/reclamation.component';
 import { ServicesComponent } from './services/services.component';
-import { HistoriqueComponent } from './historique/historique.component';
 import { InterventionComponent } from './intervention/intervention.component';
 import { ProfileComponent } from './profile/profile.component';
 import { GestionDepartementComponent } from './gestion-departement/gestion-departement.component';
 import { AllTechniciensComponent } from './gestion-departement/all-techniciens/all-techniciens.component';
 import { AllEquipesComponent } from './gestion-departement/all-equipes/all-equipes.component';
+import { CalendarComponent } from '../share/calendar/calendar.component';
+import { HistoriqueComponent } from '../share/historique/historique.component';
 
 export const ChefDepartementRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -20,6 +21,7 @@ export const ChefDepartementRoutes: Routes = [
   { path: 'gestion-departement',component: GestionDepartementComponent },
   { path: 'gestion-departement/all-techniciens',component: AllTechniciensComponent },
   { path: 'gestion-departement/all-equipes',component: AllEquipesComponent},
+  { path: 'calendrier', component: CalendarComponent },
 
 
   { path: '', redirectTo: 'services', pathMatch: 'full' } // Redirection par défaut vers le dashboard

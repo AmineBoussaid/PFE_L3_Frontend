@@ -5,13 +5,11 @@ import { AuthService } from '../../services/auth.service';
 import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
 import { ServiceDService } from '../../services/service_d.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe,HeaderComponent,SidebarComponent],
+  imports: [NgFor,NgIf,DatePipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -52,7 +50,7 @@ export class ProfileComponent implements OnInit{
         service => {
           this.service = service
         },(error) =>{
-          console.error('departement does not exist');
+          console.error('service does not exist');
         }
       );
 

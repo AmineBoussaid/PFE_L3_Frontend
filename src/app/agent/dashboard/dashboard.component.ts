@@ -4,8 +4,7 @@ import { ReclamationDto, UserDto } from '../../models';
 import Chart, { registerables } from 'chart.js/auto';
 import { NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -20,6 +19,7 @@ export class DashboardComponent implements OnInit {
   enAttente: number = 0;
   enCours: number = 0;
   terminees: number = 0;
+  annulees: number = 0;
   years: number[] = [];
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
@@ -76,6 +76,8 @@ export class DashboardComponent implements OnInit {
     this.enAttente = this.reclamations.filter(r => r.status === 'En attente').length;
     this.enCours = this.reclamations.filter(r => r.status === 'En cours').length;
     this.terminees = this.reclamations.filter(r => r.status === 'Terminer').length;
+    this.annulees = this.reclamations.filter(r => r.status === 'Annulee').length;
+
   }
 
   getQuartierData() {

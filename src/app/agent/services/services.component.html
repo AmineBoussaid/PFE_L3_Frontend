@@ -2,16 +2,13 @@
     <!--  Container Star -->
     <div class="container">
 
-        <div class="row">
-          <div class="col">
-            <h2>SERVICES</h2>
-          </div>
-          <div class="col">
-            2 of 2
-          </div>
-        </div>
 
         <div class="row mt-3 mb-3">
+
+          <div class="card-header bg-primary rounded text-white shadow">
+            <h2 class="p-1 m-2">Services</h2>
+          </div>
+
           <div class="col-12 shadow p-2 bg-body-tertiary rounded ">
 
             <div class="form-check mb-3">
@@ -31,6 +28,7 @@
                 <option value="En attente">En attente</option>
                 <option value="En cours">En cours</option>
                 <option value="Terminee">Terminee</option>
+                <option value="Annulee">Annulee</option>
               </select>
 
               <input type="text" class="form-control" placeholder="Rechercher" aria-label="Rechercher" aria-describedby="button-addon2" (input)="onSearchChange($event)">
@@ -43,10 +41,10 @@
                   <tr>
                     <th scope="col">N</th>
                     <th scope="col">Date Creation</th>
-                    <th scope="col">idFonctionnel</th>
-                    <th scope="col">nomClient</th>
+                    <th scope="col">N°Reclamation</th>
+                    <th scope="col">Category</th>
                     <th scope="col">Addresse</th>
-                    <th scope="col">status</th>
+                    <th scope="col">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -54,18 +52,30 @@
                     <th scope="row">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</th>
                     <td>{{ reclamation.createdAt }}</td>
                     <td>{{ reclamation.idFonctionnel }}</td>
-                    <td>{{ reclamation.nomClient }}</td>
-                    <td>{{ reclamation.ville }}  {{ reclamation.quartier }}  {{ reclamation.nomRue }} </td>
-                    <td>{{ reclamation.status }}</td>
+                    <td>{{ reclamation.category }}</td>
+                    <td>{{ reclamation.ville }} {{ reclamation.quartier }} {{ reclamation.nomRue }}</td>
+                    <td [ngClass]="{
+                      'status-default': reclamation.status === 'En attente',
+                      'status-en-cours': reclamation.status === 'En cours',
+                      'status-terminee': reclamation.status === 'Terminee',
+                      'status-annulee': reclamation.status === 'Annulee'
+                  }">
+                    {{ reclamation.status }}
+                  </td>
                     <td>
-                      <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(reclamation)">Voir</button>
+                      <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(reclamation)">Details</button>
 
                       <div class="btn-group">
                         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         </button>
 
                         <ul class="dropdown-menu">
-                          <li><button class="dropdown-item" type="button" (click)="goToReclamation(reclamation.idFonctionnel)" >Modifier Reclamation</button></li>
+                          <li *ngIf="reclamation.status !== 'En cours' && reclamation.status !== 'Terminee' && reclamation.status !== 'Annulee'">
+                            <button class="dropdown-item" type="button" (click)="goToReclamation(reclamation.idFonctionnel)" >Modifier Reclamation</button>
+                          </li>
+                          <li *ngIf="reclamation.status !== 'En cours' && reclamation.status !== 'Terminee' && reclamation.status !== 'Annulee'">
+                            <button class="dropdown-item" type="button" >Annuler Reclamation</button>
+                          </li>
                           <li><hr class="dropdown-divider"></li>
                           <li><button class="dropdown-item" type="button">Repport</button></li>
                         </ul>
@@ -97,15 +107,6 @@
             </nav>
           </div>
 
-        </div>
-
-        <div class="row">
-          <div class="col">
-            1 of 2
-          </div>
-          <div class="col">
-            2 of 2
-          </div>
         </div>
 
      </div>

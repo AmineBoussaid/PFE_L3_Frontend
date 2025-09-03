@@ -2,16 +2,14 @@ import { ServiceDService } from './../../services/service_d.service';
 import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
-import { InterventionDto, UserDto } from '../../models';
+import { InterventionDto, ServiceDto, UserDto } from '../../models';
 import { Chart, registerables } from 'chart.js';
 import { AuthService } from '../../services/auth.service';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
-import { HeaderComponent } from '../../menu/header/header.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgFor,HeaderComponent,SidebarComponent],
+  imports: [NgFor],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -24,13 +22,15 @@ export class DashboardComponent implements OnInit{
   enAttente: number = 0;
   enCours: number = 0;
   terminees: number = 0;
+  annulees: number = 0;
   years: number[] = [];
   selectedYear: number = new Date().getFullYear() ;
   monthlyChart: any;
 
   /*******************/
   currentUser: UserDto | null = null;
-  service_id!: number
+  service : ServiceDto = new ServiceDto();
+
 
 
   constructor(private interventionService: InterventionService,
@@ -44,7 +44,13 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
-
+      this.serviceDService.getServicesByChefService(this.currentUser.id).subscribe(
+        service => {
+          this.service = service
+        },(error) =>{
+          console.error('service does not exist');
+        }
+      );
       this.getYears();
       this.getIntervnetion(this.currentUser!.id);
 
@@ -55,9 +61,6 @@ export class DashboardComponent implements OnInit{
     }
 
   }
-
-
-
 
   getIntervnetion(user_id : number): void {
     this.serviceDService.getServicesByChefService(user_id).subscribe(service => {
@@ -92,6 +95,7 @@ export class DashboardComponent implements OnInit{
     this.enAttente = this.intervnetions.filter(r => r.status === 'En attente').length;
     this.enCours = this.intervnetions.filter(r => r.status === 'En cours').length;
     this.terminees = this.intervnetions.filter(r => r.status === 'Terminer').length;
+    this.annulees = this.intervnetions.filter(r => r.status === 'Annulee').length;
   }
 
   getQuartierData() {
@@ -145,7 +149,6 @@ export class DashboardComponent implements OnInit{
       this.monthlyChart.update();
     }
   }
-
 
 
 renderCharts() {

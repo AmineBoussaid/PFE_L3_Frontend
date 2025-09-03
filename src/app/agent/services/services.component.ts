@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { ReclamationDto, UserDto } from '../../models';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { jsPDF } from 'jspdf';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf],
+  imports: [NgFor,NgIf,NgClass],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })

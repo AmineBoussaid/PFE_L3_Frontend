@@ -7,7 +7,9 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import { InterventionService } from './../../services/intervention.service';
-import { InterventionDto } from '../../models';
+import { InterventionDto, UserDto } from '../../models';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -32,11 +34,36 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     events: [] // Initialiser comme tableau vide
   };
 
-  constructor(private interventionService: InterventionService) {}
+  id:number = 0;
+
+  constructor(
+    private interventionService: InterventionService,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    // Appel du service pour récupérer les interventions
-    this.interventionService.getInterventionsByTechnicienId(17).subscribe(
+
+    this.route.queryParams.subscribe(params => {
+      if(params["technicienId"]){
+        this.id = params["technicienId"]
+        console.log(params["technicienId"])
+
+        this.getIntervention(this.id)
+      }
+    })
+    if(this.id == 0){
+      let currentUser!: UserDto | null
+      currentUser = this.authService.getCurrentUser();
+      console.log(currentUser)
+
+      this.getIntervention(currentUser!.id)
+    }
+  }
+
+
+  getIntervention(id:number){
+    this.interventionService.getInterventionsByTechnicienId(id).subscribe(
       (data: InterventionDto[]) => {
         this.populateEvents(data); // Mettez à jour les événements après avoir récupéré les données
       },
@@ -65,7 +92,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
             title: `${interv.reclamation.ville} ${interv.reclamation.quartier} ${interv.reclamation.nomRue}` || 'No Title',
             start: start,
             end: end,
-            backgroundColor: interv.technicien ? '' : '#FF9103', // Appliquer la couleur selon la condition
+            backgroundColor: interv.status === "Terminee" ? 'green' : (interv.technicien ? '' : '#FF9103'), // Vert si terminé, sinon appliquer la couleur orange selon la condition
             borderColor: 'black',
             extendedProps: {
               technicien: interv.technicien ? `${interv.technicien.username} ${interv.technicien.description}` : 'Aucun technicien',

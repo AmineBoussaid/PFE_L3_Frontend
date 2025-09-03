@@ -3,8 +3,7 @@ import { UserHistService } from './../../services/user-hist.service';
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, formatDate, NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
+
 
 @Component({
   selector: 'app-historique',

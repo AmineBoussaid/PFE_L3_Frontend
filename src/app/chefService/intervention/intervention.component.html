@@ -2,142 +2,139 @@
       <!-- Container Star -->
       <div class="container">
 
-        <div class="row mt-2">
+        <div class="row mt-3 mb-3">
           <div class="col">
-            <h2>Formulaire Intervention</h2>
+            <!-- Colonne vide ou autre contenu -->
           </div>
 
-          <div class="col">
-            <button type="button" class="btn btn-outline-primary m-1" (click)="enterAddMode()">Nouveau</button>
-            <button type="button" class="btn btn-outline-secondary m-1" (click)="enterEditMode()">Modifier</button>
-          </div>
+          <div class="col-8 shadow px-2 m-2 bg-body-tertiary rounded">
 
-        </div>
-
-        <div class="row">
-          <div class="col">
-            1 of 3
-          </div>
-
-          <div class="col col-lg-5 shadow p-2 m-2 bg-body-tertiary rounded ">
-              <!-- Indicateur des étapes -->
-            <div class="step-indicator d-flex justify-content-between mb-4">
-              <div *ngFor="let step of [1, 2, 3, 4]; let i = index"
-                  [ngClass]="{'active-step': currentStep === step, 'inactive-step': currentStep !== step}"
-                  class="step">
-                Etape {{ step }}
+            <div class="row mb-4">
+              <div class="card-header bg-primary rounded text-white shadow">
+                <h2 class="p-1 m-2">Formulaire Intervention</h2>
               </div>
             </div>
 
-            <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention() : addIntervention()" #reclamationForm="ngForm">
-              <!-- Etape 1 : Code de Réclamation -->
-              <div *ngIf="currentStep === 1">
-                <div class="col-md-12" *ngIf="editMode">
-                  <label for="inputAddress" class="form-label">Intervention</label>
-                  <input type="text" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Intervention"
-                         [(ngModel)]="newIntervention.reclamation.idFonctionnel" (ngModelChange)="verifyIntervention($event)" required disabled>
-                  <div *ngIf="!reclamationExist" class="text-danger">Intervention n'existe pas</div>
-                </div>
-                <div class="col-md-12" *ngIf="!editMode">
-                  <label for="inputAddress" class="form-label">Reclamation</label>
-                  <input type="text" id="disabledTextInput" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Reclamation"
-                         [(ngModel)]="newIntervention.reclamation.idFonctionnel" (ngModelChange)="verifyReclamation($event)" required disabled>
-                  <div *ngIf="!reclamationExist" class="text-danger">Reclamation n'existe pas</div>
+              <div class="row p-2">
+                <!-- Indicateur des étapes -->
+              <div class="step-indicator d-flex justify-content-between mb-4">
+                <div *ngFor="let step of [1, 2, 3, 4]; let i = index"
+                    [ngClass]="{'active-step': currentStep === step, 'inactive-step': currentStep !== step}"
+                    class="step">
+                  Etape {{ step }}
                 </div>
               </div>
 
-              <!-- Etape 2 : Titre, Date de Début, et Date de Fin -->
-              <div *ngIf="currentStep === 2">
-                <div class="col-md-12">
-                  <label for="inputAddress" class="form-label">Titre</label>
-                  <input type="text" class="form-control form-control-sm" name="Titre" placeholder="Titre" [(ngModel)]="newIntervention.titre" required>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="inputAddress" class="form-label">Date de Début</label>
-                    <input type="datetime-local" class="form-control form-control-sm" name="dateDebut" [(ngModel)]="newIntervention.dateDebut" required>
+              <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention() : addIntervention()" #reclamationForm="ngForm">
+                <!-- Etape 1 : Code de Réclamation -->
+                <div *ngIf="currentStep === 1">
+                  <div class="col-md-12" *ngIf="editMode">
+                    <label for="inputAddress" class="form-label">Intervention</label>
+                    <input type="text" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Intervention"
+                          [(ngModel)]="newIntervention.reclamation.idFonctionnel" (ngModelChange)="verifyIntervention($event)" required disabled>
+                    <div *ngIf="!reclamationExist" class="text-danger">Intervention n'existe pas</div>
                   </div>
-                  <div class="col-md-6">
-                    <label for="inputAddress" class="form-label">Date de Fin Estimée</label>
-                    <input type="datetime-local" class="form-control form-control-sm" name="dateFin" [(ngModel)]="newIntervention.dateFin" required>
+                  <div class="col-md-12" *ngIf="!editMode">
+                    <label for="inputAddress" class="form-label">Reclamation</label>
+                    <input type="text" id="disabledTextInput" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Reclamation"
+                          [(ngModel)]="newIntervention.reclamation.idFonctionnel" (ngModelChange)="verifyReclamation($event)" required disabled>
+                    <div *ngIf="!reclamationExist" class="text-danger">Reclamation n'existe pas</div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Etape 3 : Choix Technicien ou Équipe -->
-              <div *ngIf="currentStep === 3">
-                <div class="row my-3 ms-5">
-                  <div class="form-check col-6">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="validationSuccess1" value="option1" [(ngModel)]="selectedOption" (change)="onOptionChange()">
-                    <label class="form-check-label " for="validationSuccess1">Technicien</label>
+                <!-- Etape 2 : Titre, Date de Début, et Date de Fin -->
+                <div *ngIf="currentStep === 2">
+                  <div class="col-md-12">
+                    <label for="inputAddress" class="form-label">Titre</label>
+                    <input type="text" class="form-control form-control-sm" name="Titre" placeholder="Titre" [(ngModel)]="newIntervention.titre" required>
                   </div>
-                  <div class="form-check col-6">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="validationSuccess2" value="option2" [(ngModel)]="selectedOption" (change)="onOptionChange()">
-                    <label class="form-check-label " for="validationSuccess2">Equipe</label>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="inputAddress" class="form-label">Date de Début</label>
+                      <input type="datetime-local" class="form-control form-control-sm" name="dateDebut" [(ngModel)]="newIntervention.dateDebut" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="inputAddress" class="form-label">Date de Fin Estimée</label>
+                      <input type="datetime-local" class="form-control form-control-sm" name="dateFin" [(ngModel)]="newIntervention.dateFin" required>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-12 was-validated" *ngIf="selectedOption === 'option1'">
-                  <label for="serviceSelect" class="form-label">Techniciens Disponible</label>
-                  <select class="form-select form-select-sm" name="Technicien" [(ngModel)]="technicien.id" required>
-                    <option value=""></option>
-                    <option *ngIf="technicienParam" [value]="technicienParam.id">
-                      {{ technicienParam.username }}  {{ technicienParam.description }}
-                    </option>
-                    <option *ngFor="let technicien of techniciens" [value]="technicien.id">
-                      {{ technicien.username }} : {{ technicien.description }}
-                    </option>
-                  </select>
+
+                <!-- Etape 3 : Choix Technicien ou Équipe -->
+                <div *ngIf="currentStep === 3">
+                  <div class="row my-3 ms-5">
+                    <div class="form-check col-6">
+                      <input class="form-check-input" type="radio" name="exampleRadios" id="validationSuccess1" value="option1" [(ngModel)]="selectedOption" (change)="onOptionChange()">
+                      <label class="form-check-label " for="validationSuccess1">Technicien</label>
+                    </div>
+                    <div class="form-check col-6">
+                      <input class="form-check-input" type="radio" name="exampleRadios" id="validationSuccess2" value="option2" [(ngModel)]="selectedOption" (change)="onOptionChange()">
+                      <label class="form-check-label " for="validationSuccess2">Equipe</label>
+                    </div>
+                  </div>
+                  <div class="col-md-12 was-validated" *ngIf="selectedOption === 'option1'">
+                    <label for="serviceSelect" class="form-label">Techniciens Disponible</label>
+                    <select class="form-select form-select-sm" name="Technicien" [(ngModel)]="technicien.id" required>
+                      <option value=""></option>
+                      <option *ngIf="technicienParam" [value]="technicienParam.id">
+                        {{ technicienParam.username }}  {{ technicienParam.description }}
+                      </option>
+                      <option *ngFor="let technicien of techniciens" [value]="technicien.id">
+                        {{ technicien.username }} : {{ technicien.description }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-md-12 was-validated" *ngIf="selectedOption === 'option2'">
+                    <label for="inputAddress" class="form-label">Nom Equipe</label>
+                    <input type="text" class="form-control form-control-sm" name="NomEquipe" placeholder="Nom Equipe" [(ngModel)]="equipe.nom" required>
+                    <label for="inputAddress" class="form-label">Chef Equipe</label>
+                    <select class="form-select form-select-sm" name="ChefEquipe" [(ngModel)]="equipe.chefEquipe.id" (change)="onChefEquipeChange($event)" required>
+                      <option value=""></option>
+                      <option *ngFor="let technicien of techniciens" [value]="technicien.id">
+                        {{ technicien.username }} : {{ technicien.description }}
+                      </option>
+                    </select>
+                    <label for="inputAddress" class="form-label">Techniciens</label>
+                    <select *ngIf="filteredTechniciens.length != techniciens.length " class="form-select form-select-sm" name="Technicien" (change)="addTechnicien($event)" required>
+                      <option value=""></option>
+                      <option *ngFor="let technicien of filteredTechniciens" [value]="technicien.id">
+                        {{ technicien.username }} : {{ technicien.description }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
-                <div class="col-md-12 was-validated" *ngIf="selectedOption === 'option2'">
-                  <label for="inputAddress" class="form-label">Nom Equipe</label>
-                  <input type="text" class="form-control form-control-sm" name="NomEquipe" placeholder="Nom Equipe" [(ngModel)]="equipe.nom" required>
-                  <label for="inputAddress" class="form-label">Chef Equipe</label>
-                  <select class="form-select form-select-sm" name="ChefEquipe" [(ngModel)]="equipe.chefEquipe.id" (change)="onChefEquipeChange($event)" required>
-                    <option value=""></option>
-                    <option *ngFor="let technicien of techniciens" [value]="technicien.id">
-                      {{ technicien.username }} : {{ technicien.description }}
-                    </option>
-                  </select>
-                  <label for="inputAddress" class="form-label">Techniciens</label>
-                  <select *ngIf="filteredTechniciens.length != techniciens.length " class="form-select form-select-sm" name="Technicien" (change)="addTechnicien($event)" required>
-                    <option value=""></option>
-                    <option *ngFor="let technicien of filteredTechniciens" [value]="technicien.id">
-                      {{ technicien.username }} : {{ technicien.description }}
-                    </option>
-                  </select>
+
+                <!-- Etape 4 : Description -->
+                <div *ngIf="currentStep === 4">
+                  <div class="input-group">
+                    <span class="input-group-text">Détail</span>
+                    <textarea type="text" class="form-control form-control-sm" rows="4" aria-label="With textarea" name="description"
+                              placeholder="Détail complémentaire de l'Intervention" [(ngModel)]="newIntervention.description" required></textarea>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Etape 4 : Description -->
-              <div *ngIf="currentStep === 4">
-                <div class="input-group">
-                  <span class="input-group-text">Détail</span>
-                  <textarea type="text" class="form-control form-control-sm" rows="4" aria-label="With textarea" name="description"
-                            placeholder="Détail complémentaire de l'Intervention" [(ngModel)]="newIntervention.description" required></textarea>
+                <!-- Boutons de navigation -->
+                <div class="d-flex justify-content-between mt-4">
+                  <button type="button" class="btn btn-outline-secondary" *ngIf="currentStep > 1" (click)="previousStep()">Précédent</button>
+                  <button type="button" class="btn btn-outline-primary" *ngIf="currentStep < 4" (click)="nextStep()" [disabled]="!canProceedToNextStep()">Suivant</button>
+                  <button type="submit" class="btn btn-outline-primary" *ngIf="currentStep === 4" [disabled]="!reclamationExist">Envoyer</button>
                 </div>
-              </div>
 
-              <!-- Boutons de navigation -->
-              <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-outline-secondary" *ngIf="currentStep > 1" (click)="previousStep()">Précédent</button>
-                <button type="button" class="btn btn-outline-primary" *ngIf="currentStep < 4" (click)="nextStep()" [disabled]="!canProceedToNextStep()">Suivant</button>
-                <button type="submit" class="btn btn-outline-primary" *ngIf="currentStep === 4" [disabled]="!reclamationExist">Envoyer</button>
-              </div>
+                <!-- Bouton Annuler -->
+                <div class="d-grid gap-2 col-3 mx-auto mt-3">
+                  <button type="reset" class="btn btn-outline-danger" (click)="resetSelection()">Annuler</button>
+                </div>
 
-              <!-- Bouton Annuler -->
-              <div class="d-grid gap-2 col-3 mx-auto mt-3">
-                <button type="reset" class="btn btn-outline-danger" (click)="resetSelection()">Annuler</button>
-              </div>
+              </form>
+            </div>
 
-            </form>
           </div>
 
 
-
-          <div class="col p-5" style="height: min-content;">
-            <div *ngIf="selectedTechniciens.length > 0 && selectedOption === 'option2'" class="selected-technicians mt-3 shadow" >
-              <div class="bg-body-tertiary p-2">
-                <label for="selectedTechniciens" class="form-label">Techniciens sélectionnés :</label>
+          <div class="col m-1 p-0" style="height: min-content;">
+            <div *ngIf="selectedTechniciens.length > 0 && selectedOption === 'option2'" class="selected-technicians mt-3 shadow" style="width: 250px;">
+              <div class="bg-body-tertiary p-0 rounded">
+                <h5 for="selectedTechniciens" class="form-label bg-primary text-white p-2">Techniciens sélectionnés :</h5>
                 <ul class="list-group p-2 ">
                   <li class="list-group-item shadow-sm m-1" *ngFor="let technicien of selectedTechniciens">
                     {{ technicien.username }}
@@ -147,17 +144,6 @@
               </div>
             </div>
           </div>
-
         </div>
-
-        <div class="row ">
-          <div class="col">
-            1 of 2
-          </div>
-          <div class="col">
-            2 of 2
-          </div>
-        </div>
-
       </div>
     <!-- Container End -->

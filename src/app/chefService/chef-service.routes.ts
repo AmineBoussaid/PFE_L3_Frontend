@@ -3,12 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { ServicesComponent } from './services/services.component';
 import { ReclamationComponent } from './reclamation/reclamation.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HistoriqueComponent } from './historique/historique.component';
 import { InterventionComponent } from './intervention/intervention.component';
 import { ProfileComponent } from './profile/profile.component';
 import { GestionServiceComponent } from './gestion-service/gestion-service.component';
 import { AllTechniciensComponent } from './gestion-service/all-techniciens/all-techniciens.component';
 import { AllEquipesComponent } from './gestion-service/all-equipes/all-equipes.component';
+import { CalendarComponent } from '../share/calendar/calendar.component';
+import { HistoriqueComponent } from '../share/historique/historique.component';
 
 export const ChefServiceRoutes: Routes = [
 
@@ -21,6 +22,8 @@ export const ChefServiceRoutes: Routes = [
   { path: 'gestion-service',component: GestionServiceComponent },
   { path: 'gestion-service/all-techniciens',component: AllTechniciensComponent },
   { path: 'gestion-service/all-equipes',component: AllEquipesComponent },
+  { path: 'calendrier', component: CalendarComponent },
+
 
 
   { path: '', redirectTo: 'services', pathMatch: 'full' }

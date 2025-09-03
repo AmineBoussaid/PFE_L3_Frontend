@@ -9,14 +9,12 @@ import { ReclamationService } from '../../services/reclamation.service';
 import { DepartementService } from '../../services/departement.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../../menu/header/header.component';
-import { SidebarComponent } from '../../menu/sidebar/sidebar.component';
 import { EquipeService } from '../../services/equipe.service';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf,HeaderComponent,SidebarComponent,NgClass],
+  imports: [NgFor,FormsModule,NgIf,NgClass],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
