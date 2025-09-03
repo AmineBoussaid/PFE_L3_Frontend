@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
 import jsPDF from 'jspdf';
 import { DepartementService } from '../../services/departement.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class ServicesComponent {
   searchStatus: string = '';
   searchText: string = '';
   filterByUserId: boolean = false;
-
+  searchTechnicienId:number = 0;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -34,32 +34,49 @@ export class ServicesComponent {
   constructor(private interventionService: InterventionService,
               private departementService: DepartementService,
               private router: Router,
-              private authService: AuthService
+              private authService: AuthService,
+              private route: ActivatedRoute,
+
             ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
 
     if (this.currentUser) {
+      this.route.queryParams.subscribe(params => {
+        if (params['technicienId']) {
+          this.searchTechnicienId = Number(params['technicienId']); // Conversion en nombre
+        }
+
+      });
       this.getInterventions(this.currentUser!.id);
       console.log('Current user:', this.currentUser);
-
     } else {
       console.log('No user is currently logged in.');
     }
   }
 
 
-  getInterventions(user_id : number): void {
+  getInterventions(user_id: number): void {
     this.departementService.getByChefDepartement(user_id).subscribe(departement => {
       this.interventionService.getInterventionsByDepartementId(departement.id).subscribe(data => {
         this.interventions = data;
         this.filteredInterventions = data;
-        this.setPage(this.currentPage);
-    })
 
+        if (this.searchTechnicienId) {
+          this.filterInterventions();
+        }else{
+          this.searchTechnicienId = 0;
+
+        }
+        console.log(this.searchTechnicienId)
+
+        this.setPage(this.currentPage);
+      });
     });
   }
+
+
 
   AnnulerIntervention(intervention: InterventionDto, user_id:number): void {
     intervention.status = 'Annulee'
@@ -77,12 +94,15 @@ export class ServicesComponent {
              (!this.searchStatus || intervention.status === this.searchStatus) &&
              (!this.searchText || intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               intervention.reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-              (!this.filterByUserId || intervention.createur.id === this.currentUser!.id);
+             (!this.filterByUserId || intervention.createur.id === this.currentUser!.id) &&
+             (!this.searchTechnicienId || intervention.technicien?.id === this.searchTechnicienId ||  intervention.equipe?.chefEquipe.id === this.searchTechnicienId
+              || intervention.equipe?.techniciens?.find(t => t.id === this.searchTechnicienId));
+    });
 
-            });
     this.setPage(this.currentPage);
     this.updatePagination();
   }
+
 
   onDateChange(event: any): void {
     this.searchDate = event.target.value;

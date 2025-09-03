@@ -235,14 +235,15 @@ export class ClientDto {
   ville!: string | null;
   quartier!: string | null;
   nomRue!: string | null;
+  codePostal!: string | null;
 
   // Parameterless constructor
   constructor();
 
   // Constructor with parameters
   constructor(
-    id?: number, nomClient?: string, codeAbonnement?: string,
-    pays?: string, ville?: string, quartier?: string, nomRue?:string
+    id?: number, nomClient?: string, codeAbonnement?: string, pays?: string,
+    ville?: string, quartier?: string, nomRue?: string, codePostal?:string
   ) {
     this.id = id ?? 0;
     this.nomClient = nomClient ?? null;
@@ -251,6 +252,7 @@ export class ClientDto {
     this.ville = ville ?? null;
     this.quartier = quartier ?? null;
     this.nomRue = nomRue ?? null;
+    this.codePostal = codePostal ?? null;
   }
 
 }

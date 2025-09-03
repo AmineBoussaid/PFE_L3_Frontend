@@ -98,5 +98,4 @@ export class GestionServiceComponent implements OnInit {
     this.router.navigate(['/chefService/gestion-service/all-equipes'], { queryParams: { equipes: equipesJson }});
   }
 
-
 }

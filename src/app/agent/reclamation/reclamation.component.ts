@@ -1,12 +1,11 @@
 import { ClientService } from './../../services/client.service';
 import { ServiceDService } from './../../services/service_d.service';
-import { listPeriodes, listOccurrences, listQuartiers } from './../assets/utils/utils';
 import { ReclamationService } from './../../services/reclamation.service';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientDto, DepartementDto, ReclamationDto, ServiceDto, UserDto } from '../../models';
-import { listCategories, listSituations } from '../assets/utils/utils';
+import { listCategories, listOccurrences, listPeriodes, listQuartiers, listSituations } from '../assets/utils/utils';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -24,6 +23,7 @@ export class ReclamationComponent implements OnInit {
   newReclamation: ReclamationDto = new ReclamationDto();
   departements: DepartementDto[] = [];
   services: ServiceDto[] = [];
+  service: ServiceDto = new ServiceDto();
   client: ClientDto = new ClientDto();
 
   categories = listCategories;
@@ -79,43 +79,51 @@ export class ReclamationComponent implements OnInit {
 
    /****  Service Reclamation  ****/
 
-   addReclamation(user_id:number): void {
+   addReclamation(): void {
 
-    this.newReclamation.agent.id = user_id ;
+    if(!this.newReclamation.agent) {
+        this.newReclamation.agent = new UserDto();
+    }
+    this.newReclamation.agent!.id = this.currentUser!.id;
 
-    // Mise à jour de la description dans newReclamation
-    let newDescription = `nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
+    if(!this.newReclamation.service) {
+      this.newReclamation.service = new ServiceDto();
+    }
+    this.newReclamation.service.id = this.service.id;
 
-    Category: ${this.newReclamation.category},
-    Situation: ${this.newReclamation.situation},
-    Periode: ${this.newReclamation.periode},
-    Occurrence: ${this.newReclamation.occurrence},\n\n
+    if (this.selectedOption === 'option2') {
+      this.newReclamation.codeAbonnement = null;
+    } else {
+      this.newReclamation.codeAbonnement = this.codeAbonnement;
+    }
 
-    Detailles:\n${this.newReclamation.description}`;
-
-    this.newReclamation.description = newDescription;
-    this.reclamationService.addReclamation(this.newReclamation,user_id).subscribe(
+    this.reclamationService.addReclamation(this.newReclamation,this.currentUser!.id).subscribe(
       response => {
-        console.log('Reclamation added', response);
+        console.log('Reclamation added',  this.newReclamation);
       },
     );
   }
 
 
-  updateReclamation(user_id:number): void {
+  updateReclamation(): void {
 
-    let newDescription = `
-    nomClient: ${this.newReclamation.nomClient},\n Email: ${this.newReclamation.email},\n Telephone: ${this.newReclamation.telephone},\n Adresse: ${this.newReclamation.pays} ${this.newReclamation.ville} ${this.newReclamation.quartier} ${this.newReclamation.nomRue},\n\n
+    if(!this.newReclamation.agent) {
+      this.newReclamation.agent = new UserDto();
+    }
+    this.newReclamation.agent!.id = this.currentUser!.id;
 
-    Category: ${this.newReclamation.category},
-    Situation: ${this.newReclamation.situation},
-    Periode: ${this.newReclamation.periode},
-    Occurrence: ${this.newReclamation.occurrence},\n\n
+    if(!this.newReclamation.service) {
+      this.newReclamation.service = new ServiceDto();
+    }
+    this.newReclamation.service.id = this.service.id;
 
-    Detailles:\n${this.newReclamation.description}`;
-
-    this.newReclamation.description = newDescription;
-    this.reclamationService.updateReclamation(this.newReclamation,user_id).subscribe(
+    if (this.selectedOption === 'option2') {
+      this.newReclamation.codeAbonnement = null;
+    } else {
+      this.newReclamation.codeAbonnement = this.codeAbonnement;
+    }
+    this.newReclamation.description
+    this.reclamationService.updateReclamation(this.newReclamation,this.currentUser!.id).subscribe(
       response => {
         console.log('Reclamation updated', response);
       },
@@ -128,11 +136,13 @@ export class ReclamationComponent implements OnInit {
   verifyCode(codeAbonnement: string): void {
     this.clientService.getByCodeAbonnement(codeAbonnement).subscribe(
       (response) => {
-        this.client = response;
-        this.codeExist = true;
-        console.log(this.client);
-        // Optional: Open a new window or display a modal with client details
-        this.openClientDetailsWindow();
+        if(response.codeAbonnement != null){
+          this.client = response;
+          this.codeExist = true;
+          console.log(this.client);
+          // Optional: Open a new window or display a modal with client details
+          this.openClientDetailsWindow();
+        }
       },
       (error) => {
         console.error('Client does not exist', error);
@@ -145,7 +155,8 @@ export class ReclamationComponent implements OnInit {
     const clientDetails = `
       Nom: ${this.client.nomClient}\n
       Code Abonnement: ${this.client.codeAbonnement}\n
-      Adresse: ${this.client.pays} ${this.client.ville} ${this.client.quartier} ${this.client.nomRue}
+      Adresse: ${this.client.pays} ${this.client.ville} ${this.client.quartier} ${this.client.nomRue}\n
+      Code Postal: ${this.client.codePostal}
     `;
     window.alert(clientDetails); // Use a modal for better UI
   }
@@ -192,9 +203,11 @@ export class ReclamationComponent implements OnInit {
       if (this.selectedOption === 'option2') {
         this.newReclamation.pays = 'Maroc';
         this.newReclamation.ville = 'Fes';
+        this.newReclamation.codeAbonnement = null;
       } else {
         this.newReclamation.pays = null;
         this.newReclamation.ville = null;
+        this.newReclamation.codeAbonnement = this.codeAbonnement;
       }
     }
 

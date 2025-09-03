@@ -100,10 +100,11 @@ export class AllTechniciensComponent implements OnInit{
       this.paginatedTechniciens = this.filteredTechniciens.slice(startIndex, endIndex);
     }
 
-    goToIntervention(technicien: TechnicienDto): void {
-      if (technicien) {
-        const technicienJson = JSON.stringify(technicien);
-        this.router.navigate(['/chefDepartement/intervention'], { queryParams: { technicien: technicienJson } });
+
+    goToServices(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefDepartement/services'], { queryParams: { technicienId: technicienIdJson } });
       } else {
         alert('technicien is null');
       }

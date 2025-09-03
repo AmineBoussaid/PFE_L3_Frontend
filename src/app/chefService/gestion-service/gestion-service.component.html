@@ -9,7 +9,7 @@
           <h2 class="p-1 m-2">Gestion Service</h2>
         </div>
 
-        <div class="col-8 shadow-sm p-2 bg-body-tertiary rounded ">
+        <div class="col-9 shadow-sm p-2 bg-body-tertiary rounded ">
           <!-- Techniciens Section -->
           <div class="my-2 p-3 bg-body rounded shadow-sm">
             <h6 class="border-bottom pb-2 mb-0">Techniciens</h6>
@@ -70,7 +70,30 @@
 
         <div class="col shadow-sm ms-3 p-2 bg-body-tertiary rounded">
           <div class="my-2 p-3 bg-body rounded shadow-sm h-100">
-            <h4>{{service!.nom}} </h4>
+
+            <div class="row">
+              <h3 class=" pb-2 mb-0">{{service!.nom}} </h3>
+              <h5 class=" border-bottom pb-2 m-0 p-0 fs-6">Chef Service: {{service!.chefService.username}} </h5>
+            </div>
+
+            <div class="col m-0 p-0 ">
+              <ul class="list-group list-group-flush m-0 p-0">
+                <div class="col-md mt-4 m-0 p-0">
+                  <div class="card text-center m-0 p-3 shadow-sm" style="border-radius:50%; border-width: 2px;">
+                      <div class="badge text-bg-secondary fs-5 mt-4 mb-2 shadow-sm ">Total Techniciens</div>
+                      <h4 class="fs-1">{{this.techniciens.length}}</h4>
+                  </div>
+                </div>
+                <div class="col-md mt-4">
+                  <div class="card text-center m-0 p-3 shadow-sm" style="border-radius:50%; border-width: 2px;">
+                    <div class="badge text-bg-secondary fs-5 mt-4 mb-2 shadow-sm  ">Total Equipes</div>
+                      <h4 class="fs-1 ">{{this.equipes.length}}</h4>
+                  </div>
+                </div>
+              </ul>
+
+            </div>
+
           </div>
         </div>
 

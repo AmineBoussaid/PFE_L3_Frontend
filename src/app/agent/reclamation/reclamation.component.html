@@ -15,12 +15,12 @@
               </div>
             </div>
 
-            <form class="row g-2 py-3 px-5 mb-2" (ngSubmit)="editMode ? updateReclamation(this.currentUser!.id) : addReclamation(this.currentUser!.id)" #reclamationForm="ngForm">
+            <form class="row g-2 py-3 px-5 mb-2" (ngSubmit)="editMode ? updateReclamation() : addReclamation()" #reclamationForm="ngForm">
 
               <div class="col-md-12" *ngIf="editMode">
 
                 <label for="inputIdFonctionnel" class="form-label">ID Fonctionnel</label>
-                <input type="text" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Reclamation" [(ngModel)]="newReclamation.idFonctionnel"(ngModelChange)="verifyReclamation($event)" required>
+                <input type="text" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Reclamation" [(ngModel)]="newReclamation.idFonctionnel"(ngModelChange)="verifyReclamation($event)" required disabled>
                 <div *ngIf="!reclamationExist" class="text-danger">Reclamation n'existe pas</div>
 
               </div>
@@ -54,20 +54,13 @@
                 </label>
               </div>
 
-              <div class="col-12" *ngIf="selectedOption === 'option1'">
+              <div class="col-12 px-5" *ngIf="selectedOption === 'option1'">
                 <input type="text" class="form-control form-control-sm" name="codeAbonnement" placeholder="Code Abonnement" [(ngModel)]="codeAbonnement" (ngModelChange)="verifyCode($event)" required>
                 <div *ngIf="!codeExist" class="text-danger">Code d'abonnement invalide</div>
 
-                <div *ngIf="codeExist">
-                  <div class="row">
-
-
-
-                  </div>
-                </div>
               </div>
 
-              <div class="col-12" *ngIf="selectedOption === 'option2'">
+              <div class="col-12 px-5" *ngIf="selectedOption === 'option2'">
                 <input type="text" class="form-control form-control-sm mb-2" name="pays" placeholder="pays" [(ngModel)]="newReclamation.pays" required disabled>
                 <input type="text" class="form-control form-control-sm mb-2" name="ville" placeholder="ville" [(ngModel)]="newReclamation.ville" required disabled>
                 <select class="form-select form-select-sm mb-2" name="quartier" placeholder="quartier" [(ngModel)]="newReclamation.quartier" required>
@@ -132,7 +125,7 @@
 
               <div class="col-md-6">
                 <label for="serviceSelect" class="form-label">Service</label>
-                <select class="form-select form-select-sm" name="Service" [(ngModel)]="newReclamation.service.id" required>
+                <select class="form-select form-select-sm" name="Service" [(ngModel)]="this.service.id" required>
                   <option value=""></option>
                   <option *ngFor="let service of services" [value]="service.id">
                     {{ service.nom }}
@@ -150,8 +143,8 @@
               </div>
 
               <div class="d-grid gap-2 col-5 mx-auto">
-                <button *ngIf="!editMode" type="submit" class="btn btn-outline-primary">Envoyer</button>
-                <button *ngIf="editMode" [disabled]="!reclamationExist" type="submit" class="btn btn-outline-primary">Modifier</button>
+                <button *ngIf="!editMode" type="submit" class="btn btn-outline-primary" [disabled]="!reclamationForm.valid">Envoyer</button>
+                <button *ngIf="editMode" [disabled]="!reclamationExist || !reclamationForm.valid" type="submit" class="btn btn-outline-primary">Modifier</button>
               </div>
             </form>
 

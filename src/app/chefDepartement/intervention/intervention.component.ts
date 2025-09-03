@@ -33,6 +33,7 @@ export class InterventionComponent implements OnInit {
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
   selectedOption: string = '';
   technicien: UserDto = new UserDto()
+  minDate: string = '';
 
   departement_id!:number
   service_id!: number;
@@ -62,6 +63,8 @@ export class InterventionComponent implements OnInit {
           this.editMode = params['editMode'] === 'true'; // Convertit la chaîne en booléen
         }
       });
+    const now = new Date();
+    this.minDate = now.toISOString().slice(0, 16);
     this.getServicesByDepartementId(this.currentUser.id);
     this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel);
     this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel);

@@ -34,7 +34,15 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     events: [] // Initialiser comme tableau vide
   };
 
+  intervnetions:InterventionDto[]=[];
   id:number = 0;
+  totalIntervnetions: number = 0;
+  enCours: number = 0;
+  enCoursEquipe: number = 0;
+  enCoursSolo: number = 0;
+  terminees: number = 0;
+  annulees: number = 0;
+
 
   constructor(
     private interventionService: InterventionService,
@@ -65,13 +73,28 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   getIntervention(id:number){
     this.interventionService.getInterventionsByTechnicienId(id).subscribe(
       (data: InterventionDto[]) => {
+        this.intervnetions = data;
         this.populateEvents(data); // Mettez à jour les événements après avoir récupéré les données
+        this.calculateStatistics();
       },
       error => {
         console.error('Erreur lors du chargement des interventions', error);
       }
     );
   }
+
+  calculateStatistics(): void {
+    this.totalIntervnetions = this.intervnetions.length;
+
+    this.enCoursEquipe = this.intervnetions.filter(r => r.status === 'En cours' && r.equipe != null && r.technicien == null).length;
+
+    this.enCoursSolo = this.intervnetions.filter(r => r.status === 'En cours' && r.technicien != null && r.equipe == null).length;
+
+    this.terminees = this.intervnetions.filter(r => r.status === 'Terminer').length;
+
+    this.annulees = this.intervnetions.filter(r => r.status === 'Annulee').length;
+  }
+
 
   ngAfterViewInit() {
     // Assurez-vous que le calendrier est correctement initialisé

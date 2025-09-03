@@ -73,7 +73,8 @@ export class GestionDepartementComponent implements OnInit {
     this.selectedServiceId = serviceId; // Mettre à jour l'ID du service sélectionné
     this.equipeService.getEquipeByService(serviceId).subscribe(
       equipes => {
-        this.equipes = equipes;
+
+        this.equipes = equipes.filter(e => e.active == true);
         this.groupEquipes();
       }
     );

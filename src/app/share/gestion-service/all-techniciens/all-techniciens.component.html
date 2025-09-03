@@ -71,11 +71,10 @@
               </ul>
 
               <div class="card-body text-end m-0 p-1">
-                <button class="col-3 btn btn-link p-0" (click)="goToIntervention(technicien)">Intervenir</button>
-                <button class="col-3 btn btn-link p-0" (click)="goToCalendrier(technicien.id)"> Calendrier</button>
-                <button class="col-6 btn btn-link p-0 ">Liberer</button>
-
+                <button class="col-4 btn btn-link p-0" (click)="goToServices(technicien.id)">Interventions</button>
+                <button class="col-4 btn btn-link p-0" (click)="goToCalendrier(technicien.id)"> Calendrier</button>
               </div>
+
             </div>
           </div>
           <div *ngIf="paginatedTechniciens.length === 0" class="text-center p-5">Aucune technicien trouvée.</div>

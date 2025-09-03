@@ -31,8 +31,8 @@ export class AllEquipesComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService
-    )
+    private authService: AuthService,
+    private router: Router)
     {}
 
 
@@ -94,6 +94,24 @@ export class AllEquipesComponent {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
       this.paginatedEquipes = this.filteredEquipes.slice(startIndex, endIndex);
+    }
+
+    goToServices(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefDepartement/services'], { queryParams: { technicienId: technicienIdJson } });
+      } else {
+        alert('technicien is null');
+      }
+    }
+
+    goToCalendrier(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefDepartement/calendrier'], { queryParams: { technicienId: technicienIdJson } });
+      } else {
+        alert('technicien is null');
+      }
     }
 
 

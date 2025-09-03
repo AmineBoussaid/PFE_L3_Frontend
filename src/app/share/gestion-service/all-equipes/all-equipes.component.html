@@ -74,16 +74,17 @@
               </div>
 
               <ul class="list-group list-group-flush m-0 p-0">
-                <strong class="p-1">L'Equipe</strong>
+                <strong class="p-1">Infos</strong>
                 <li *ngFor="let technicien of equipe.techniciens" class="list-group-item fs-6 m-0">
-                  {{ technicien.username }}: {{ technicien.description }}
+                  <div><h6 class="m-0">{{ technicien.username }}</h6> {{ technicien.description }}</div>
                 </li>
               </ul>
 
               <div class="card-body text-end m-0 p-1">
-                <button class="col-3 btn btn-link p-0"></button>
-
+                <button class="col-4 btn btn-link p-0" (click)="goToServices(equipe.chefEquipe.id)">Interventions</button>
+                <button class="col-4 btn btn-link p-0" (click)="goToCalendrier(equipe.chefEquipe.id)"> Calendrier</button>
               </div>
+
             </div>
           </div>
           <div *ngIf="paginatedEquipes.length === 0" class="text-center p-5">Aucune technicien trouvée.</div>

@@ -103,5 +103,22 @@ export class AllEquipesComponent {
       this.paginatedEquipes = this.filteredEquipes.slice(startIndex, endIndex);
     }
 
+    goToServices(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefDepartement/services'], { queryParams: { technicienId: technicienIdJson } });
+      } else {
+        alert('technicien is null');
+      }
+    }
+    goToCalendrier(technicienId: number): void {
+      if (technicienId) {
+        const technicienIdJson = JSON.stringify(technicienId);
+        this.router.navigate(['/chefService/calendrier'], { queryParams: { technicienId: technicienIdJson } });
+      } else {
+        alert('technicien is null');
+      }
+    }
+
 
 }

@@ -4,7 +4,7 @@ import { InterventionService } from '../../services/intervention.service';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
 import { ServiceDService } from '../../services/service_d.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -25,6 +25,7 @@ export class ServicesComponent {
   searchText: string = '';
 
   filterByUserId: boolean = false;
+  searchTechnicienId:number = 0;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -37,13 +38,21 @@ export class ServicesComponent {
   constructor(private interventionService: InterventionService,
               private serviceDService: ServiceDService,
               private router: Router,
-              private authService: AuthService
+              private authService: AuthService,
+              private route: ActivatedRoute,
+
             ) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
 
     if (this.currentUser) {
+      this.route.queryParams.subscribe(params => {
+        if (params['technicienId']) {
+          this.searchTechnicienId = Number(params['technicienId']); // Conversion en nombre
+        }
+
+      });
       this.getInterventions(this.currentUser!.id);
       console.log('Current User:', this.currentUser);
 
@@ -57,6 +66,14 @@ export class ServicesComponent {
       this.interventionService.getInterventionsByServiceId(service.id).subscribe(data => {
         this.interventions = data;
         this.filteredInterventions = data;
+        if (this.searchTechnicienId) {
+          this.filterInterventions();
+        }else{
+          this.searchTechnicienId = 0;
+
+        }
+        console.log(this.searchTechnicienId)
+
         this.setPage(this.currentPage);
       });
     });
@@ -75,18 +92,19 @@ export class ServicesComponent {
 
   filterInterventions(): void {
     this.filteredInterventions = this.interventions.filter(intervention => {
-
       return (!this.searchDate || intervention.createdAt?.startsWith(this.searchDate)) &&
              (!this.searchStatus || intervention.status === this.searchStatus) &&
-             (!this.searchText ||
-              intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+             (!this.searchText || intervention.titre?.toLowerCase().includes(this.searchText.toLowerCase()) ||
               intervention.reclamation.idFonctionnel?.toLowerCase().includes(this.searchText.toLowerCase())) &&
-              (!this.filterByUserId || intervention.createur?.id === this.currentUser!.id);
+             (!this.filterByUserId || intervention.createur.id === this.currentUser!.id) &&
+             (!this.searchTechnicienId || intervention.technicien?.id === this.searchTechnicienId ||  intervention.equipe?.chefEquipe.id === this.searchTechnicienId
+              || intervention.equipe?.techniciens?.find(t => t.id === this.searchTechnicienId));
+    });
 
-            });
     this.setPage(this.currentPage);
     this.updatePagination();
   }
+
 
   onDateChange(event: any): void {
     this.searchDate = event.target.value;

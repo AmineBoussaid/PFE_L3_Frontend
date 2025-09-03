@@ -33,6 +33,7 @@ export class InterventionComponent implements OnInit {
   editMode: boolean = false; // Ajout de la variable d'état pour le mode édition
   selectedOption: string = '';
   technicien: TechnicienDto = new TechnicienDto()
+  minDate: string = '';
 
   currentUser!: UserDto | null;
 
@@ -68,6 +69,8 @@ export class InterventionComponent implements OnInit {
           }
         }
       });
+      const now = new Date();
+      this.minDate = now.toISOString().slice(0, 16);
       this.verifyReclamation(this.newIntervention.reclamation.idFonctionnel)
       this.verifyIntervention(this.newIntervention.reclamation.idFonctionnel)
     } else {

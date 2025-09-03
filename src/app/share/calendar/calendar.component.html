@@ -1,16 +1,57 @@
-<div class="container" style="width: 60%;">
+<div class="container" style="width: 122vh;">
 
   <div class="row mt-3 mb-3">
+    <div class="card-header bg-primary rounded text-white shadow-sm">
+      <h2 class="p-1 m-1">Calendrier</h2>
+    </div>
 
-      <div class="card-header bg-primary rounded text-white shadow-sm">
-        <h2 class="p-1 m-1">Calendrier</h2>
+    <div class="row m-0 shadow p-1 bg-body-tertiary rounded">
+      <full-calendar class="col-10 m-0 p-1 shadow-sm" #fullcalendar [options]="calendarOptions"></full-calendar>
+      <div class="col-2 m-0 p-0">
+            <ul class="list-group list-group-flush m-0 p-0">
+              <div class="col-md m-0 p-0">
+                <div class="card text-center">
+                  <div class="card-body p-0">
+                    <div class="badge text-bg-dark ">Total Interventions</div>
+                    <div class="fs-4">{{ totalIntervnetions }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md m-0 p-0">
+                <div class="card text-center">
+                  <div class="card-body p-0">
+                    <div class="badge text-bg-primary">En cours (Individuel)</div>
+                    <div class="fs-4">{{ enCoursSolo }}/{{ totalIntervnetions }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md m-0 p-0">
+                <div class="card text-center">
+                  <div class="card-body p-0">
+                    <div class="badge text-bg-warning ">En cours (Équipe)</div>
+                    <div class="fs-4">{{ enCoursEquipe }}/{{ totalIntervnetions }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md m-0 p-0">
+                <div class="card text-center">
+                  <div class="card-body p-0">
+                    <div class="badge text-bg-success ">Terminées</div>
+                    <div class="fs-4">{{ terminees }}/{{ totalIntervnetions }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md m-0 p-0">
+                <div class="card text-center">
+                  <div class="card-body p-0">
+                    <div class="badge text-bg-danger ">Annulees</div>
+                    <div class="fs-4">{{ annulees }}/{{ totalIntervnetions }}</div>
+                  </div>
+                </div>
+              </div>
+            </ul>
       </div>
-
-    <div class="col-12 shadow p-2 bg-body-tertiary rounded ">
-      <full-calendar #fullcalendar [options]="calendarOptions"></full-calendar>
+    </div>
   </div>
-
-</div>
-
 
 </div>
