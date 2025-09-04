@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { InterventionDto } from '../models';
+import { InterventionDto, InterventionHistoriqueDto } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 
 export class InterventionService {
   private apiUrl = 'http://localhost:8080/api/interventions';
+  private apiUrl_2 = 'http://localhost:8080/api/interventions-historique';
 
   constructor(private http: HttpClient) { }
 
@@ -51,6 +52,10 @@ export class InterventionService {
 
   getInterventionsByCreateurId(createurId: number): Observable<InterventionDto[]> {
     return this.http.get<InterventionDto[]>(`${this.apiUrl}/getByCreateurId/${createurId}`);
+  }
+
+  getHistoriqueByInterventionId(interventionId: number): Observable<InterventionHistoriqueDto[]> {
+    return this.http.get<InterventionHistoriqueDto[]>(`${this.apiUrl_2}/getByIntervention/${interventionId}`);
   }
 
 }

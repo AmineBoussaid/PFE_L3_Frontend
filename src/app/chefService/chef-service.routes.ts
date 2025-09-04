@@ -10,6 +10,7 @@ import { AllTechniciensComponent } from './gestion-service/all-techniciens/all-t
 import { AllEquipesComponent } from './gestion-service/all-equipes/all-equipes.component';
 import { CalendarComponent } from '../share/calendar/calendar.component';
 import { HistoriqueComponent } from '../share/historique/historique.component';
+import { InterventionHistoriqueComponent } from '../share/intervention-historique/intervention-historique.component';
 
 export const ChefServiceRoutes: Routes = [
 
@@ -23,8 +24,7 @@ export const ChefServiceRoutes: Routes = [
   { path: 'gestion-service/all-techniciens',component: AllTechniciensComponent },
   { path: 'gestion-service/all-equipes',component: AllEquipesComponent },
   { path: 'calendrier', component: CalendarComponent },
-
-
+  { path: 'intervention-historique', component: InterventionHistoriqueComponent},
 
   { path: '', redirectTo: 'services', pathMatch: 'full' }
 

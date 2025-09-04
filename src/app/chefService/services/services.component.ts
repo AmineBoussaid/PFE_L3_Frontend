@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
 export class ServicesComponent {
 
   interventions: InterventionDto[] = [];
+  DetailIntervention: InterventionDto = new InterventionDto();
   filteredInterventions: InterventionDto[] = [];
   paginatedInterventions: InterventionDto[] = [];
 
@@ -26,6 +27,7 @@ export class ServicesComponent {
 
   filterByUserId: boolean = false;
   searchTechnicienId:number = 0;
+  showDetails: boolean = false;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -146,6 +148,21 @@ export class ServicesComponent {
       this.router.navigate(['chefService/intervention'], { queryParams: { idFonctionnel,editMode} });
     } else {
       console.error('idFonctionnel is null');
+    }
+  }
+
+
+  toggleDetails(intervention: InterventionDto): void {
+    this.DetailIntervention = intervention;
+    this.showDetails = !this.showDetails;
+  }
+
+
+  goToInterventionHistorique(interventionId: number | null): void {
+    if (interventionId) {
+      this.router.navigate(['chefService/intervention-historique'], { queryParams: { interventionId} });
+    } else {
+      console.error('interventionId is null');
     }
   }
 

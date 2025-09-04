@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { ReclamationDto, UserDto } from '../../models';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { jsPDF } from 'jspdf';
 import { AuthService } from '../../services/auth.service';
@@ -10,13 +10,14 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,NgClass],
+  imports: [NgFor,NgIf,NgClass,DatePipe],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
 export class ServicesComponent implements OnInit {
 
   reclamations: ReclamationDto[] = [];
+  DetailReclamation: ReclamationDto = new ReclamationDto();
   filteredReclamations: ReclamationDto[] = [];
   paginatedReclamations: ReclamationDto[] = [];
 
@@ -27,6 +28,7 @@ export class ServicesComponent implements OnInit {
   searchDate: string = '';
   searchStatus: string = '';
   searchText: string = '';
+  showDetails: boolean = false;
 
   currentUser: UserDto | null = null;
 
@@ -113,6 +115,11 @@ export class ServicesComponent implements OnInit {
     } else {
       console.error('idFonctionnel is null');
     }
+  }
+
+  toggleDetails(reclamation: ReclamationDto): void {
+    this.DetailReclamation = reclamation;
+    this.showDetails = !this.showDetails;
   }
 
   // Method to generate PDF and open it in a new window

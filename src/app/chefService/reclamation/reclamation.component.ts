@@ -3,26 +3,28 @@ import { Component, OnInit } from '@angular/core';
 import { ReclamationDto, UserDto } from '../../models';
 import { ReclamationService } from '../../services/reclamation.service';
 import { Router } from '@angular/router';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import jsPDF from 'jspdf';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-reclamation',
   standalone: true,
-  imports: [NgFor,NgIf,NgClass],
+  imports: [NgFor,NgIf,NgClass,DatePipe],
   templateUrl: '../../share/reclamation/reclamation.component.html',
   styleUrl: './reclamation.component.css'
 })
 export class ReclamationComponent  implements OnInit{
 
   reclamations: ReclamationDto[] = [];
+  DetailReclamation: ReclamationDto = new ReclamationDto();
   filteredReclamations: ReclamationDto[] = [];
   paginatedReclamations: ReclamationDto[] = [];
 
   searchDate: string = '';
   searchStatus: string = '';
   searchText: string = '';
+  showDetails: boolean = false;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -119,6 +121,10 @@ export class ReclamationComponent  implements OnInit{
     }
   }
 
+  toggleDetails(reclamation: ReclamationDto): void {
+    this.DetailReclamation = reclamation;
+    this.showDetails = !this.showDetails;
+  }
 
     // Method to generate PDF and open it in a new window
     generatePDF(reclamation: ReclamationDto): void {

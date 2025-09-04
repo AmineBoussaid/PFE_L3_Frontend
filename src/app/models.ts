@@ -227,6 +227,54 @@ export class InterventionDto {
 }
 
 
+
+export class InterventionHistoriqueDto {
+
+  intervention!:InterventionDto
+  titre!: string | null;
+  status!: string | null;
+  dateDebut!: Date | null;
+  dateFin!: Date | null;
+  createdAt!: string | null;
+  description!: string | null;
+  createur!: UserDto;
+  reclamation: ReclamationDto;
+  departement!: DepartementDto;
+  service!: ServiceDto;
+  technicien!: TechnicienDto;
+  equipe!: EquipeDto;
+  changePar!: UserDto;
+
+  // Parameterless constructor
+  constructor()
+
+  // Constructor with parameters
+  constructor(
+    intervention?:InterventionDto, titre?: string, status?: string, dateDebut?: Date, dateFin?: Date, description?: string,
+    createdAt?: string,  reclamation?:ReclamationDto ,departement?:DepartementDto,createur?: UserDto,
+    service?: ServiceDto, technicien?: TechnicienDto, equipe?: EquipeDto, changePar?: UserDto,)
+  {
+    this.intervention = intervention ?? new InterventionDto();
+    this.titre = titre ?? null;
+    this.status = status ?? null;
+    this.dateDebut = dateDebut?? null;
+    this.dateFin = dateFin ?? null;
+    this.description = description ?? null;
+    this.createdAt = createdAt ?? null;
+    this.createur = createur ?? new UserDto();
+    this.reclamation = reclamation ?? new ReclamationDto();
+    this.departement = departement ?? new DepartementDto();
+    this.service = service ?? new ServiceDto();
+    this.technicien = technicien ?? new TechnicienDto();
+    this.equipe = equipe ?? new EquipeDto();
+    this.changePar = changePar ?? new UserDto();
+
+  }
+}
+
+
+
+
 export class ClientDto {
   id!: number;
   nomClient!: string | null;

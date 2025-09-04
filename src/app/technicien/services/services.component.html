@@ -1,8 +1,8 @@
 
     <!--  Container Star -->
-    <div class="container">
+    <div class="container position-relative ">
 
-      <div class="row mt-3 mb-3">
+      <div class="row mt-3 mb-3 z-0 position-absolute rounded-3">
 
         <div class="card-header bg-primary rounded text-white shadow">
           <h2 class="p-1 m-2">Services</h2>
@@ -60,7 +60,7 @@
                   {{ intervention.status }}
                 </td>
                   <td>
-                    <button type="button" class="btn btn-primary btn-outline-light" (click)="generatePDF(intervention)">Détails</button>
+                    <button type="button" class="btn btn-primary btn-outline-light" (click)="toggleDetails(intervention)">Détails</button>
                     <!-- Example single danger button -->
                     <div class="btn-group">
                       <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -74,9 +74,9 @@
                       </ul>
                     </div>
                   </td>
-
                 </tr>
               </tbody>
+
             </table>
 
             <div *ngIf="paginatedInterventions.length === 0" class="text-center p-5">Aucune intervention trouvée.</div>
@@ -103,14 +103,98 @@
 
       </div>
 
-      <div class="row">
-        <div class="col">
-          1 of 2
+
+    <div class="col-7 p-5 z-1 position-absolute rounded-3 d-flex justify-content-center" *ngIf="showDetails">
+      <div class="card shadow">
+        <div class="card-header" [ngClass]="{
+          'text-bg-warning': DetailIntervention.status === 'En cours',
+          'text-bg-success': DetailIntervention.status === 'Terminee',
+          'text-bg-danger': DetailIntervention.status === 'Annulee',
+          'text-bg-secondary': DetailIntervention.status === 'En attente'
+        }">
+          <span class="float-start badge me-4 fs-6">N°/ {{ DetailIntervention.reclamation.idFonctionnel }}</span>
+          <span class="float-end badge ms-4 fs-6">{{ DetailIntervention.createdAt | date:'yyyy-MM-dd' }}</span>
         </div>
-        <div class="col">
-          2 of 2
+
+        <div class="card-body">
+
+          <div class="row">
+
+            <div class="col-6">
+              <h6 class="text-uppercase">Date Debut</h6>
+              <p>{{ DetailIntervention.dateDebut | date:'yyyy-MM-dd' }}</p>
+            </div>
+            <div class="col-3">
+              <h6 class="text-uppercase">Date Fin</h6>
+              <p>{{ DetailIntervention.dateFin | date:'yyyy-MM-dd' }}</p>
+            </div>
+            <div class="col-3 ">
+              <span *ngIf="DetailIntervention.status == 'En cours'"  class="float-end spinner-grow spinner-grow text-warning me-3"></span>
+              <span *ngIf="DetailIntervention.status == 'Terminee'"  class="float-end spinner-grow spinner-grow text-success me-3"></span>
+              <span *ngIf="DetailIntervention.status == 'Annulee'"  class="float-end spinner-grow spinner-grow text-danger me-3"></span>
+              <span *ngIf="DetailIntervention.status == 'En attente'"  class="float-end spinner-grow spinner-grow text-secondary me-3"></span>
+              <span class=" float-end me-2">{{ DetailIntervention.status}}</span>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div *ngIf="DetailIntervention.equipe != null" class="col">
+              <h6 class="text-uppercase">En Equipe</h6>
+              <div>Equipe : {{ DetailIntervention.equipe.nom }}</div>
+              <div>Techniciens :</div>
+              <ul>
+                <li *ngFor="let technicien of DetailIntervention.equipe.techniciens">
+                  {{ technicien.username }}
+                </li>
+              </ul>
+            </div>
+
+            <div *ngIf="DetailIntervention.technicien != null" class="col">
+              <h6 class="text-uppercase">Individual</h6>
+              <p class="m-0">{{DetailIntervention.technicien.username}}</p>
+              <p>{{DetailIntervention.technicien.description}}
+            </div>
+
+            <div class="col">
+              <h6 class="text-uppercase">Category</h6>
+              <p>{{ DetailIntervention.reclamation.category }}</p>
+            </div>
+
+            <div class="col">
+              <h6 class="text-uppercase">Situation</h6>
+              <p>{{ DetailIntervention.reclamation.situation }}</p>
+            </div>
+
+          </div>
+
+          <div class="row mb-2">
+            <h6 class="text-uppercase">Description</h6>
+            <p>{{ DetailIntervention.description }}</p>
+          </div>
+
+          <div class="row mt-2 ">
+            <h6 class="text-uppercase">Informations Client</h6>
+            <ul class="list-group mb-3">
+              <li class="list-group-item">
+                <strong>Nom: </strong>{{ DetailIntervention.reclamation.nomClient }}
+              </li>
+              <li class="list-group-item">
+                <strong>Adresse: </strong>
+                {{ DetailIntervention.reclamation.ville }} {{ DetailIntervention.reclamation.quartier }} {{ DetailIntervention.reclamation.nomRue }}
+              </li>
+              <li class="list-group-item">
+                <strong>Téléphone: </strong>{{ DetailIntervention.reclamation.telephone }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-danger float-star">Repport</button>
         </div>
       </div>
+    </div>
 
     </div>
     <!--  Container End -->

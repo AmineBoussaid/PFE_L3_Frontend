@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth.service';
 export class ServicesComponent {
 
   interventions: InterventionDto[] = [];
+  DetailIntervention: InterventionDto = new InterventionDto();
   filteredInterventions: InterventionDto[] = [];
   paginatedInterventions: InterventionDto[] = [];
 
@@ -31,6 +32,7 @@ export class ServicesComponent {
 
   /*******************/
   currentUser: UserDto | null = null;
+  showDetails: boolean = false;
 
 
   service_id!: number
@@ -123,6 +125,11 @@ export class ServicesComponent {
     } else {
       console.error('intervention is null');
     }
+  }
+
+  toggleDetails(intervention: InterventionDto): void {
+    this.DetailIntervention = intervention;
+    this.showDetails = !this.showDetails;
   }
 
     // Method to generate PDF and open it in a new window

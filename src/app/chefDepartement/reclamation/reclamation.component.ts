@@ -2,7 +2,7 @@ import { DepartementService } from './../../services/departement.service';
 import { Component, OnInit } from '@angular/core';
 import { ReclamationService } from '../../services/reclamation.service';
 import { ReclamationDto, UserDto } from '../../models';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import { AuthService } from '../../services/auth.service';
@@ -11,19 +11,21 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-reclamationShare',
   standalone: true,
-  imports: [NgFor,NgIf,NgClass],
+  imports: [NgFor,NgIf,NgClass,DatePipe],
   templateUrl: '../../share/reclamation/reclamation.component.html',
   styleUrl: './reclamation.component.css'
 })
 export class ReclamationComponent implements OnInit{
 
   reclamations: ReclamationDto[] = [];
+  DetailReclamation: ReclamationDto = new ReclamationDto();
   filteredReclamations: ReclamationDto[] = [];
   paginatedReclamations: ReclamationDto[] = [];
 
   searchDate: string = '';
   searchStatus: string = '';
   searchText: string = '';
+  showDetails: boolean = false;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -116,6 +118,11 @@ export class ReclamationComponent implements OnInit{
     } else {
       console.error('idFonctionnel is null');
     }
+  }
+
+  toggleDetails(reclamation: ReclamationDto): void {
+    this.DetailReclamation = reclamation;
+    this.showDetails = !this.showDetails;
   }
 
   generatePDF(reclamation: ReclamationDto): void {

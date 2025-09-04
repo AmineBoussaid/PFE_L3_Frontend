@@ -18,11 +18,15 @@
           <div class="col-9 p-0">
 
             <div class="card shadow-sm">
-              <div class="card-header text-bg-success">
-                <span class="float-star badge me-4 fs-6"> N°/ {{ intervention.reclamation.idFonctionnel }}</span>
+              <div class="card-header" [ngClass]="{
+                'text-bg-warning': intervention.status === 'En cours',
+                'text-bg-success': intervention.status === 'Terminee',
+                'text-bg-danger': intervention.status === 'Annulee',
+                'text-bg-secondary': intervention.status === 'En attente'
+              }">
+                <span class="float-start badge me-4 fs-6">N°/ {{ intervention.reclamation.idFonctionnel }}</span>
                 <span class="float-end badge ms-4 fs-6">{{ intervention.createdAt | date:'yyyy-MM-dd' }}</span>
               </div>
-
               <div class="card-body">
 
                 <div class="row">
@@ -35,9 +39,12 @@
                     <h6 class="text-uppercase">Date Fin</h6>
                     <p>{{ intervention.dateFin | date:'yyyy-MM-dd' }}</p>
                   </div>
+
                   <div class="col-3 ">
                     <span *ngIf="intervention.status == 'En cours'"  class="float-end spinner-grow spinner-grow text-warning me-3"></span>
-                    <span *ngIf="intervention.status == 'Terminer'"  class="float-end spinner-grow spinner-grow text-success me-3"></span>
+                    <span *ngIf="intervention.status == 'Terminee'"  class="float-end spinner-grow spinner-grow text-success me-3"></span>
+                    <span *ngIf="intervention.status == 'Annulee'"  class="float-end spinner-grow spinner-grow text-danger me-3"></span>
+                    <span *ngIf="intervention.status == 'En attente'"  class="float-end spinner-grow spinner-grow text-secondary me-3"></span>
                     <span class=" float-end me-2">{{ intervention.status}}</span>
                   </div>
 
@@ -46,9 +53,15 @@
                 <div class="row">
                   <div *ngIf="intervention.equipe != null" class="col">
                     <h6 class="text-uppercase">En Equipe</h6>
-                    <p>Equipe :{{intervention.equipe.nom}}</p>
-                    <p>techniciens :{{intervention.equipe.techniciens}}
+                    <div>Equipe : {{ intervention.equipe.nom }}</div>
+                    <div>Techniciens :</div>
+                    <ul>
+                      <li *ngFor="let technicien of intervention.equipe.techniciens">
+                        {{ technicien.username }}
+                      </li>
+                    </ul>
                   </div>
+
                   <div *ngIf="intervention.technicien != null" class="col">
                     <h6 class="text-uppercase">Individual</h6>
                     <p class="m-0">{{intervention.technicien.username}}</p>

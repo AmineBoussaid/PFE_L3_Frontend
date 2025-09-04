@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { InterventionDto, UserDto } from '../../models';
 import { ActivatedRoute } from '@angular/router';
 import { InterventionService } from '../../services/intervention.service';
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [DatePipe,NgIf],
+  imports: [DatePipe,NgIf,NgFor,NgClass],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -55,11 +55,12 @@ export class InterventionComponent implements OnInit {
   }
 
   ChangeStatus(user_id:number): void{
-    this.intervention.status = "Terminer";
+    this.intervention.status = "Terminee";
     this.interventionService.updateIntervention(this.intervention,user_id).subscribe(
       response => {
         if(response)
         this.intervention = response;
+        localStorage.setItem(`currentIntervention_${this.currentUser!.id}`, JSON.stringify(this.intervention));
         console.log('intervention updated', response);
       });
   }
