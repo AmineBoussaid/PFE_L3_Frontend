@@ -1,21 +1,15 @@
 
 
       <!-- Container Star -->
-      <div class="container">
+      <div class="container position-relative ">
 
-        <div class="row mt-3 mb-3">
+      <div class="row mt-3 mb-3">
 
-        <div class="col shadow m-2 bg-body-tertiary rounded">
-
-          <div class="row">
-            <div class="card-header bg-primary rounded text-white shadow">
-              <h2 class="p-1 m-2">Intervention Actuelle</h2>
-            </div>
-          </div>
+        <div class="col shadow m-2 bg-body-tertiary">
 
         <div class="row">
 
-          <div class="col-9 p-0">
+          <div class="col-9 p-0 ">
 
             <div class="card shadow-sm">
               <div class="card-header" [ngClass]="{
@@ -102,8 +96,8 @@
                 </div>
               </div>
               <div class="card-footer">
-                <button class="btn btn-danger  float-star">Repport</button>
-                <button type="button" class="btn btn-primary float-end" (click)="ChangeStatus(this.currentUser!.id)" [disabled]="intervention.status == 'Terminee'">Terminer</button>
+                <button class="btn btn-danger float-star" (click)="generatePDF(intervention)" [disabled]="!intervention.rapport">Repport</button>
+                <button type="button" class="btn btn-primary float-end" (click)="toggleDetails()" [disabled]="intervention.status == 'Terminee'">Terminer</button>
               </div>
             </div>
           </div>
@@ -123,6 +117,55 @@
         </div>
 
         </div>
+
+        <div class="col-5 shadow-lg bg-body-tertiary z-1 position-absolute rounded p-0" style="margin-left: 15%;">
+
+          <div class="m-0 p-0" *ngIf="showDetails">
+            <div class="card-header bg-primary rounded text-white m-0 p-0 ">
+              <h3 class="p-2">Rapport</h3>
+            </div>
+
+            <form class="row g-2 py-3 px-5 mb-2"  >
+
+              <div class="col-md-12 m-1 p-1">
+                <label for="inputIdFonctionnel" class="form-label">Techncien</label>
+                <div class="row">
+                  <div class="col-4">
+                    <input type="text" class="form-control form-control-sm" name="Nom" placeholder="Nom" [(ngModel)]="currentUser!.username" required disabled>
+                  </div>
+                  <div class="col-8">
+                    <input type="text" class="form-control form-control-sm" name="Role" placeholder="Role"  [(ngModel)]="currentUser!.description" required disabled>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12 m-1 p-1">
+                <label for="inputIdFonctionnel" class="form-label">Intervention</label>
+                <div class="row">
+
+                  <div class="col-md-12">
+                    <input type="text" class="form-control form-control-sm" name="idFonctionnel" placeholder="N-Intervention"  [(ngModel)]="intervention!.reclamation.idFonctionnel" required disabled>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-12 m-1 p-1 ">
+                <label for="inputIdFonctionnel" class="form-label">Rapport</label>
+                <div class="input-group m-0 p-0" style="height: 300px;">
+                  <textarea type="text" class="form-control form-control-sm" rows="4" aria-label="With textarea" name="description" placeholder="Détail complémentaire de l'intervention" [(ngModel)]="description" required></textarea>
+                </div>
+              </div>
+
+              <div class="col-12 mx-auto">
+                <button class="btn btn-outline-danger float-star" (click)="toggleDetails()">Annuler</button>
+                <button class="btn btn-outline-primary  float-end" (click)="ChangeStatus(currentUser!.id)" [disabled]="intervention.status == 'Terminee'">Terminer</button>
+              </div>
+
+
+            </form>
+          </div>
+      </div>
         </div>
       </div>
     <!-- Container End -->

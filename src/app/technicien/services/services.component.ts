@@ -132,37 +132,45 @@ export class ServicesComponent {
     this.showDetails = !this.showDetails;
   }
 
-    // Method to generate PDF and open it in a new window
-    generatePDF(intervention: InterventionDto): void {
-      const doc = new jsPDF();
-      doc.text(
+  generatePDF(intervention: InterventionDto): void {
+    const doc = new jsPDF();
 
-    `
-    \n\n
-      N°intervention: ${intervention.reclamation.idFonctionnel}\t${intervention.createdAt}
-    \n
-        CARTEGORY: ${intervention.reclamation.category}
-        SITUATION: ${intervention.reclamation.situation}
-        DATE DEBUT \t\t DATE FIN
-        ${intervention.dateDebut}  |  ${intervention.dateFin}
-    \n
+    // Ajouter un grand titre
+    doc.setFontSize(20);
+    doc.text("Rapport de l'intervention", 105, 30, { align: "center" });
 
-      INFORMATIONS CLIENT\n
-        NOM: ${intervention.reclamation.nomClient}
-        ADRESSE: ${intervention.reclamation.ville} ${intervention.reclamation.quartier} ${intervention.reclamation.nomRue}
-        TELEPHONE: ${intervention.reclamation.telephone}
-    \n
+    // Ajouter l'image en haut
+    const imgUrl = "https://www.radeef.ma/assetsFront/images/upload/logo-dark2.jpg";
+    doc.addImage(imgUrl, 'JPEG', 10, 10, 50, 20); // x, y, width, height
 
-      DESCRIPTION\n
-        ${intervention.description}
-    \n\n
-    `
-      ,10, 10);
+    // Réinitialiser la taille de la police
+    doc.setFontSize(12);
 
-      // Open the PDF in a new window
-      const pdfBlob = doc.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl);
-    }
+    // Informations de l'intervention
+    doc.text("INFORMATIONS INTERVENTION", 10, 50);
+    doc.text(`N°intervention: ${intervention.reclamation.idFonctionnel}`, 10, 60);
+    doc.text(`Date de création: ${intervention.createdAt}`, 120, 60);
+
+    doc.text(`CATEGORY: ${intervention.reclamation.category}`, 10, 70);
+    doc.text(`SITUATION: ${intervention.reclamation.situation}`, 10, 80);
+
+    doc.text(`DATE DEBUT: ${intervention.dateDebut}`, 10, 90);
+    doc.text(`DATE FIN: ${intervention.dateFin}`, 100, 90);
+
+    // Informations du client
+    doc.text("INFORMATIONS CLIENT", 10, 110);
+    doc.text(`NOM: ${intervention.reclamation.nomClient}`, 10, 120);
+    doc.text(`ADRESSE: ${intervention.reclamation.ville} ${intervention.reclamation.quartier} ${intervention.reclamation.nomRue}`, 10, 130);
+    doc.text(`TELEPHONE: ${intervention.reclamation.telephone}`, 10, 140);
+
+    // Rapport
+    doc.text("RAPPORT", 10, 160);
+    doc.text(`${intervention.rapport!.description}`, 10, 170);
+
+    // Ouvrir le PDF dans une nouvelle fenêtre
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl);
+}
 
 }

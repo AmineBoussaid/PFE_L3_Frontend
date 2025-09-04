@@ -90,7 +90,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
 
     this.enCoursSolo = this.intervnetions.filter(r => r.status === 'En cours' && r.technicien != null && r.equipe == null).length;
 
-    this.terminees = this.intervnetions.filter(r => r.status === 'Terminer').length;
+    this.terminees = this.intervnetions.filter(r => r.status === 'Terminee').length;
 
     this.annulees = this.intervnetions.filter(r => r.status === 'Annulee').length;
   }

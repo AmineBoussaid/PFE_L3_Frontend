@@ -85,7 +85,7 @@
                             </button>
                         </li>
                         <li *ngIf="intervention.status !== 'Terminee' && intervention.status !== 'Annulee'"><hr class="dropdown-divider"></li>
-                        <li><button class="dropdown-item" href="#">Rapport</button></li>
+                        <li><button class="dropdown-item" (click)="generatePDF(intervention)" [disabled]="!intervention.rapport">Rapport</button></li>
                     </ul>
                     </div>
 
@@ -206,7 +206,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-danger float-star" >Repport</button>
+            <button class="btn btn-danger float-star" (click)="generatePDF(DetailIntervention)" [disabled]="!DetailIntervention.rapport">Repport</button>
             <button class="btn btn-primary float-end" type="button" (click)="goToInterventionHistorique(DetailIntervention.id)">Historique</button>
           </div>
         </div>

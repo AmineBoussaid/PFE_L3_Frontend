@@ -200,6 +200,7 @@ export class InterventionDto {
   service!: ServiceDto;
   technicien!: TechnicienDto | null;
   equipe!: EquipeDto | null;
+  rapport!: RapportDto | null;
 
   // Parameterless constructor
   constructor()
@@ -208,7 +209,7 @@ export class InterventionDto {
   constructor(
     id?: number, titre?: string, status?: string, dateDebut?: Date, dateFin?: Date,
     description?: string, createdAt?: string,  reclamation?:ReclamationDto ,departement?:DepartementDto,
-    createur?: UserDto, service?: ServiceDto, technicien?: TechnicienDto, equipe?: EquipeDto)
+    createur?: UserDto, service?: ServiceDto, technicien?: TechnicienDto, equipe?: EquipeDto, rapport?: RapportDto)
   {
     this.id = id ?? 0;
     this.titre = titre ?? null;
@@ -223,6 +224,7 @@ export class InterventionDto {
     this.service = service ?? new ServiceDto();
     this.technicien = technicien ?? new TechnicienDto();
     this.equipe = equipe ?? new EquipeDto();
+    this.rapport = rapport ?? new RapportDto();
   }
 }
 
@@ -301,6 +303,26 @@ export class ClientDto {
     this.quartier = quartier ?? null;
     this.nomRue = nomRue ?? null;
     this.codePostal = codePostal ?? null;
+  }
+}
+
+export class RapportDto{
+  interventionId!:number
+  technicien!: TechnicienDto;
+  createdAt!: string | null;
+  description!: string | null;
+
+  // Parameterless constructor
+  constructor();
+
+  // Constructor with parameters
+  constructor(
+    interventionId?: number, technicien?: TechnicienDto, createdAt?: string, description?:string
+  ) {
+    this.interventionId = interventionId ?? 0;
+    this.technicien = technicien ?? new TechnicienDto();
+    this.createdAt = createdAt ?? null;
+    this.description = description ?? null;
   }
 
 }
