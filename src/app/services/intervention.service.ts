@@ -14,16 +14,16 @@ export class InterventionService {
   constructor(private http: HttpClient) { }
 
   addIntervention(interventionDTO: InterventionDto, userId: number): Observable<InterventionDto> {
-    return this.http.post<InterventionDto>(`${this.apiUrl}/add/${userId}`, interventionDTO);
+    return this.http.post<InterventionDto>(`${this.apiUrl}/add`, interventionDTO);
   }
 
 
-  deleteById(id: number, userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}/${userId}`);
+  deleteById(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}`);
   }
 
-  updateIntervention(interventionDTO: InterventionDto, userId: number): Observable<InterventionDto> {
-    return this.http.put<InterventionDto>(`${this.apiUrl}/update/${userId}`, interventionDTO);
+  updateIntervention(interventionDTO: InterventionDto): Observable<InterventionDto> {
+    return this.http.put<InterventionDto>(`${this.apiUrl}/update`, interventionDTO);
   }
 
   getInterventions(): Observable<InterventionDto[]> {

@@ -97,7 +97,7 @@ export class ReclamationComponent implements OnInit {
       this.newReclamation.codeAbonnement = this.codeAbonnement;
     }
 
-    this.reclamationService.addReclamation(this.newReclamation,this.currentUser!.id).subscribe(
+    this.reclamationService.addReclamation(this.newReclamation).subscribe(
       response => {
         console.log('Reclamation added',  this.newReclamation);
       },
@@ -123,7 +123,7 @@ export class ReclamationComponent implements OnInit {
       this.newReclamation.codeAbonnement = this.codeAbonnement;
     }
     this.newReclamation.description
-    this.reclamationService.updateReclamation(this.newReclamation,this.currentUser!.id).subscribe(
+    this.reclamationService.updateReclamation(this.newReclamation).subscribe(
       response => {
         console.log('Reclamation updated', response);
       },

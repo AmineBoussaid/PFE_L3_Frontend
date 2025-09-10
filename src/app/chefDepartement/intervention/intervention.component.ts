@@ -138,7 +138,7 @@ export class InterventionComponent implements OnInit {
       this.newIntervention.technicien = null;
     }
 
-    this.interventionService.updateIntervention(this.newIntervention,this.currentUser!.id).subscribe(
+    this.interventionService.updateIntervention(this.newIntervention).subscribe(
       response => {
         console.log('Intervention updated', response);
       },

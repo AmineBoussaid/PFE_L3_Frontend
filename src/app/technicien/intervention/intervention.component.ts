@@ -72,7 +72,7 @@ export class InterventionComponent implements OnInit {
     this.intervention.rapport.description = this.description;
 
     this.intervention.status = "Terminee";
-    this.interventionService.updateIntervention(this.intervention,user_id).subscribe(
+    this.interventionService.updateIntervention(this.intervention).subscribe(
       response => {
         if(response)
         localStorage.setItem(`currentIntervention_${this.currentUser!.id}`, JSON.stringify(this.intervention));

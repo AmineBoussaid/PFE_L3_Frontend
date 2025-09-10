@@ -60,8 +60,8 @@ export class ReclamationComponent  implements OnInit{
 
   }
 
-  deleteById(id: number ,user_id : number): void {
-    this.reclamationService.deleteById(id,user_id).subscribe(() => {
+  deleteById(id: number): void {
+    this.reclamationService.deleteById(id).subscribe(() => {
       this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
       this.filterReclamations();
     });

@@ -9,16 +9,16 @@ export class ReclamationService {
 
   constructor(private http: HttpClient) { }
 
-  addReclamation(reclamation: ReclamationDto, userId: number): Observable<ReclamationDto> {
-    return this.http.post<ReclamationDto>(`${this.apiUrl}/add/${userId}`, reclamation);
+  addReclamation(reclamation: ReclamationDto): Observable<ReclamationDto> {
+    return this.http.post<ReclamationDto>(`${this.apiUrl}/add`, reclamation);
   }
 
-  updateReclamation(reclamation: ReclamationDto, userId: number): Observable<ReclamationDto> {
-    return this.http.put<ReclamationDto>(`${this.apiUrl}/update/${userId}`, reclamation);
+  updateReclamation(reclamation: ReclamationDto): Observable<ReclamationDto> {
+    return this.http.put<ReclamationDto>(`${this.apiUrl}/update`, reclamation);
   }
 
-  deleteById(id: number, userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}/${userId}`);
+  deleteById(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteById/${id}`);
   }
 
 
