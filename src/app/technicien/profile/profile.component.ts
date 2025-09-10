@@ -71,7 +71,7 @@ export class ProfileComponent implements OnInit{
   }
 
   getUserHist(user_id: number): void {
-    this.userHistService.getByUserHistId(user_id).subscribe(
+    this.userHistService.getByUserHistId().subscribe(
       data => {
         this.historiques = data.sort((a, b) => {
           const dateA = new Date(a.createdAt!).getTime();

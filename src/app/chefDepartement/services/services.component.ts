@@ -81,9 +81,9 @@ export class ServicesComponent {
 
 
 
-  AnnulerIntervention(intervention: InterventionDto, user_id:number): void {
+  AnnulerIntervention(intervention: InterventionDto): void {
     intervention.status = 'Annulee'
-    this.interventionService.updateIntervention(intervention,user_id).subscribe(
+    this.interventionService.updateIntervention(intervention).subscribe(
       response => {
         if(response)
         console.log('intervention Annulee', response);

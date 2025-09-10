@@ -15,7 +15,7 @@ export class UserHistService {
     return this.http.get<UserHistoriqueDto[]>(`${this.apiUrl}/getAll`);
   }
 
-  getByUserHistId(userId:number): Observable<UserHistoriqueDto[]> {
-    return this.http.get<UserHistoriqueDto[]>(`${this.apiUrl}/getByUserId/${userId}`);
+  getByUserHistId(): Observable<UserHistoriqueDto[]> {
+    return this.http.get<UserHistoriqueDto[]>(`${this.apiUrl}/getByUserId`);
   }
 }

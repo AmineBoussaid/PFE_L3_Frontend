@@ -69,7 +69,7 @@
                           </button>
                         </li>
                         <li *ngIf="reclamation.status !== 'Terminee' && reclamation.status !== 'Annulee'">
-                          <button class="dropdown-item" type="button" (click)="deleteById(reclamation.id, currentUser!.id)">
+                          <button class="dropdown-item" type="button" (click)="deleteById(reclamation.id)">
                             Annuler Reclamation
                           </button>
                         </li>

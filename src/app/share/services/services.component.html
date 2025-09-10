@@ -80,7 +80,7 @@
                             </button>
                         </li>
                         <li *ngIf="intervention.status !== 'Terminee' && intervention.status !== 'Annulee'">
-                            <button class="dropdown-item" type="button" (click)="AnnulerIntervention(intervention, this.currentUser!.id)">
+                            <button class="dropdown-item" type="button" (click)="AnnulerIntervention(intervention)">
                                 Annuler Intervention
                             </button>
                         </li>

@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit{
     this.totalIntervnetions = this.interventionsByService.length;
     this.enAttente = this.interventionsByService.filter(r => r.status === 'En attente').length;
     this.enCours = this.interventionsByService.filter(r => r.status === 'En cours').length;
-    this.terminees = this.interventionsByService.filter(r => r.status === 'Terminer').length;
+    this.terminees = this.interventionsByService.filter(r => r.status === 'Terminee').length;
     this.annulees = this.interventionsByService.filter(r => r.status === 'Annulee').length;
   }
 
