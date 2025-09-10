@@ -9,6 +9,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   let token = authService.getToken();
   if(!token) {
     router.navigateByUrl('/login');
+    return next(req);
   }
 
   const authReq = req.clone({
