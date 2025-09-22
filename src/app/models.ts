@@ -6,6 +6,7 @@ export class UserDto {
   createdAt!: string | null;
   lastLogin!: string | null;
   description!: string | null;
+  imageBase64!: string | null;
 
   // Parameterless constructor
   constructor();
@@ -52,6 +53,7 @@ export class TechnicienDto {
   email!: string | null;
   description!: string | null;
   service!: ServiceDto;
+  imageBase64!: string | null;
 
 
 // Parameterless constructor
@@ -308,7 +310,7 @@ export class ClientDto {
 
 export class RapportDto{
   interventionId!:number
-  technicien!: TechnicienDto;
+  createur!: UserDto;
   createdAt!: string | null;
   description!: string | null;
 
@@ -317,10 +319,10 @@ export class RapportDto{
 
   // Constructor with parameters
   constructor(
-    interventionId?: number, technicien?: TechnicienDto, createdAt?: string, description?:string
+    interventionId?: number, createur?: UserDto, createdAt?: string, description?:string
   ) {
     this.interventionId = interventionId ?? 0;
-    this.technicien = technicien ?? new TechnicienDto();
+    this.createur = createur ?? new UserDto();
     this.createdAt = createdAt ?? null;
     this.description = description ?? null;
   }

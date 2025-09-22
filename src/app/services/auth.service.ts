@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { UserDto } from '../models';
 
 @Injectable({
@@ -12,6 +12,7 @@ export class AuthService {
   private tokenKey : string = "token";
 
   private apiUrl = 'http://localhost:8080/api/users';
+
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -44,10 +45,9 @@ export class AuthService {
 
 
   logout() {
+    // Clear session from localStorage
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.tokenKey);
-    //this.router.navigate(['/login']);
-
 
   }
 

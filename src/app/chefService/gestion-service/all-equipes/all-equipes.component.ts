@@ -106,7 +106,7 @@ export class AllEquipesComponent {
     goToServices(technicienId: number): void {
       if (technicienId) {
         const technicienIdJson = JSON.stringify(technicienId);
-        this.router.navigate(['/chefDepartement/services'], { queryParams: { technicienId: technicienIdJson } });
+        this.router.navigate(['/chefService/services'], { queryParams: { technicienId: technicienIdJson } });
       } else {
         alert('technicien is null');
       }

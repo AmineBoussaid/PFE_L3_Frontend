@@ -15,17 +15,36 @@
               </div>
             </div>
 
-              <div class="row p-2">
-                <!-- Indicateur des étapes -->
-              <div class="step-indicator d-flex justify-content-between mb-4">
+              <div class="row px-4">
+              <!-- Indicateur des étapes -->
+              <div class="step-indicator d-flex justify-content-between mb-2">
                 <div *ngFor="let step of [1, 2, 3, 4]; let i = index"
                     [ngClass]="{'active-step': currentStep === step, 'inactive-step': currentStep !== step}"
-                    class="step">
-                  Etape {{ step }}
+                    class="step d-flex flex-column align-items-center p-2 arrow-step">
+
+                  <!-- Icône pour chaque étape -->
+                  <div *ngIf="step === 1">
+                    <i class="fas fa-exclamation-circle fa-2x"></i> <!-- Icône de réclamation -->
+                  </div>
+                  <div *ngIf="step === 2">
+                    <i class="fas fa-calendar-alt fa-2x"></i> <!-- Icône de date -->
+                  </div>
+                  <div *ngIf="step === 3">
+                    <i class="fas fa-user fa-2x"></i> <!-- Icône de personne -->
+                  </div>
+                  <div *ngIf="step === 4">
+                    <i class="fas fa-info-circle fa-2x"></i> <!-- Icône de détails -->
+                  </div>
+
+                  <!-- Texte de l'étape -->
+                  <span>Étape {{ step }}</span>
                 </div>
               </div>
 
-              <form class="row g-2 p-4" (ngSubmit)="editMode ? updateIntervention() : addIntervention()" #reclamationForm="ngForm">
+              <!-- Ligne de séparation -->
+              <hr class="divider-line">
+
+              <form class="row g-2 p-4" (ngSubmit)="confirmIntervention()" #reclamationForm="ngForm">
                 <!-- Etape 1 : Code de Réclamation -->
                 <div *ngIf="currentStep === 1">
                   <div class="col-md-12" *ngIf="editMode">
@@ -122,28 +141,68 @@
                 <div class="d-flex justify-content-between mt-4">
                   <button type="button" class="btn btn-outline-secondary" *ngIf="currentStep > 1" (click)="previousStep()">Précédent</button>
                   <button type="button" class="btn btn-outline-primary" *ngIf="currentStep < 4" (click)="nextStep()" [disabled]="!canProceedToNextStep()">Suivant</button>
-                  <button type="submit" class="btn btn-outline-primary" *ngIf="currentStep === 4" [disabled]="!reclamationExist">Envoyer</button>
+                  <button type="button" class="btn btn-outline-primary" *ngIf="currentStep === 4" (click)="confirmIntervention()">Envoyer</button>
                 </div>
 
                 <!-- Bouton Annuler -->
                 <div class="d-grid gap-2 col-3 mx-auto mt-3">
                   <button type="reset" class="btn btn-outline-danger" (click)="resetSelection()">Annuler</button>
                 </div>
-
               </form>
+
+              <div
+              class="position-fixed top-50 start-50 translate-middle text-center p-5 rounded-3 bg-dark text-white"
+              style="width: 300px;"
+              *ngIf="showConfirmation">
+
+              <!-- Message de confirmation -->
+              <h6 class="text-uppercase">{{ editMode ? 'Confirmer les modifications' : 'Confirmer l\'ajout' }}</h6>
+
+              <!-- Informations affichées pour confirmer l'ajout -->
+              <p>Le code de réclamation : <strong>{{ newIntervention.reclamation.idFonctionnel }}</strong></p>
+              <p>Titre : <strong>{{ newIntervention.titre }}</strong></p>
+              <p>Date de début : <strong>{{ newIntervention.dateDebut | date: 'short' }}</strong></p>
+              <p>Date de fin estimée : <strong>{{ newIntervention.dateFin | date: 'short' }}</strong></p>
+              <p>Description : <strong>{{ newIntervention.description }}</strong></p>
+
+              <!-- Boutons pour confirmer ou annuler l'ajout -->
+              <div class="mt-3">
+                <button type="button" class="btn btn-outline-success me-2" (click)="editMode ? updateIntervention() : addIntervention()">Confirmer</button>
+                <button type="button" class="btn btn-outline-danger" (click)="cancelConfirmation()">Annuler</button>
+              </div>
             </div>
 
+
+            <!-- Fenêtre modale de succès -->
+            <div
+              class="position-fixed top-50 start-50 translate-middle text-center p-5 rounded-3 bg-dark text-white"
+              style="width: 300px;"
+              *ngIf="showDetails">
+
+              <!-- Icône de succès -->
+              <i class="bi bi-check-circle-fill mb-3" style="font-size: 4rem; color: #28a745;"></i>
+
+              <!-- Message de succès -->
+
+              <!-- ID fonctionnel affiché -->
+              <p>Le code de l'intervention : <strong>{{ newIntervention.reclamation.idFonctionnel }}</strong></p>
+
+              <!-- Bouton OK -->
+            </div>
+
+            </div>
           </div>
 
 
           <div class="col m-1 p-0" style="height: min-content;">
             <div *ngIf="selectedTechniciens.length > 0 && selectedOption === 'option2'" class="selected-technicians mt-3 shadow" style="width: 250px;">
               <div class="bg-body-tertiary p-0 rounded">
-                <h5 for="selectedTechniciens" class="form-label bg-primary text-white p-2">Techniciens sélectionnés :</h5>
+                <h5 for="selectedTechniciens" class="form-label bg-primary text-white p-2">Techniciens sélectionnés</h5>
                 <ul class="list-group p-2 ">
                   <li class="list-group-item shadow-sm m-1" *ngFor="let technicien of selectedTechniciens">
-                    {{ technicien.username }}
                     <button type="button" class="btn btn-danger btn-sm float-end" (click)="removeTechnicien(technicien)">X</button>
+                    <img *ngIf="technicien?.imageBase64" [src]="'data:image/png;base64,' + technicien?.imageBase64" alt="User Image"  class="shadow-sm p-2" style="width: 35%;" alt="{{ technicien.username }}">
+                    {{ technicien.username }}
                   </li>
                 </ul>
               </div>

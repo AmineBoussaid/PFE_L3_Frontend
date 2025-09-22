@@ -53,7 +53,7 @@
 
               <div class="row">
                 <div class="col-4">
-                  <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="shadow-sm p-2" style="width: 120%;" alt="{{ technicien.username }}">
+                  <img *ngIf="technicien?.imageBase64" [src]="'data:image/png;base64,' + technicien?.imageBase64" alt="User Image"  class="shadow-sm p-2" style="width: 120%;" alt="{{ technicien.username }}">
                 </div>
 
                 <div class="col-8 ">

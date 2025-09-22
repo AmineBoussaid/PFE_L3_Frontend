@@ -1,4 +1,4 @@
-import { InterventionDto, UserDto } from '../../models';
+import { InterventionDto, RapportDto, UserDto } from '../../models';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { InterventionService } from '../../services/intervention.service';
@@ -6,11 +6,12 @@ import jsPDF from 'jspdf';
 import { DepartementService } from '../../services/departement.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NgFor,NgIf,DatePipe,NgClass],
+  imports: [NgFor,NgIf,DatePipe,NgClass,FormsModule],
   templateUrl: '../../share/services/services.component.html',
   styleUrl: './services.component.css'
 })
@@ -24,9 +25,11 @@ export class ServicesComponent {
   searchStatus: string = '';
   searchText: string = '';
   filterByUserId: boolean = false;
+  description: string = ''
 
   searchTechnicienId:number = 0;
   showDetails: boolean = false;
+  showRapport: boolean = false;
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -82,11 +85,19 @@ export class ServicesComponent {
 
 
   AnnulerIntervention(intervention: InterventionDto): void {
+    if(!intervention.rapport){
+      intervention.rapport = new RapportDto();
+    }
+    intervention.rapport.interventionId = intervention.id;
+    intervention.rapport.createur!.id = this.currentUser!.id;
+    intervention.rapport.description = this.description;
+
     intervention.status = 'Annulee'
     this.interventionService.updateIntervention(intervention).subscribe(
       response => {
         if(response)
         console.log('intervention Annulee', response);
+        this.fermerRapport();
       });
     this.filterInterventions();
   }
@@ -156,6 +167,15 @@ export class ServicesComponent {
     this.showDetails = !this.showDetails;
   }
 
+  toggleRapport(intervention: InterventionDto): void {
+    this.DetailIntervention = intervention;
+    this.showRapport = !this.showRapport;
+  }
+
+  fermerRapport(): void {
+    this.showRapport = !this.showRapport;
+  }
+
   goToInterventionHistorique(interventionId: number | null): void {
     if (interventionId) {
       this.router.navigate(['chefDepartement/intervention-historique'], { queryParams: { interventionId} });
@@ -196,8 +216,12 @@ export class ServicesComponent {
     doc.text(`TELEPHONE: ${intervention.reclamation.telephone}`, 10, 140);
 
     // Rapport
-    doc.text("RAPPORT", 10, 160);
+    doc.text("Observations du Createur :", 10, 160);
     doc.text(`${intervention.rapport!.description}`, 10, 170);
+
+        // Rapport
+        doc.text("Rapport Rédigé par :", 10, 200);
+        doc.text(`${intervention.rapport!.createur.username}`, 55, 200);
 
     // Ouvrir le PDF dans une nouvelle fenêtre
     const pdfBlob = doc.output('blob');

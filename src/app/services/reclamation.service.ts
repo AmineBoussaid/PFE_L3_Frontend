@@ -9,8 +9,8 @@ export class ReclamationService {
 
   constructor(private http: HttpClient) { }
 
-  addReclamation(reclamation: ReclamationDto): Observable<ReclamationDto> {
-    return this.http.post<ReclamationDto>(`${this.apiUrl}/add`, reclamation);
+  addReclamation(reclamation: ReclamationDto): Observable<string> {
+    return this.http.post(`${this.apiUrl}/add`, reclamation, { responseType: 'text' });
   }
 
   updateReclamation(reclamation: ReclamationDto): Observable<ReclamationDto> {

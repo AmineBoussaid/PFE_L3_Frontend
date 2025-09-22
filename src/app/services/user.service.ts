@@ -24,11 +24,6 @@ export class UserService {
     return this.http.get<UserDto>(`${this.apiUrl}/getById/${id}`);
   }
 
-  getByEmail(email: string ,password: string): Observable<UserDto>{
-    return this.http.get<UserDto>(`${this.apiUrl}/getByEmail/${email}/${password}`)
-
-  }
-
   getTechniciensByServiceId(serviceId: number): Observable<TechnicienDto[]> {
     return this.http.get<TechnicienDto[]>(`${this.apiUrl_2}/getByServiceId/${serviceId}`);
   }

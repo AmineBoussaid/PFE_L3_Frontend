@@ -43,6 +43,8 @@ export class ReclamationComponent implements OnInit {
   currentUser: UserDto | null = null;
   codeExist: boolean = false;
   codeAbonnement: string = '';
+  idFonctionnel: string = '';
+  showDetails: boolean = false;
 
 
   constructor(
@@ -98,8 +100,10 @@ export class ReclamationComponent implements OnInit {
     }
 
     this.reclamationService.addReclamation(this.newReclamation).subscribe(
-      response => {
-        console.log('Reclamation added',  this.newReclamation);
+      (response: string) => {
+        this.idFonctionnel = response;
+        console.log('Réclamation ajoutée avec idFonctionnel:', this.idFonctionnel);
+        this.showDetails = !this.showDetails;
       },
     );
   }
@@ -128,6 +132,10 @@ export class ReclamationComponent implements OnInit {
         console.log('Reclamation updated', response);
       },
     );
+  }
+
+  closeDetails() {
+    this.showDetails = false;
   }
 
 

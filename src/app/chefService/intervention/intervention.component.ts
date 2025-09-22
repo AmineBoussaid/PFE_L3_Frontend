@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EquipeDto, ServiceDto, TechnicienDto, UserDto, InterventionDto, ReclamationDto, DepartementDto } from '../../models';
@@ -12,7 +12,7 @@ import { EquipeService } from '../../services/equipe.service';
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf,NgClass],
+  imports: [NgFor,FormsModule,NgIf,NgClass,DatePipe],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -34,6 +34,8 @@ export class InterventionComponent implements OnInit {
   selectedOption: string = '';
   technicien: TechnicienDto = new TechnicienDto()
   minDate: string = '';
+  showConfirmation: boolean = false; // Pour afficher la confirmation
+  showDetails: boolean = false; // Pour afficher la fenêtre de succès
 
   currentUser!: UserDto | null;
 
@@ -116,6 +118,7 @@ export class InterventionComponent implements OnInit {
         this.interventionService.addIntervention(this.newIntervention, this.currentUser!.id).subscribe(
             response => {
                 console.log('Intervention added', response);
+                this.Terminer();
                 // Optionally navigate away or show a success message
             },
         );
@@ -146,8 +149,27 @@ export class InterventionComponent implements OnInit {
     this.interventionService.updateIntervention(this.newIntervention).subscribe(
       response => {
         console.log('Intervention updated', response);
+        this.Terminer();
       },
     );
+  }
+
+  Terminer(){
+    this.showConfirmation = false;
+    this.showDetails = true;
+
+    setTimeout(() => {
+      this.showDetails = false;
+    }, 3000);
+    this.resetSelection();
+  }
+
+  confirmIntervention() {
+    this.showConfirmation = true; // Afficher la fenêtre de confirmation
+  }
+
+  cancelConfirmation() {
+    this.showConfirmation = false; // Masquer la fenêtre de confirmation sans ajouter
   }
 
 

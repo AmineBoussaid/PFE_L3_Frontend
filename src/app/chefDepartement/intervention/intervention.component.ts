@@ -3,7 +3,7 @@ import { InterventionService } from '../../services/intervention.service';
 import { DepartementDto, EquipeDto, InterventionDto, ReclamationDto, ServiceDto, TechnicienDto, UserDto } from '../../models';
 import { FormsModule } from '@angular/forms';
 import { ServiceDService } from '../../services/service_d.service';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ReclamationService } from '../../services/reclamation.service';
 import { DepartementService } from '../../services/departement.service';
@@ -14,7 +14,7 @@ import { EquipeService } from '../../services/equipe.service';
 @Component({
   selector: 'app-intervention',
   standalone: true,
-  imports: [NgFor,FormsModule,NgIf,NgClass],
+  imports: [NgFor,FormsModule,NgIf,NgClass,DatePipe],
   templateUrl: './intervention.component.html',
   styleUrl: './intervention.component.css'
 })
@@ -35,9 +35,13 @@ export class InterventionComponent implements OnInit {
   technicien: UserDto = new UserDto()
   minDate: string = '';
 
+  showConfirmation: boolean = false; // Pour afficher la confirmation
+  showDetails: boolean = false; // Pour afficher la fenêtre de succès
+
   departement_id!:number
   service_id!: number;
   currentUser: UserDto | null = null;
+
 
 
   constructor(
@@ -48,7 +52,6 @@ export class InterventionComponent implements OnInit {
     private userService : UserService,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private equipeService: EquipeService
   ) {}
 
 
@@ -114,7 +117,7 @@ export class InterventionComponent implements OnInit {
       this.interventionService.addIntervention(this.newIntervention,this.currentUser!.id).subscribe(
         response => {
           console.log('Intervention added', response);
-          // Optionally navigate away or show a success message
+          this.Terminer();
         },
       );
     } else {
@@ -141,10 +144,28 @@ export class InterventionComponent implements OnInit {
     this.interventionService.updateIntervention(this.newIntervention).subscribe(
       response => {
         console.log('Intervention updated', response);
+        this.Terminer();
       },
     );
   }
 
+  Terminer(){
+    this.showConfirmation = false;
+    this.showDetails = true;
+
+    setTimeout(() => {
+      this.showDetails = false;
+    }, 3000);
+    this.resetSelection();
+  }
+
+  confirmIntervention() {
+    this.showConfirmation = true; // Afficher la fenêtre de confirmation
+  }
+
+  cancelConfirmation() {
+    this.showConfirmation = false; // Masquer la fenêtre de confirmation sans ajouter
+  }
 
   /****  Service Service  ****/
   getServicesByDepartementId(user_id: number): void{

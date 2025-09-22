@@ -119,7 +119,7 @@ export class ServicesComponent implements OnInit {
 
   toggleDetails(reclamation: ReclamationDto): void {
     this.DetailReclamation = reclamation;
-    this.showDetails = !this.showDetails;
+    this.showDetails = true;
   }
 
   // Method to generate PDF and open it in a new window

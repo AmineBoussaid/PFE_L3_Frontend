@@ -11,7 +11,7 @@
 
             <div class="row mb-2">
               <div class="card-header bg-primary rounded text-white shadow-sm">
-                <h2 class="p-1 m-2">Formulaire Intervention</h2>
+                <h2 class="p-1 m-2">Formulaire Reclamation</h2>
               </div>
             </div>
 
@@ -74,7 +74,7 @@
               </div>
 
               <div class="col-md-8">
-                <label for="inputAddress" class="form-label">Category</label>
+                <label for="inputAddress" class="form-label">Catégorie</label>
                 <select class="form-select form-select-sm" name="Category" [(ngModel)]="newReclamation.category" required>
                   <option></option>
                   <option *ngFor="let category of categories" [value]="category">
@@ -146,7 +146,24 @@
                 <button *ngIf="!editMode" type="submit" class="btn btn-outline-primary" [disabled]="!reclamationForm.valid">Envoyer</button>
                 <button *ngIf="editMode" [disabled]="!reclamationExist || !reclamationForm.valid" type="submit" class="btn btn-outline-primary">Modifier</button>
               </div>
+
+
+              <div class="position-fixed top-50 start-50 translate-middle text-center p-5 rounded-3 bg-dark text-white" style="width: 300px;" *ngIf="showDetails">
+                <!-- Icône de succès -->
+                <i class="bi bi-check-circle-fill mb-3" style="font-size: 3rem; color: #28a745;"></i>
+
+                <!-- Message de succès -->
+                <h6 class="text-uppercase">Réclamation ajoutée avec succès !</h6>
+
+                <!-- ID fonctionnel affiché -->
+                <p>Le code de réclamation : <strong>{{ idFonctionnel }}</strong></p>
+                <button type="reset" class="btn btn-outline-primary" (click)="closeDetails()">OK</button>
+              </div>
+
             </form>
+
+            <!--Message Succés-->
+
 
           </div>
 

@@ -164,8 +164,12 @@ export class ServicesComponent {
     doc.text(`TELEPHONE: ${intervention.reclamation.telephone}`, 10, 140);
 
     // Rapport
-    doc.text("RAPPORT", 10, 160);
+    doc.text("Observations du Createur :", 10, 160);
     doc.text(`${intervention.rapport!.description}`, 10, 170);
+
+        // Rapport
+        doc.text("Rapport Rédigé par :", 10, 200);
+        doc.text(`${intervention.rapport!.createur.username}`, 55, 200);
 
     // Ouvrir le PDF dans une nouvelle fenêtre
     const pdfBlob = doc.output('blob');

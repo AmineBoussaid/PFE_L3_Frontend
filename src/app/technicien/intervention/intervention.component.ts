@@ -68,7 +68,7 @@ export class InterventionComponent implements OnInit {
       this.intervention.rapport = new RapportDto();
     }
     this.intervention.rapport.interventionId = this.intervention.id;
-    this.intervention.rapport.technicien!.id = this.currentUser!.id;
+    this.intervention.rapport.createur!.id = this.currentUser!.id;
     this.intervention.rapport.description = this.description;
 
     this.intervention.status = "Terminee";
@@ -78,6 +78,7 @@ export class InterventionComponent implements OnInit {
         localStorage.setItem(`currentIntervention_${this.currentUser!.id}`, JSON.stringify(this.intervention));
         this.showDetails = !this.showDetails;
         console.log('intervention updated', response);
+        this.toggleDetails();
       });
   }
 

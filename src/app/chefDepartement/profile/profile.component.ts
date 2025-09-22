@@ -36,6 +36,7 @@ export class ProfileComponent implements OnInit{
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser) {
+      console.log(this.currentUser.imageBase64)
       this.CountReclamation();
       this.getUserHist(this.currentUser.id);
       console.log('Current user:', this.currentUser);
